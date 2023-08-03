@@ -1,7 +1,7 @@
 import { Layout } from '@/components/layouts'
 import { Button } from '@/registry/default/ui/button';
 import { Separator } from "@/registry/default/ui/separator"
-import { MouseEvent } from 'react';
+import { MouseEvent, useEffect } from 'react';
 import { Input } from "@/registry/default/ui/input"
 import { useState } from "react";
 import axios from 'axios';
@@ -23,13 +23,78 @@ import { Card } from 'semantic-ui-react'
 
 
 const DocumentsPage = () => {
-
+    const [basededatos, setBasededatos] = useState([]);
     const [nombres, setNombres] = useState("");
     const [descriptions, setDescriptions] = useState("");
     const [type, setType] = useState("");
+    const [img, setImg] = useState("https://github.com/shadcn.png");
+    const objMock ={
+        finance: "https://images.pexels.com/photos/164527/pexels-photo-164527.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+        rrhh:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQA9enOPrVdOEU1MsFljdUnEoJiqG1Fg5dUZg&usqp=CAU",
+        legales:"https://images.pexels.com/photos/5669619/pexels-photo-5669619.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+        default: "https://github.com/shadcn.png"
+    }
+
+    const currentDate = new Date();
+
+    // Obtén el día, el mes y el año por separado
+    const day = currentDate.getDate();
+    const month = currentDate.getMonth() + 1; // Los meses en JavaScript son indexados desde 0, por lo que sumamos 1.
+    const year = currentDate.getFullYear();
+    // Formatea la fecha al formato día/mes/año
+    const formattedDate = `${day}/${month}/${year}`;
+  
+    
+    const getAllDataFromLocalStorage = () => {
+        if (typeof window !== 'undefined') {
+        const allData = [];
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          const value = localStorage.getItem(key);
+          allData.push({ key, value });
+        }
+        return allData;
+    }
+      };
+    
+      const getPublicDataFromLocalStorage = () => {
+        if (typeof window !== 'undefined') {
+            const array = []
+      const data = getAllDataFromLocalStorage()
+      
+        for(let i=0; i <= data.length -1 ; i++){
+
+           array.push(JSON.parse(data[i].value))
+        }
+       
+ 
+       const info = array.filter(objeto => objeto.isData === true);
+       setBasededatos(info)
+    }
+      }
 
 
+      
+     
     const onClick = (): void => {
+        
+        if(!descriptions || type == "default" || type == "" || !nombres){
+         return   Swal.fire('¡Hola, usuario!', 'select a type or add description', 'error')
+        }
+
+   
+
+        const data = {
+            name: nombres,
+            descriptions: descriptions,
+            type: type,
+            img: img,
+            date: formattedDate,
+            isData:true
+          };
+          
+        localStorage.setItem(nombres, JSON.stringify(data));
+
         const files = document.querySelector<HTMLInputElement>('#docfile')?.files![0];
         const formData = new FormData();
         formData.append('files', files!);
@@ -40,19 +105,24 @@ const DocumentsPage = () => {
 
         setNombres(null)
         const fileInfoDiv = document.getElementById('file-info');
-        fileInfoDiv.textContent = 'No file selected';
+        // fileInfoDiv.textContent = 'No file selected';
         
-        axios.post('https://flowise.seidoranalytics.com/api/v1/prediction/e4740be0-f776-4d56-8bda-77134309fa5d', formData, { headers: { 'Content-Type': 'multipart/form-data' }})
-                .then(function () { Swal.fire('¡Hola, usuario!', 'Cargado exitosamente', 'success');})
+        axios.post('https://flowise.seidoranalytics.com/api/v1/prediction/1060b49a-44c6-43de-98b7-fe047331ddf1', formData, { headers: { 'Content-Type': 'multipart/form-data' }})
+                .then(function () { Swal.fire('¡Hola, usuario!', 'Cargado exitosamente', 'success');}, getPublicDataFromLocalStorage())
                 .catch(function () { Swal.fire('¡Hola, usuario!', 'Su archivo no se ha podido cargar correctamente', 'error');})
     }
 
     const handleSelectChange = (event) => {
-        console.log('hola')
-        setType(event.target.value);
+        const typeEvent = event.target.value
+        setType(typeEvent);
+        setImg(objMock[typeEvent])
       };
     
-    
+      const handleChangeText = (event) => {
+      
+        setDescriptions(event.target.value);
+      };
+
         function handleFileChange(event) {
           const fileInput = event.target;
           const fileInfoDiv = document.getElementById('file-info');
@@ -60,37 +130,46 @@ const DocumentsPage = () => {
           if (fileInput.files.length > 0) {
             const fileName = fileInput.files[0].name;
             setNombres(fileName)
-            fileInfoDiv.textContent = `Selected file: ${fileName}`;
-          } else {
-            fileInfoDiv.textContent = 'No file selected';
           }
         }
 
-        
-
+        useEffect(() => {
+            getPublicDataFromLocalStorage()
+            console.log(basededatos)
+          }, []);
+          
   return (
         
     <Layout  title='Documents page'>
         <div className ={styles.body}>
         <div className ={styles.sidebar}>
-        <Label htmlFor="email">Your files
+        <Label htmlFor="email">
+            YOUR FILES
         </Label>
-<div className ={styles.hover}>
-<h1>Estructura.js</h1>
-<h3>25/05/2022</h3>
-<p>adsdsada sdadas dasdsad asda
-    dasdsadsda
-    sadsdaads
-</p>
-</div>
-<div className ={styles.hover}>
-<h1>Algo.js</h1>
-<h3>25/05/2023</h3>
-<p>ads dsadas dadasd asdsad asda
-    dasdsadsda
-    sadsdaads
-</p>
-</div>
+
+{basededatos?.map((obj)=>{
+    return(
+    <div className ={styles.hover}>
+  
+  <div>
+  <Avatar className="w-20 h-20">
+    <AvatarImage src={obj.img} />
+    <AvatarFallback>CN</AvatarFallback>
+  </Avatar>
+  </div>    
+  <div className={styles.hoverCont}>
+  <h1>{obj.name}</h1>
+  <h3>{obj.date}</h3> <h3>{obj.type}</h3>
+  <p>{obj.descriptions}</p>
+  </div>    
+  
+  
+  </div>
+    )
+})
+
+}
+
 
 
 </div>
@@ -105,7 +184,7 @@ const DocumentsPage = () => {
           
 <div className={styles.avatar}>
 <Avatar className="w-40 h-40">
-  <AvatarImage src="https://github.com/shadcn.png" />
+  <AvatarImage src={img} />
   <AvatarFallback>CN</AvatarFallback>
 </Avatar>
 
@@ -113,16 +192,16 @@ const DocumentsPage = () => {
 <div className={styles.select}>
 <Label>Select an option</Label>
 <select onChange={handleSelectChange}   id="countries" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-  <option selected>Choose a type</option>
-  <option value="CA">Economy</option>
-  <option value="FR">Finance</option>
-  <option value="DE">Human resources</option>
+  <option selected value="default">Choose a type</option>
+  <option value="legales">Legales</option>
+  <option value="finance">Finance</option>
+  <option value="rrhh">Human resources</option>
 </select>
 </div>
 
 <div className={styles.descriptions}>
 <Label htmlFor="email">Your descriptions</Label>
-<Textarea onChange={handleSelectChange} />
+<Textarea onChange={handleChangeText} />
 </div>    
 
 <div className={styles.descriptions}>
@@ -130,10 +209,10 @@ const DocumentsPage = () => {
       <FaCloudUploadAlt className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" />
         <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
            
-           Select file PDF, TXT OR JSON (MAX. 1GBx)</p>
+           {nombres?`Filed Select: ${nombres}`:"Select file PDF, TXT OR JSON (MAX. 1GBx)"}</p>
  
       </label>
-      <div id="file-info" className="text-xs text-gray-500 dark:text-gray-400"></div>
+      {/* <div id="file-info" className="text-xs text-gray-500 dark:text-gray-400"></div> */}
       <input id="docfile" type="file" className="hidden" onChange={handleFileChange} />
       {nombres?<Button variant="outline" onClick={ onClick }>Upload</Button>:""}
 </div>
