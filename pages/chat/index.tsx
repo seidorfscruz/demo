@@ -1,7 +1,12 @@
 import { Layout } from '@/components/layouts'
-import { BubbleChat, FullPageChat } from "flowise-embed-react";
+import '@/styles/chat.css'
+
 
 const ChatPage = () => {
+
+
+
+
   return (
     <Layout title='Chat page'>
       <div className="hidden flex-col md:flex">
@@ -11,8 +16,45 @@ const ChatPage = () => {
           </div>
         </div>
       </div>
-      <BubbleChat chatflowid="e4740be0-f776-4d56-8bda-77134309fa5d" apiHost="https://flowise.seidoranalytics.com" />
-      {/* <FullPageChat chatflowid="e4740be0-f776-4d56-8bda-77134309fa5d" apiHost="https://flowise.seidoranalytics.com" /> */}
+
+      <div className="relative flex justify-end">
+        <div
+          className="center-div relative h-full w-full overflow-clip rounded-md border border-zinc-200 bg-white p-2 px-0 py-0"
+        >
+          <iframe
+            srcDoc="<body><script src='https://cdn.botpress.cloud/webchat/v0/inject.js'></script>
+            <script>
+              window.botpressWebChat.init({
+                  'composerPlaceholder': 'Escríbele a SmartBot...',
+                  'botConversationDescription': 'Hazme las preguntas que quieras sobre la documentación que cargaste',
+                  'botName': 'SmartBot',
+                  'avatarUrl': 'https://e7.pngegg.com/pngimages/811/700/png-clipart-chatbot-internet-bot-business-natural-language-processing-facebook-messenger-business-people-logo-thumbnail.png',
+                  'locale': 'es',
+                  'botId': '81c2c462-0122-4e42-921a-2fd55c636d95',
+                  'hostUrl': 'https://cdn.botpress.cloud/webchat/v0',
+                  'messagingUrl': 'https://messaging.botpress.cloud',
+                  'clientId': '81c2c462-0122-4e42-921a-2fd55c636d95',
+                  'enableConversationDeletion': true,
+                  'showPoweredBy': true,
+                  'className': 'webchatIframe',
+                  'containerWidth': '100%25',
+                  'layoutWidth': '100%25',
+                  'hideWidget': true,
+                  'showCloseButton': false,
+                  'disableAnimations': true,
+                  'closeOnEscape': false,
+                  'showConversationsButton': false,
+                  'enableTranscriptDownload': false,
+                  'stylesheet':'https://webchat-styler-css.botpress.app/prod/code/3fcd3e4e-d5bc-4bf5-8699-14b621b3ada2/v31782/style.css'
+                  
+              });
+            window.botpressWebChat.onEvent(function () { window.botpressWebChat.sendEvent({ type: 'show' }) }, ['LIFECYCLE.LOADED']);
+            </script></body>"
+            width="100%"
+            height="100%"
+          ></iframe>
+        </div>
+      </div>
     </Layout>
   )
 }
