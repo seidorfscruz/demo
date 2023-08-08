@@ -10,22 +10,19 @@ import {Avatar,AvatarFallback,AvatarImage,} from "@/registry/default/ui/avatar";
 import { Label } from "@/registry/default/ui/label";
 import Swal from "sweetalert2";
 import React from "react";
+import { Payment, columns } from "./columnas"
+import { DataTable } from "./data-table"
 
 const DocumentsPage = () => {
-  const [url, setUrl] = useState("");
-  const [basededatos, setBasededatos] = useState([]);
-  const [nombres, setNombres] = useState("");
-  const [descriptions, setDescriptions] = useState("");
-  const [type, setType] = useState("");
-  const [img, setImg] = useState("https://github.com/shadcn.png");
-  const objMock = {
-    finance:
-      "https://images.pexels.com/photos/164527/pexels-photo-164527.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    rrhh: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQA9enOPrVdOEU1MsFljdUnEoJiqG1Fg5dUZg&usqp=CAU",
-    legales:
-      "https://images.pexels.com/photos/5669619/pexels-photo-5669619.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    default: "https://github.com/shadcn.png",
-  };
+
+  
+  const [basededatos, setBasededatos] = useState<Payment[]>([]);
+  const [nombres, setNombres] = useState<string | null>("");
+  const [descriptions, setDescriptions] = useState<string>("");
+  const [loading, setLoading] = useState(false)
+
+
+
 
   const currentDate = new Date();
 
@@ -40,7 +37,7 @@ const DocumentsPage = () => {
     if (typeof window !== "undefined") {
       const allData = [];
       for (let i = 0; i < localStorage.length; i++) {
-        const key: string | null = localStorage.key(i);
+        const key  = localStorage.key(i) as string;
         const value: string | null = localStorage.getItem(key);
         allData.push({ key, value });
       }
@@ -48,22 +45,31 @@ const DocumentsPage = () => {
     }
   };
 
+  function funcionAux(){
+
+    getAllDataFromLocalStorage()
+  }
+
+
   const getPublicDataFromLocalStorage = () => {
     if (typeof window !== "undefined") {
       const array  = [];
-      const data = getAllDataFromLocalStorage();
-
+      const data:  {key: string | null; value: string | null;}[] | undefined = getAllDataFromLocalStorage();
+if(data !== undefined){
       for (let i = 0; i <= data.length - 1; i++) {
-        array.push(JSON.parse(data[i].value));
+      
+        array.push(JSON.parse(data[i].value as string));
+        
       }
 
       const info = array.filter((objeto) => objeto.isData === true);
       setBasededatos(info);
     }
+  }
   };
 
-  const onClick = (): void => {
-    if (!descriptions || type == "default" || type == "" || !nombres) {
+  const onClick = ():  any => {
+    if (!descriptions || !nombres) {
       return Swal.fire(
         "¡Hola, usuario!",
         "select a type or add description",
@@ -74,13 +80,13 @@ const DocumentsPage = () => {
     const data = {
       name: nombres,
       descriptions: descriptions,
-      type: type,
-      img: img,
+      autor: "usuario1",
       date: formattedDate,
       isData: true,
+      id: (Math.floor(Math.random() * 90000) + 10000).toString()
     };
 
-    localStorage.setItem(nombres, JSON.stringify(data));
+    
 
     const files = document.querySelector<HTMLInputElement>("#docfile")?.files![0];
     const formData = new FormData();
@@ -92,33 +98,27 @@ const DocumentsPage = () => {
 
     setNombres(null);
     const fileInfoDiv = document.getElementById("file-info");
-   
+    setLoading(true)
 
-    axios.post(url, formData,{ headers: { "Content-Type": "multipart/form-data" } })
-      .then(function () {Swal.fire("¡Hola, usuario!", "Cargado exitosamente", "success");}, getPublicDataFromLocalStorage())
+
+    axios.post("https://flowise.seidoranalytics.com/api/v1/prediction/1060b49a-44c6-43de-98b7-fe047331ddf1", formData,{ headers: { "Content-Type": "multipart/form-data" } })
+      .then(responese => setLoading(false))
+      .then(response => localStorage.setItem(nombres, JSON.stringify(data)))
+      .then(response => getPublicDataFromLocalStorage())
+      .then(function () {Swal.fire("¡Hola, usuario!", "Cargado exitosamente", "success");})
+      .catch(responese => setLoading(false))
       .catch(function () {Swal.fire( "¡Hola, usuario!","Su archivo no se ha podido cargar correctamente", "error" );
     });
   };
 
-  const handleSelectChange = (event) => {
-    const typeEvent : string = event.target.value;
-    typeEvent=="finance"?setUrl("https://flowise.seidoranalytics.com/api/v1/prediction/1060b49a-44c6-43de-98b7-fe047331ddf1"):""
-    typeEvent=="legales"?setUrl("https://flowise.seidoranalytics.com/api/v1/prediction/c418aa68-85f5-42aa-baeb-be754858c828"):""
-    typeEvent=="rrhh"?setUrl("https://flowise.seidoranalytics.com/api/v1/prediction/bcd88535-b9c3-404a-aee7-4c71d4b9a4d4"):""
-    console.log(url)
-    setType(typeEvent);
-    setImg(objMock[typeEvent]);
-  };
 
-  const handleChangeText = (event) => {
+  const handleChangeText = (event: React.ChangeEvent<HTMLInputElement>) => {
     setDescriptions(event.target.value);
   };
 
-  function handleFileChange(event) {
-    const fileInput = event.target;
-    const fileInfoDiv = document.getElementById("file-info");
-
-    if (fileInput.files.length > 0) {
+  function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const fileInput: HTMLInputElement | null = event.target;
+    if (fileInput?.files && fileInput.files.length > 0) {
       const fileName = fileInput.files[0].name;
       setNombres(fileName);
     }
@@ -126,63 +126,37 @@ const DocumentsPage = () => {
 
   useEffect(() => {
     getPublicDataFromLocalStorage();
+    // DemoPage()
     
   }, []);
+
+
 
   return (
     <Layout title="Documents page">
       <div className={styles.body}>
         <div className={styles.sidebar}>
-          <Label htmlFor="email">YOUR FILES</Label>
 
-          {basededatos?.map((obj) => {
-            return (
-              <div className={styles.hover}>
-                <div>
-                  <Avatar className="w-20 h-20">
-                    <AvatarImage src={obj.img} />
-                    <AvatarFallback>CN</AvatarFallback>
-                  </Avatar>
-                </div>
-                <div className={styles.hoverCont}>
-                  <h1>{obj.name}</h1>
-                  <h3>{obj.date}</h3> <h3>{obj.type}</h3>
-                  <p>{obj.descriptions}</p>
-                </div>
-              </div>
-            );
-          })}
+<div className="container mx-auto py-10">
+      <DataTable  columns={columns} data={basededatos} />
+    </div>
+
         </div>
 
         <div className={styles.content}>
           <div className={styles.main}>
             <div className={styles.avatar}>
               <Avatar className="w-40 h-40">
-                <AvatarImage src={img} />
+                <AvatarImage src={"https://github.com/shadcn.png"} />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
             </div>
-            <div className={styles.select}>
-              <Label>Select an option</Label>
-              <select
-                onChange={handleSelectChange}
-                id="countries"
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              >
-                <option selected value="default">
-                  Choose a type
-                </option>
-                <option value="legales">Legales</option>
-                <option value="finance">Finance</option>
-                <option value="rrhh">Human resources</option>
-              </select>
-            </div>
+
 
             <div className={styles.descriptions}>
               <Label htmlFor="email">Your descriptions</Label>
               <Textarea onChange={handleChangeText} />
             </div>
-
             <div className={styles.descriptions}>
               <label
                 htmlFor="docfile"
@@ -202,13 +176,15 @@ const DocumentsPage = () => {
                 onChange={handleFileChange}
               />
               {nombres ? (
-                <Button variant="outline" onClick={onClick}>
+                <Button disabled={loading} variant="outline" onClick={onClick}>
                   Upload
                 </Button>
               ) : (
                 ""
-              )}
+                )}
             </div>
+{loading &&<span className={styles.loader}></span>}
+
           </div>
         </div>
       </div>
