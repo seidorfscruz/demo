@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import { FC } from 'react'
-import { Props } from '@/interfaces/index'
+import { Props } from '@/interfaces'
 import TeamSwitcher from '@/components/ui/team-switcher'
 import { MainNav } from '@/components/ui/main-nav'
 import { Search } from '@/components/ui/search'
