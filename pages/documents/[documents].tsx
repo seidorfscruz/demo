@@ -23,7 +23,7 @@ const DocumentsPage = () => {
 const router = useRouter();
 const [name,setName] = useState<string>("")
 const [img,setImg] = useState<string>("")
-const [basededatos, setBasededatos] = useState<Document[] >()
+const [basededatos, setBasededatos] = useState<Document[]>()
 const [nombres, setNombres] = useState<string | null>("");
 const [descriptions, setDescriptions] = useState<string>("");
 const [loading, setLoading] = useState<boolean>(false)
@@ -115,7 +115,7 @@ const [loading, setLoading] = useState<boolean>(false)
         <div className={styles.sidebar}>
         <h1>{`${name}` } </h1>
 <div className="container mx-auto py-10">
-      <DataTable  columns={columns} data={basededatos as Document[]} />
+      <DataTable  columns={columns} data={basededatos?basededatos:''} />
     </div>
 
         </div>
