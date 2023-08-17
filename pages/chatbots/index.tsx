@@ -70,12 +70,6 @@ const data: Task[] = [
     label: "feature",
     priority: "medium"
   }
-  // {
-  //   id: "bhqecj4p",
-  //   amount: 721,
-  //   status: "failed",
-  //   email: "carmella@hotmail.com",
-  // },
 ]
 
 export type Task = {

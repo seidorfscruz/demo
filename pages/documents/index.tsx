@@ -55,17 +55,18 @@ const DocumentsPage = () => {
     if (typeof window !== "undefined") {
       const array  = [];
       const data:  {key: string | null; value: string | null;}[] | undefined = getAllDataFromLocalStorage();
-if(data !== undefined){
-      for (let i = 0; i <= data.length - 1; i++) {
-      
-        array.push(JSON.parse(data[i].value as string));
-        
-      }
+      if(data !== undefined){
+            for (let i = 0; i <= data.length - 1; i++) {
+              console.log(data)
+              array.push(data[i].value as any);
+              // array.push(JSON.parse(data[i].value as string));
+            }
 
-      const info = array.filter((objeto) => objeto.isData === true);
-      setBasededatos(info);
+            const info = array.map((objeto) => console.log(JSON.parse(objeto)));
+            // const info = array.filter((objeto) => objeto.isData === true);
+            // setBasededatos(info);
+          }
     }
-  }
   };
 
   const onClick = ():  any => {
@@ -112,7 +113,7 @@ if(data !== undefined){
   };
 
 
-  const handleChangeText = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeText = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setDescriptions(event.target.value);
   };
 
@@ -155,7 +156,7 @@ if(data !== undefined){
 
             <div className={styles.descriptions}>
               <Label htmlFor="email">Your descriptions</Label>
-              <Textarea onChange={handleChangeText} />
+              <Textarea onChange={ handleChangeText } />
             </div>
             <div className={styles.descriptions}>
               <label
