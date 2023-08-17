@@ -40,97 +40,72 @@ import {
   TableRow,
 } from "@/registry/new-york/ui/table"
 import { Layout } from "@/components/layouts"
+import {Info} from '../info'
+import Link from "next/link"
+import {Avatar,AvatarFallback,AvatarImage,} from "@/registry/default/ui/avatar"
 
-const data: Task[] = [
-  {
-    id: "TASK-8782",
-    title: "You can't compress the program without quantifying the open-source SSD pixel!",
-    status: "processing",
-    label: "documentation",
-    priority: "medium"
-  },
-  {
-    id: "TASK-7878",
-    title: "Try to calculate the EXE feed, maybe it will index the multi-byte pixel!",
-    status: "pending",
-    label: "documentation",
-    priority: "medium"
-  },
-  {
-    id: "TASK-7839",
-    title: "We need to bypass the neural TCP card!",
-    status: "failed",
-    label: "bug",
-    priority: "high"
-  },
-  {
-    id: "TASK-5562",
-    title: "The SAS interface is down, bypass the open-source pixel so we can back up the PNG bandwidth!",
-    status: "pending",
-    label: "feature",
-    priority: "medium"
-  }
-]
+
+
+console.log(Info)
+const data: Task[] = Info
 
 export type Task = {
-  id: string
-  title: string
-  status: "pending" | "processing" | "success" | "failed"
-  label: string
-  priority: string
+  name: string;
+    id: string;
+    descriptions: string;
+    date: string;
+    autor: string;
+    docs: {
+        autor: string;
+        date: string;
+        descriptions: string;
+        id: string;
+        name: string;
+    }[];
 }
 
 export const columns: ColumnDef<Task>[] = [
+
   {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={table.getIsAllPageRowsSelected()}
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
+    accessorKey: "img",
+    header: "",
     cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
-    accessorKey: "id",
-    header: "Task",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("id")}</div>
+     <Avatar className="w-10 h-10">
+      <AvatarImage src={row.getValue("img")} />
+      <AvatarFallback>CN</AvatarFallback>
+    </Avatar>
+   
     ),
   },
   {
-    accessorKey: "title",
+    accessorKey: "name",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Title
+          Name
           <CaretSortIcon className="ml-2 h-4 w-4" />
         </Button>
       )
     },
-    cell: ({ row }) => <div>{row.getValue("title")}</div>,
+    cell: ({ row }) => <div>{row.getValue("name")}</div>,
   },
   {
-    accessorKey: "status",
-    header: () => <div className="">Status</div>,
-    cell: ({ row }) => <div className="capitalize">{row.getValue("status")}</div>
+    accessorKey: "descriptions",
+    header: () => <div className="">Descriptions</div>,
+    cell: ({ row }) => <div className="capitalize">{row.getValue("descriptions")}</div>
   },
   {
-    accessorKey: "priority",
-    header: () => <div className="">Priority</div>,
-    cell: ({ row }) => <div className="capitalize">{row.getValue("priority")}</div>
+    accessorKey: "autor",
+    header: () => <div className="">Created by</div>,
+    cell: ({ row }) => <div className="capitalize">{row.getValue("autor")}</div>
+  },
+  {
+    accessorKey: "date",
+    header: () => <div className="">Date</div>,
+    cell: ({ row }) => <div className="capitalize">{row.getValue("date")}</div>
   },
   {
     id: "actions",
@@ -148,14 +123,16 @@ export const columns: ColumnDef<Task>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <Link href={`/documents/${payment.id}`}>
             <DropdownMenuItem
               onClick={() => navigator.clipboard.writeText(payment.id)}
             >
-              Copy payment ID
+                Upload document
             </DropdownMenuItem>
+            </Link>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
+            <DropdownMenuItem>Edit bot</DropdownMenuItem>
+            <DropdownMenuItem>Delete bot</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )
@@ -197,6 +174,7 @@ export default function DataTableDemo() {
         <div className="flex-1 space-y-4 p-8 pt-6">
           <div className="flex items-center justify-between space-y-2">
             <h2 className="text-3xl font-bold tracking-tight">ChatBots</h2>
+          <Link href={'addbot'}> <Button>Add new bot</Button></Link>
           </div>
         </div>
       </div>
@@ -205,10 +183,10 @@ export default function DataTableDemo() {
       <div className="w-11/12 mx-auto">
         <div className="flex items-center py-4">
           <Input
-            placeholder="Filter title..."
-            value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
+            placeholder="Filter Name..."
+            value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
             onChange={(event) =>
-              table.getColumn("title")?.setFilterValue(event.target.value)
+              table.getColumn("name")?.setFilterValue(event.target.value)
             }
             className="max-w-sm"
           />
@@ -263,10 +241,11 @@ export default function DataTableDemo() {
               {table.getRowModel().rows?.length ? (
                 table.getRowModel().rows.map((row) => (
                   <TableRow
-                    key={row.id}
-                    data-state={row.getIsSelected() && "selected"}
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
                   >
                     {row.getVisibleCells().map((cell) => (
+                
                       <TableCell key={cell.id}>
                         {flexRender(
                           cell.column.columnDef.cell,

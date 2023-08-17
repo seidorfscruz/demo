@@ -56,7 +56,7 @@
   .body{
     
     display: flex;
-    height: 100em;
+    height: 90vh;
     flex-direction:row-reverse
    
   }
