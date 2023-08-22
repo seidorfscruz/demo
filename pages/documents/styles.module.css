@@ -132,6 +132,7 @@
     justify-content: center;
     width: 80%;
     padding: 10px;
+   
 }
 
 .select{
@@ -168,4 +169,11 @@
     filter: blur(5px);
     letter-spacing: 4px;
   }
+}
+
+.pfile{
+  word-wrap: break-word;
+  width: 92%;
+  padding-left: 5%;
+ 
 }

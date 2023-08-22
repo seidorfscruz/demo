@@ -1,36 +1,21 @@
 "use client";
 import styles from "./style.module.css";
+import supabase from "../../apis/supabase";
 import Link from "next/link";
 import * as z from "zod";
 import { Layout } from "@/components/layouts";
 import { Button } from "@/registry/default/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/registry/default/ui/form";
+import {Form,FormControl,FormDescription,FormField,FormItem,FormLabel,FormMessage} from "@/registry/default/ui/form";
 import { Input } from "@/registry/default/ui/input";
 import { useForm } from "react-hook-form";
 import { Textarea } from "@/registry/default/ui/textarea";
 import { useState } from "react";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/registry/default/ui/avatar";
+import {Avatar,AvatarFallback,AvatarImage,} from "@/registry/default/ui/avatar";
 import { Label } from "@/registry/default/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/registry/default/ui/select";
-
+import {Select,SelectContent,SelectItem,SelectTrigger,SelectValue,} from "@/registry/default/ui/select";
+import Swal, { SweetAlertResult } from "sweetalert2";
+import { Router } from "next/router";
+import { useRouter } from "next/router";
 const formSchema = z.object({
   name: z.string().min(2, {
     message: "Username must be at least 2 characters.",
@@ -41,21 +26,54 @@ const formSchema = z.object({
   img: z.string().min(2, {
     message: "Username must be at least 2 characters.",
   }),
-  workspace: z.string().min(2, {
+  team: z.string().min(2, {
     message: "Username must be at least 2 characters.",
   }),
 });
 
 const addBotPage = () => {
-  const [info, setInfo] = useState({ 
-    name: "", 
-    descriptions: "", 
-    img: "https://us.123rf.com/450wm/hugok1000/hugok10001905/hugok1000190500198/123291745-ilustraci%C3%B3n-de-avatar-de-perfil-predeterminado-en-azul-y-blanco-sin-persona.jpg",
-    workspace:"" });
 
-  function onSubmit(values: z.infer<typeof formSchema>) :void{
-    console.log(values);
+
+const router = useRouter();
+const [info,setInfo]=useState({
+  name: 'string',
+  descriptions: 'string',
+  img: '',
+  team: '',
+})
+  function onSubmit (values: z.infer<typeof formSchema>) :void | Promise<SweetAlertResult<any>>{
+    const post = async () => {
+      console.log("asd123 ejecutando ");
+      try {
+        const x1 = await supabase
+        .from("aibot")
+        .insert([
+          {
+            idTenant: 1,
+            name: values.name,
+            description: values.descriptions,
+            createdUser: "User1",
+            updatedUser: "UserUpdate",
+            imageUrl:values.img,
+            team: values.team      
+                },
+              ])
+              .select();
+              Swal.fire(
+                "¡Hola, usuario!",
+                "Bot creado ",
+                "success"
+              )
+              router.push('/chatbots')
+              
+            } catch (err) {
+              console.log(err);
+            }
+          };
+          post()
   }
+
+
   function onChange(values: z.infer<typeof formSchema>) :void{
     setInfo(values);
     console.log(info);
@@ -126,18 +144,18 @@ const addBotPage = () => {
               />
       <FormField
           control={form.control}
-          name="workspace"
+          name="team"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Teams</FormLabel>
+              <FormLabel>Team</FormLabel>
               <Select onValueChange={field.onChange}>
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select a workspace" />
+                    <SelectValue placeholder="Select a team" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="Not Workspace">Not Team</SelectItem>
+                  <SelectItem value="Not team">Not Team</SelectItem>
                   <SelectItem value="finance">Finance</SelectItem>
                   <SelectItem value="legales">Legales</SelectItem>
                 </SelectContent>
