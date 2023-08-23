@@ -3,6 +3,7 @@ import { styled } from '@mui/material/styles';
 import Badge from '@mui/material/Badge';
 import Avatar from '@mui/material/Avatar';
 import Stack from '@mui/material/Stack';
+import { Props } from '../../interfaces';
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
   '& .MuiBadge-badge': {
@@ -34,7 +35,7 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 }));
 
 
-export default function AvatarBadge() {
+const AvatarStatusBadge: React.FC<Props> = ({ imageUrl }) => {
   return (
     <Stack direction="row" spacing={2}>
       <StyledBadge
@@ -42,8 +43,11 @@ export default function AvatarBadge() {
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
         variant="dot"
       >
-        <Avatar alt="Remy Sharp" src="https://mui.com/static/images/avatar/1.jpg" />
+        <Avatar alt="Remy Sharp" src={imageUrl} />
+        {/* <Avatar alt="Remy Sharp" src="https://mui.com/static/images/avatar/1.jpg" /> */}
       </StyledBadge>
     </Stack>
   );
 }
+
+export default AvatarStatusBadge;

@@ -32,13 +32,13 @@ import { error } from "console";
 
 // const router = useRouter();
 // const [name,setName] = useState<string>("")
-// const [img,setImg] = useState<string>("")
 // const [basededatos, setBasededatos] = useState<Document[]>([])
 // const [nombres, setNombres] = useState<string | null>("");
 // const [descriptions, setDescriptions] = useState<string>("");
-// const [loading, setLoading] = useState<boolean>(false)
 
 const DocumentsPage = () => {
+  const [info, setInfo] = useState([])
+  const [img,setImg] = useState<string>("")
   const router = useRouter();
   const [basededatos, setBasededatos] = useState<Document[]>([]);
   const [nameReal, setNameReal] = useState<string | null>("");
@@ -170,6 +170,18 @@ const DocumentsPage = () => {
       setNameReal(fileName)
     }
   }
+  
+  const actualBot = router.query.documents
+  // const infoBot =  info.filter((e) => e.id === actualBot)
+  
+  useEffect(() => {
+
+    // setBasededatos(infoBot[0]?.docs)
+    // setImg(infoBot[0]?.img)
+    // setName(infoBot[0]?.name)
+    // console.log(basededatos)
+
+  }, [router.query.documents]);
 
   const handleNombreUsuarioChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -219,9 +231,9 @@ const DocumentsPage = () => {
 
       <div className={styles.body}>
         <div className={styles.sidebar}>
-        <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
-        {`${bot[0]?.name ? bot[0].name : ""}`} documents
-    </h2>
+          <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
+              {`${bot[0]?.name ? bot[0].name : ""}`} documents
+          </h2>
           <div className="container mx-auto py-10">
 
             <Table>
@@ -255,7 +267,7 @@ const DocumentsPage = () => {
                           <DialogHeader>
                             <DialogTitle>Edit document</DialogTitle>
                             <DialogDescription>
-                              Make changes to your document here. Click save when you're done.
+                              Make changes to your document here. Click save when you`re done.
                             </DialogDescription>
                           </DialogHeader>
                           <div className="grid gap-4 py-4">
@@ -281,10 +293,10 @@ const DocumentsPage = () => {
                       </Dialog>
                     </TableCell>
 
-<!--         <h1>{`${name}` } </h1>
-<div className="container mx-auto py-10">
-      <DataTable  columns={columns} data={ basededatos } />
-    </div> -->
+                  {/* <h1>{`${name}` } </h1>
+                  <div className="container mx-auto py-10">
+                        <DataTable  columns={columns} data={ basededatos } />
+                      </div> */}
 
                     <TableCell className="text-right">
                       <AlertDialog>
@@ -319,10 +331,13 @@ const DocumentsPage = () => {
               </TableBody>
             </Table>
 
+          <h1>{`${name}` } </h1>
 
+          <div className="container mx-auto py-10">
+            {/* <DataTable  columns={columns} data={ basededatos } /> */}
+          </div>
           </div>
         </div>
-
         <div className={styles.content}>
           <div className={styles.main}>
          
@@ -343,7 +358,8 @@ const DocumentsPage = () => {
               
               <div className={styles.descriptions}>
                 <Label htmlFor="email">Your descriptions</Label>
-                <Textarea onChange={ handleChangeText } />
+                {/* <Textarea onChange={ handleChangeText } /> */}
+                <Textarea />
               </div>
               
             <div className={styles.descriptions}>
@@ -376,6 +392,7 @@ const DocumentsPage = () => {
             {loading && <span className={styles.loader}></span>}
           </div>
         </div>
+      </div>
       </div>
     </Layout>
   );
