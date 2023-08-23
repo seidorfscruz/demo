@@ -204,7 +204,7 @@ const handleUpdate = async (e: React.MouseEvent<HTMLButtonElement>) => {
                             </DialogDescription>
                             <div className={styles.avatarform}> 
                             <Avatar className="w-20 h-20">
-        <AvatarImage src={e.imageUrl || ''} />
+        <AvatarImage src={botInfoId.imageUrl || ''} />
         <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
                 </div>

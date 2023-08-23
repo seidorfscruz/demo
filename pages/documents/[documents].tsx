@@ -209,19 +209,21 @@ const DocumentsPage = () => {
 
       <div className={styles.body}>
         <div className={styles.sidebar}>
-
+        <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
+        {`${bot[0]?.name ? bot[0].name : ""}`} documents
+    </h2>
           <div className="container mx-auto py-10">
 
             <Table>
               <TableCaption>A list of your recent invoices.</TableCaption>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[100px]">Name</TableHead>
-                  <TableHead>Description</TableHead>
-                  <TableHead>CreatedBy</TableHead>
-                  <TableHead>Date</TableHead>
-                  <TableHead>Edit</TableHead>
-                  <TableHead className="text-right">Delete</TableHead>
+                  <TableHead style={{ width: "15%" }} className="w-[100px]">Name</TableHead>
+                  <TableHead style={{ width: "45%" }}>Description</TableHead>
+                  <TableHead style={{ width: "17%" }}>CreatedBy</TableHead>
+                  <TableHead style={{ width: "13%" }}>Date</TableHead>
+                  <TableHead style={{ width: "5%" }}>Edit</TableHead>
+                  <TableHead style={{ width: "5%" }} className="text-right">Delete</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
