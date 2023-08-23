@@ -71,6 +71,17 @@ const DialogHeader = ({
 )
 DialogHeader.displayName = "DialogHeader"
 
+const DialogClose = React.forwardRef<
+  React.ElementRef<typeof DialogPrimitive.Close>,
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Close>
+>(({ className, ...props }, ref) => (
+  <DialogPrimitive.Close
+    ref={ref}
+    {...props}
+  />
+))
+DialogClose.displayName = DialogPrimitive.Title.displayName
+
 const DialogFooter = ({
   className,
   ...props
@@ -119,5 +130,5 @@ export {
   DialogHeader,
   DialogFooter,
   DialogTitle,
-  DialogDescription,
+  DialogDescription, DialogClose,
 }
