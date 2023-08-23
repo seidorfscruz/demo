@@ -98,13 +98,12 @@ const [loading, setLoading] = useState<boolean>(false)
   const infoBot =  Info.filter((e) => e.id === actualBot)
   
   useEffect(() => {
-    
+
     setBasededatos(infoBot[0]?.docs)
     setImg(infoBot[0]?.img)
     setName(infoBot[0]?.name)
-    console.log(basededatos)
-    
-    
+    // console.log(basededatos)
+
   }, [router.query.documents]);
 
 
@@ -113,11 +112,11 @@ const [loading, setLoading] = useState<boolean>(false)
     <Layout title="Documents page">
       <div className={styles.body}>
         <div className={styles.sidebar}>
-        <h1>{`${name}` } </h1>
-<div className="container mx-auto py-10">
-      <DataTable  columns={columns} data={ basededatos } />
-    </div>
+          <h1>{`${name}` } </h1>
 
+          <div className="container mx-auto py-10">
+            <DataTable  columns={columns} data={ basededatos } />
+          </div>
         </div>
 
         <div className={styles.content}>

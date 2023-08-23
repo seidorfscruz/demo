@@ -43,10 +43,11 @@ import { Layout } from "@/components/layouts"
 import {Info} from '../info'
 import Link from "next/link"
 import {Avatar,AvatarFallback,AvatarImage,} from "@/registry/default/ui/avatar"
+import supabase from "@/apis/supabase"
 
 
 
-console.log(Info)
+// console.log(Info)
 const data: Task[] = Info
 
 export type Task = {
@@ -74,7 +75,6 @@ export const columns: ColumnDef<Task>[] = [
       <AvatarImage src={row.getValue("img")} />
       <AvatarFallback>CN</AvatarFallback>
     </Avatar>
-   
     ),
   },
   {
@@ -145,8 +145,7 @@ export default function DataTableDemo() {
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   )
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({})
+  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
 
   const table = useReactTable({
@@ -168,13 +167,60 @@ export default function DataTableDemo() {
     },
   })
 
+
+  // Alta de usuarios en supabase simplemente con el email
+  const login = async() => {
+    const email = 'fsantacruz@seidoranalytics.com'
+    try {
+      let { data, error } = await supabase.auth.signInWithOtp({ email })
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  // READ ALL ROWS
+  const select = async() => {
+    try {
+      let { data, error } = await supabase.from('tenants').select()
+      console.log(data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  // INSERT A ROW
+  const insert = async() => {
+    try {
+      const { data, error } = await supabase.from('tenants')
+        .insert([
+          { idtenant: 'fsantacruz_seidoranalytics.com', email: 'fsantacruz@seidoranalytics.com', plan: 'enterprise', payment: true, createdat: '2021-10-01T00:00:00.000Z', updatedat: '2021-10-01T00:00:00.000Z' }
+        ])
+        .select()
+      
+      if(data){
+        console.log(data)
+      }
+
+      if(error){
+        console.log(error)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  
+
   return (
     <Layout title="ChatBots page">
       <div className="hidden flex-col md:flex">
         <div className="flex-1 space-y-4 p-8 pt-6">
           <div className="flex items-center justify-between space-y-2">
             <h2 className="text-3xl font-bold tracking-tight">ChatBots</h2>
-          <Link href={'addbot'}> <Button>Add new bot</Button></Link>
+            <Button variant="outline" onClick={ insert }>Insert</Button>
+            <Button variant="outline" onClick={ select }>Select</Button>
+            <Link href={'addbot'}>
+              <Button>Add new bot</Button>
+            </Link>
           </div>
         </div>
       </div>

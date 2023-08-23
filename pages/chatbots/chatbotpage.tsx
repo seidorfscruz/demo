@@ -3,9 +3,6 @@ import { Layout } from '@/components/layouts'
 
 const ChatBotsPage = () => {
 
-
-
-
   return (
     <Layout title='Chat page'>
       <div className="hidden flex-col md:flex">
@@ -15,8 +12,6 @@ const ChatBotsPage = () => {
           </div>
         </div>
       </div>
-
-      
     </Layout>
   )
 }
