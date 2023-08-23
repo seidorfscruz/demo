@@ -4,7 +4,7 @@ import { Button } from "@/registry/default/ui/button";
 import { Textarea } from "@/registry/default/ui/textarea";
 import { useEffect, useState } from "react";
 import { FaCloudUploadAlt } from "react-icons/fa";
-import {Avatar,AvatarFallback,AvatarImage} from "@/registry/default/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/registry/default/ui/avatar";
 import { Label } from "@/registry/default/ui/label";
 import Swal from "sweetalert2";
 import React from "react";
@@ -13,9 +13,19 @@ import { Document } from "../info";
 import { Input } from "@/registry/default/ui/input";
 import { supabase } from "@/apis";
 import { Task } from "../chatbots/index";
-import {Table,TableBody,TableCaption,TableCell,TableHead,TableHeader,TableRow,} from "@/registry/default/ui/table"
-import {AlertDialog,AlertDialogAction,AlertDialogCancel,AlertDialogContent,AlertDialogDescription,AlertDialogFooter,AlertDialogHeader,AlertDialogTitle,AlertDialogTrigger,} from "@/registry/default/ui/alert-dialog"
-
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow, } from "@/registry/default/ui/table"
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger, } from "@/registry/default/ui/alert-dialog"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogClose,
+} from "@/registry/default/ui/dialog"
+import { error } from "console";
 
 
 
@@ -28,7 +38,11 @@ const DocumentsPage = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [bot, setBot] = useState<Task[]>([]);
   const idBot = router.query.documents
-
+  const [documentId, setDocumentId] = useState({
+    id: '',
+    name: '',
+    description: ''
+  })
 
   const currentDate = new Date();
   // Obtén el día, el mes y el año por separado
@@ -53,14 +67,14 @@ const DocumentsPage = () => {
     if (x.data !== null) setBasededatos(x.data);
   };
 
-  const handleDelete = async (e)=>{
-    
-    const x = await supabase.from('document').delete().eq('id',e.target.value)
-    if(x.error){
-      Swal.fire("¡Hola, usuario!","El documento no pudo ser eliminado ","warning")
-    }else {
+  const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
+
+    const x = await supabase.from('document').delete().eq('id', e.currentTarget.value)
+    if (x.error) {
+      Swal.fire("¡Hola, usuario!", "El documento no pudo ser eliminado ", "warning")
+    } else {
       select()
-      Swal.fire("¡Hola, usuario!","Documento eliminado correctamente","success")
+      Swal.fire("¡Hola, usuario!", "Documento eliminado correctamente", "success")
     }
   }
 
@@ -70,25 +84,21 @@ const DocumentsPage = () => {
 
 
     if (!description || !name || !nameReal) {
-      return Swal.fire(
-        "¡Hola, usuario!",
-        "select a type or add description",
-        "error"
-      );
+      return Swal.fire("¡Hola, usuario!", "select a type or add description", "error");
     }
-    
 
     const x = await supabase
-    .from('document')
-    .insert([
-      {
-      createdBy: 'User1',
-      description,
-      name, 
-      nameReal,
-      idBot, },
-    ])
-    .select()
+      .from('document')
+      .insert([
+        {
+          createdBy: 'User1',
+          description,
+          name,
+          nameReal,
+          idBot,
+        },
+      ])
+      .select()
 
 
 
@@ -103,15 +113,15 @@ const DocumentsPage = () => {
 
     setLoading(true);
 
-    if(x.error){
+    if (x.error) {
       setLoading(false);
       return Swal.fire(
         "¡Hola, usuario!",
         "Error al subir el documento",
         "error"
       );
-    }else {
-      setDescription('') 
+    } else {
+      setDescription('')
       setName('')
       setNameReal('')
       setLoading(false);
@@ -151,88 +161,165 @@ const DocumentsPage = () => {
     }
   }
 
+  const handleNombreUsuarioChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setDocumentId((prevDocument) => ({
+      ...prevDocument,
+      [name]: value,
+    }));
+
+
+  };
+
+  const handleBaseId = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    const id = event.currentTarget.value
+
+    const x = await supabase.from('document').select("*").eq('id', id)
+    if (x.error) {
+
+    } else {
+
+      setDocumentId({
+        name: x.data[0].name,
+        description: x.data[0].description,
+        id: x.data[0].id,
+      })
+    }
+  }
+
+  const handleUpdate = async (e: React.MouseEvent<HTMLButtonElement>) => {
+
+    const x = await supabase
+      .from('document')
+      .update({ name: documentId.name, description: documentId.description })
+      .eq('id', documentId.id)
+      .select()
+
+    if (x.error) {
+      return Swal.fire("¡Hola, usuario!", "no se puedo realizar la modificacion", "error");
+    } else {
+      select()
+      return Swal.fire("¡Hola, usuario!", "Cambios guardados correctamente", "success");
+    }
+  }
 
 
   return (
     <Layout title="Documents page">
-   
+
       <div className={styles.body}>
         <div className={styles.sidebar}>
-          <h1>{`${bot[0]?.name ? bot[0].name : ""}`}</h1>
+
           <div className="container mx-auto py-10">
 
-          <Table>
-  <TableCaption>A list of your recent invoices.</TableCaption>
-  <TableHeader>
-    <TableRow>
-      <TableHead className="w-[100px]">Name</TableHead>
-      <TableHead>Description</TableHead>
-      <TableHead>CreatedBy</TableHead>
-      <TableHead>Date</TableHead>
-      <TableHead>Edit</TableHead>
-      <TableHead className="text-right">Delete</TableHead>
-    </TableRow>
-  </TableHeader>
-  <TableBody>
-    {basededatos.map((e) => (
-      <TableRow key={e.id}>
-        <TableCell className="font-medium">{e.name}</TableCell>
-        <TableCell>{e.description}</TableCell>
-        <TableCell >{e.createdBy}</TableCell>
-        <TableCell>{e.created_at.toString().slice(0,10)}</TableCell>
-        <TableCell>
-                  <button value={e.id} className="inline-flex items-center px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 text-sm font-medium rounded-md">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34"></path><polygon points="18 2 22 6 12 16 8 16 8 12 18 2"></polygon></svg>
-                  </button>
-        </TableCell>
-        
-        <TableCell className="text-right">
-        <AlertDialog>
-  <AlertDialogTrigger>
-                  <button  value={e.id} className="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-md">
-	                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-	                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-	                </svg>
-                  </button>
-                  </AlertDialogTrigger>
-  <AlertDialogContent>
-    <AlertDialogHeader>
-      <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-      <AlertDialogDescription>
-        This action cannot be undone. This will permanently delete your document
-        and remove your data from our servers.
-      </AlertDialogDescription>
-    </AlertDialogHeader>
-    <AlertDialogFooter>
-      <AlertDialogCancel>Cancel</AlertDialogCancel>
-      <AlertDialogAction value={e.id} 
-      onClick={(e) => {
-      handleDelete(e);
-      }}>Continue</AlertDialogAction>
-    </AlertDialogFooter>
-  </AlertDialogContent>
-</AlertDialog>
-        </TableCell>
-      </TableRow>
-    ))}
-  </TableBody>
-</Table>
+            <Table>
+              <TableCaption>A list of your recent invoices.</TableCaption>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[100px]">Name</TableHead>
+                  <TableHead>Description</TableHead>
+                  <TableHead>CreatedBy</TableHead>
+                  <TableHead>Date</TableHead>
+                  <TableHead>Edit</TableHead>
+                  <TableHead className="text-right">Delete</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {basededatos.map((e) => (
+                  <TableRow key={e.id}>
+                    <TableCell className="font-medium">{e.name}</TableCell>
+                    <TableCell>{e.description}</TableCell>
+                    <TableCell >{e.createdBy}</TableCell>
+                    <TableCell>{e.created_at.toString().slice(0, 10)}</TableCell>
+                    <TableCell>
+                      <Dialog>
+                        <DialogTrigger>
+                          <button value={e.id} onClick={(event) => { handleBaseId(event) }}
+                            className="inline-flex items-center px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 text-sm font-medium rounded-md">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34"></path><polygon points="18 2 22 6 12 16 8 16 8 12 18 2"></polygon></svg>
+                          </button>
+                        </DialogTrigger>
+                        <DialogContent className="sm:max-w-[425px]">
+                          <DialogHeader>
+                            <DialogTitle>Edit document</DialogTitle>
+                            <DialogDescription>
+                              Make changes to your document here. Click save when you're done.
+                            </DialogDescription>
+                          </DialogHeader>
+                          <div className="grid gap-4 py-4">
+                            <div className="grid grid-cols-4 items-center gap-4">
+                              <Label htmlFor="name" className="text-right">
+                                Name
+                              </Label>
+                              <Input name="name" value={documentId.name} onChange={handleNombreUsuarioChange} className="col-span-3" />
+                            </div>
+                            <div className="grid grid-cols-4 items-center gap-4">
+                              <Label htmlFor="username" className="text-right">
+                                Descriptions
+                              </Label>
+                              <Textarea name="description" value={documentId.description} onChange={handleNombreUsuarioChange} className="col-span-3" />
+                            </div>
+                          </div>
+                          <DialogFooter>
+                            <DialogClose asChild>
+                              <Button onClick={handleUpdate} type="button">Save changes</Button>
+                            </DialogClose>
+                          </DialogFooter>
+                        </DialogContent>
+                      </Dialog>
+                    </TableCell>
+
+
+                    <TableCell className="text-right">
+                      <AlertDialog>
+                        <AlertDialogTrigger>
+                          <button value={e.id} className="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-md">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                          </button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              This action cannot be undone. This will permanently delete your document
+                              and remove your data from our servers.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction value={e.id}
+                              onClick={(e) => {
+                                handleDelete(e);
+                              }}>Continue</AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </TableCell>
+                  </TableRow>
+
+                ))}
+              </TableBody>
+            </Table>
+
+
           </div>
         </div>
 
         <div className={styles.content}>
           <div className={styles.main}>
-            <h1>{`${bot[0]?.name ? bot[0].name : ""}`} </h1>
+         
             <div className={styles.avatar}>
               <Avatar className="w-40 h-40">
                 <AvatarImage src={bot[0]?.imageUrl ? bot[0].imageUrl : ""} />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
             </div>
-
+                                <Label>Add new document to bot   <span className={styles.spanBotname}>{`${bot[0]?.name ? bot[0].name : ""}`}</span></Label>
             <div className={styles.descriptions}>
               <Label htmlFor="email">Name</Label>
-              
+
               <Input value={name} onChange={(e) => setName(e.target.value)} />
 
               <Label htmlFor="email">Description</Label>

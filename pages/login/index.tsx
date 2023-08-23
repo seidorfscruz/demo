@@ -1,142 +1,89 @@
-"use client";
-import { useState } from "react";
-import supabase from "../../apis/supabase";
-import react from "react";
-import { Button } from "@/registry/default/ui/button";
-import { Label } from "@/registry/default/ui/label";
-import { Input } from "@/registry/default/ui/input";
+import {
+  ChevronDownIcon,
+  CircleIcon,
+  PlusIcon,
+  StarIcon,
+} from "@radix-ui/react-icons"
 
-const loginPage = () => {
-  const [email, setEmail] = useState<string>("");
-  const [info, setInfo] = useState({
-    name: "",
-    description: "",
-    autor: "",
-  });
+import { Button } from "@/registry/new-york/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/registry/new-york/ui/card"
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/registry/new-york/ui/dropdown-menu"
+import { Separator } from "@/registry/new-york/ui/separator"
 
-  const post = async () => {
-    console.log("asd123 ejecutando ");
-    try {
-      const x1 = await supabase
-        .from("aibot")
-        .insert([
-            {
-                idTenant: 1,
-                name: "Nombre del bot",
-                description: "Descripción del bot",
-                createdUser: "Usuario de creación",
-                updatedUser: "Usuario de actualización",
-                imageUrl:"www.google.com/images"
-            },
-        ])
-        .select();
+const LoginPage = () => {
 
-      console.log(x1);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const put = async () => {
-    console.log("put ejecutando ");
-    try {
-      const x1 = await supabase
-        .from("bot")
-        .update([
-          { autor: "agustuki", description: "test1231", name: "agustin" },
-        ])
-        .eq('id', '0ed18a67-b823-4a43-83a3-aeae784f32e7')
-        .select();
-
-      console.log(x1);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
- 
-
-  const handleSumbit = async (e: { preventDefault: () => void }) => {
-    e.preventDefault();
-    try {
-      const result = supabase.auth.signInWithOtp({
-        email,
-      });
-      console.log(result);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  // async function handleSumbit(event: { preventDefault: () => void }) {
-
-  //     event.preventDefault()
-  //     console.log(event)
-  //     const { data, error } = await supabase.auth.signInWithOtp({
-  //       email,
-  //       options: {
-  //         emailRedirectTo: 'http://localhost:3000',
-  //       },
-  //     })
-  //   }
-
-const login = async ()=>{
-
-    try{
-    const log = await supabase.auth.signUp(
-        {
-          email: 'agustin-nibanez@hotmail.com',
-          password: 'agustinboca12',
-          options: {
-            data: {
-              first_name: 'agustiki',
-              age: 27,
-            }
-          }
-        }
-      )
-
-console.log(log)
-}catch(err){
-    console.log(err)
-  }
-}
   return (
-    <div>
-      <h1>Hello world</h1>
-      <form onSubmit={handleSumbit} action="">
-        <input
-          type="email"
-          name="email"
-          placeholder="Type your email"
-          onChange={(e) => setEmail(e.target.value)}
-        ></input>
-        <Button type="submit">link magic</Button>
-      </form>
+    <Card>
+      <CardHeader className="grid grid-cols-[1fr_110px] items-start gap-4 space-y-0">
+        <div className="space-y-1">
+          <CardTitle>shadcn/ui</CardTitle>
+          <CardDescription>
+            Beautifully designed components built with Radix UI and Tailwind
+            CSS.
+          </CardDescription>
+        </div>
+        <div className="flex items-center space-x-1 rounded-md bg-secondary text-secondary-foreground">
+          <Button variant="secondary" className="px-3 shadow-none">
+            <StarIcon className="mr-2 h-4 w-4" />
+            Star
+          </Button>
+          <Separator orientation="vertical" className="h-[20px]" />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="secondary" className="px-2 shadow-none">
+                <ChevronDownIcon className="h-4 w-4 text-secondary-foreground" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="end"
+              alignOffset={-5}
+              className="w-[200px]"
+              forceMount
+            >
+              <DropdownMenuLabel>Suggested Lists</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuCheckboxItem checked>
+                Future Ideas
+              </DropdownMenuCheckboxItem>
+              <DropdownMenuCheckboxItem>My Stack</DropdownMenuCheckboxItem>
+              <DropdownMenuCheckboxItem>Inspiration</DropdownMenuCheckboxItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>
+                <PlusIcon className="mr-2 h-4 w-4" /> Create List
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <div className="flex space-x-4 text-sm text-muted-foreground">
+          <div className="flex items-center">
+            <CircleIcon className="mr-1 h-3 w-3 fill-sky-400 text-sky-400" />
+            TypeScript
+          </div>
+          <div className="flex items-center">
+            <StarIcon className="mr-1 h-3 w-3" />
+            20k
+          </div>
+          <div>Updated April 2023</div>
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
 
-      <form>
-        <Label>Nombre</Label>
-        <Input></Input>
-        <Label>descriptions</Label>
-        <Input></Input>
-        <Label>img</Label>
-        <Input></Input>
-        <Button type="button" onClick={post}>
-          post
-        </Button>
-      </form>
-      <form>
-       
-        <Button type="button" onClick={put}>
-          put
-        </Button>
-        <Button type="button" onClick={login}>
-          login
-        </Button>
-      </form>
-  
-    </div>
-  );
-};
-
-export default loginPage;
+export default LoginPage

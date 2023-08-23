@@ -3,10 +3,8 @@
 import * as React from "react"
 import {useEffect, useState} from 'react'
 import supabase from "../../apis/supabase";
-import { CaretSortIcon,ChevronDownIcon,DotsHorizontalIcon,} from "@radix-ui/react-icons"
-import {ColumnDef,ColumnFiltersState,SortingState,VisibilityState,flexRender,getCoreRowModel,getFilteredRowModel,getPaginationRowModel,  getSortedRowModel,useReactTable,} from "@tanstack/react-table"
+import { DotsHorizontalIcon,} from "@radix-ui/react-icons"
 import { Button } from "@/registry/new-york/ui/button"
-import { Checkbox } from "@/registry/new-york/ui/checkbox"
 import {DropdownMenu,DropdownMenuCheckboxItem,DropdownMenuContent,DropdownMenuItem,DropdownMenuLabel,DropdownMenuSeparator,DropdownMenuTrigger,} from "@/registry/new-york/ui/dropdown-menu"
 import { Layout } from "@/components/layouts"
 import Link from "next/link"
@@ -14,8 +12,20 @@ import {Avatar,AvatarFallback,AvatarImage,} from "@/registry/default/ui/avatar"
 import Swal, { SweetAlertResult } from "sweetalert2";
 import {Table,TableBody,TableCaption,TableCell,TableHead,TableHeader,TableRow,} from "@/registry/default/ui/table"
 import {AlertDialog,AlertDialogAction,AlertDialogCancel,AlertDialogContent,AlertDialogDescription,AlertDialogFooter,AlertDialogHeader,AlertDialogTitle,AlertDialogTrigger,} from "@/registry/default/ui/alert-dialog"
-
-
+import styles from "./styles.module.css";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogClose,
+} from "@/registry/default/ui/dialog"
+import { Label } from "@/registry/default/ui/label";
+import { Input } from "@/registry/default/ui/input";
+import { Textarea } from "@/registry/default/ui/textarea";
 
 export type Task = {
   name: string | null;
@@ -34,6 +44,14 @@ export type Task = {
 
 export default function DataTableDemo() {
   const [info, setInfo] =useState<Task[] | null>(null)
+  const [botInfoId, setBotInfoId] = useState({
+    id: '',
+    name: '',
+    description: '',
+    imageUrl:'',
+    
+
+  })
 
 
 
@@ -49,7 +67,7 @@ export default function DataTableDemo() {
     
   }, []); 
 
-  const handleDelete =async  (id) =>{
+  const handleDelete =async  (id: string) =>{
     console.log(id)
     const x = await supabase
     .from('aibot')
@@ -69,9 +87,51 @@ export default function DataTableDemo() {
       "Bot eliminado exitosamente",
       "success")
     
-  }
+  }}
+
+
   
+  const handleNombreUsuarioChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>)  => {
+    const { name, value } = e.target;
+    setBotInfoId((prevDocument) => ({
+      ...prevDocument,
+      [name]: value,
+    }));
+ };
+ const handleBaseId = async (event: React.MouseEvent<HTMLButtonElement>) => {
+
+   const id = event.currentTarget.id
+  
+
+  const x = await supabase.from('aibot').select("*").eq('idBot', id)
+  if (x.error) {
+
+  } else {
+
+    setBotInfoId({
+      name: x.data[0].name,
+      description: x.data[0].description,
+      imageUrl: x.data[0].imageUrl,
+      id: x.data[0].idBot,
+    })
   }
+}
+const handleUpdate = async (e: React.MouseEvent<HTMLButtonElement>) => {
+
+  const x = await supabase
+    .from('aibot')
+    .update({ name: botInfoId.name, description: botInfoId.description, imageUrl: botInfoId.imageUrl  })
+    .eq('idBot', botInfoId.id)
+    .select()
+
+  if (x.error) {
+    return Swal.fire("¡Hola, usuario!", "no se puedo realizar la modificacion", "error");
+  } else {
+    select()
+    return Swal.fire("¡Hola, usuario!", "Cambios guardados correctamente", "success");
+  }
+}
+
 
   return (
     <Layout title="ChatBots page">
@@ -105,7 +165,7 @@ export default function DataTableDemo() {
         <TableRow key={e.idBot}>
           <TableCell>
           <Avatar className="w-10 h-10">
-      <AvatarImage src={e.imageUrl} />
+      <AvatarImage src={e.imageUrl || ''} />
       <AvatarFallback>CN</AvatarFallback>
     </Avatar></TableCell>
           <TableCell className="font-medium">{e.name}</TableCell>
@@ -123,17 +183,65 @@ export default function DataTableDemo() {
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
                 <Link href={`/documents/${e.idBot}`}>
-                  <DropdownMenuItem>
+                  <p className={styles.pbtton}>
                     Upload document
-                  </DropdownMenuItem>
+                    
+                  </p>
                 </Link>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>Edit bot</DropdownMenuItem>
+
+                <Dialog>
+                        <DialogTrigger className={styles.dialog}>
+                       
+                <button id={e.idBot} onClick={(event) => { handleBaseId(event) }} className={styles.pbtton}>Edit bot</button>
+                
+                </DialogTrigger>
+                        <DialogContent className="sm:max-w-[425px]">
+                          <DialogHeader>
+                            <DialogTitle>Edit bot</DialogTitle>
+                            <DialogDescription>
+                              Make changes to your bot here. Click save when you're done.
+                            </DialogDescription>
+                            <div className={styles.avatarform}> 
+                            <Avatar className="w-20 h-20">
+        <AvatarImage src={e.imageUrl || ''} />
+        <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
+                </div>
+                          </DialogHeader>
+                          <div className="grid gap-4 py-4">
+                            <div className="grid grid-cols-4 items-center gap-4">
+                              <Label htmlFor="name" className="text-right">
+                                Name
+                              </Label>
+                              <Input onChange={handleNombreUsuarioChange} name="name" value={botInfoId.name} className="col-span-3" />
+                            </div>
+                            <div className="grid grid-cols-4 items-center gap-4">
+                              <Label htmlFor="img" className="text-right">
+                                Avatar
+                              </Label>
+                              <Input onChange={handleNombreUsuarioChange} name="imageUrl"  value={botInfoId.imageUrl} className="col-span-3" />
+                            </div>
+                            <div className="grid grid-cols-4 items-center gap-4">
+                              <Label htmlFor="username" className="text-right">
+                                Descriptions
+                              </Label>
+                              <Textarea onChange={handleNombreUsuarioChange} name="description" value={botInfoId.description}  className="col-span-3" />
+                            </div>
+                          </div>
+                          <DialogFooter>
+                            <DialogClose asChild>
+                              <Button onClick={handleUpdate}  type="button">Save changes</Button>
+                            </DialogClose>
+                          </DialogFooter>
+                        </DialogContent>
+                      </Dialog>
+
 
                 <AlertDialog>
   <AlertDialogTrigger>
   <DropdownMenuSeparator />
-                  <span >Delete bot</span>
+                  <p className={styles.pbtton}>Delete bot</p>
            
                 </AlertDialogTrigger>
   <AlertDialogContent>

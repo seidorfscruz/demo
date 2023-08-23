@@ -1,0 +1,20 @@
+.pbtton{
+    transition: 0.3s;
+    cursor: pointer;
+    opacity: 0.6;
+}
+.pbtton:hover{
+    opacity: 1;
+}
+
+
+.dialog{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.avatarform{
+    display: flex;
+    justify-content: center;
+}

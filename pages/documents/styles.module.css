@@ -119,12 +119,7 @@
     font-family:'Times New Roman', Times, serif
     
   }
-  .avatar{
-    display: flex;
-    justify-content: center;
-    width: 80%;
-    padding: 10px;
-  }
+
 
 .descriptions{
     flex-direction: column;
@@ -175,5 +170,20 @@
   word-wrap: break-word;
   width: 92%;
   padding-left: 5%;
+ 
+}
+
+.spanBotname{
+  color: red;
+}
+.navBar{
+  display: flex;
+  justify-content: space-between;
+  background-color: #fcfcfc;
+}
+.avatar{
+  display: flex;
+  justify-content: center;
+
  
 }
