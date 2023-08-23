@@ -28,6 +28,15 @@ import {
 import { error } from "console";
 
 
+// const DocumentsPage = () => {
+
+// const router = useRouter();
+// const [name,setName] = useState<string>("")
+// const [img,setImg] = useState<string>("")
+// const [basededatos, setBasededatos] = useState<Document[]>([])
+// const [nombres, setNombres] = useState<string | null>("");
+// const [descriptions, setDescriptions] = useState<string>("");
+// const [loading, setLoading] = useState<boolean>(false)
 
 const DocumentsPage = () => {
   const router = useRouter();
@@ -272,6 +281,10 @@ const DocumentsPage = () => {
                       </Dialog>
                     </TableCell>
 
+<!--         <h1>{`${name}` } </h1>
+<div className="container mx-auto py-10">
+      <DataTable  columns={columns} data={ basededatos } />
+    </div> -->
 
                     <TableCell className="text-right">
                       <AlertDialog>
@@ -327,7 +340,12 @@ const DocumentsPage = () => {
 
               <Label htmlFor="email">Description</Label>
               <Textarea value={description} onChange={(e) => setDescription(e.target.value)} />
-            </div>
+              
+              <div className={styles.descriptions}>
+                <Label htmlFor="email">Your descriptions</Label>
+                <Textarea onChange={ handleChangeText } />
+              </div>
+              
             <div className={styles.descriptions}>
               <Label
                 htmlFor="docfile"
