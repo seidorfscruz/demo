@@ -43,7 +43,7 @@ const [info,setInfo]=useState({
 })
   function onSubmit (values: z.infer<typeof formSchema>) :void | Promise<SweetAlertResult<any>>{
     const post = async () => {
-      console.log("asd123 ejecutando ");
+     
       try {
         const x1 = await supabase
         .from("aibot")
@@ -65,9 +65,9 @@ const [info,setInfo]=useState({
                 "success"
               )
               router.push('/chatbots')
-              
+            
             } catch (err) {
-              console.log(err);
+              
             }
           };
           post()
@@ -76,7 +76,7 @@ const [info,setInfo]=useState({
 
   function onChange(values: z.infer<typeof formSchema>) :void{
     setInfo(values);
-    console.log(info);
+   
   }
 
   const form = useForm();

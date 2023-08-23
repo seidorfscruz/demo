@@ -114,6 +114,7 @@ const DocumentsPage = () => {
     setLoading(true);
 
     if (x.error) {
+      console.log(x.error)
       setLoading(false);
       return Swal.fire(
         "¡Hola, usuario!",

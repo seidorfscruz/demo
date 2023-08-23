@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 
 
-const supabase = createClient('http://localhost:8000','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE')
+const supabase = createClient('https://fzjgljxomqpukuvmguay.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ6amdsanhvbXFwdWt1dm1ndWF5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTI4MjAxMjgsImV4cCI6MjAwODM5NjEyOH0.b5jTFQF6QfFPzJ59ImVO4Icx8k9Gsd5kIcKMEIYzhbw')
 
 export default supabase;
