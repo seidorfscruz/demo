@@ -27,11 +27,6 @@ import { Label } from "@/registry/default/ui/label";
 import { Input } from "@/registry/default/ui/input";
 import { Textarea } from "@/registry/default/ui/textarea";
 
-
-
-// console.log(Info)
-// const data: Task[] = Info
-
 export type Task = {
   name: string | null;
     idBot: string;
@@ -46,99 +41,19 @@ export type Task = {
    
 }
 
-// export default function DataTableDemo() {
-//   const [info, setInfo] =useState<Task[] | null>(null)
-//   const [botInfoId, setBotInfoId] = useState({
-//     id: '',
-//     name: '',
-//     description: '',
-//     imageUrl:'',
-//   })}
-
-
-export const columns: ColumnDef<Task>[] = [
-
-  {
-    accessorKey: "img",
-    header: "",
-    cell: ({ row }) => (
-     <Avatar className="w-10 h-10">
-      <AvatarImage src={row.getValue("img")} />
-      <AvatarFallback>CN</AvatarFallback>
-    </Avatar>
-    ),
-  },
-  {
-    accessorKey: "name",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Name
-          <CaretSortIcon className="ml-2 h-4 w-4" />
-        </Button>
-      )
-    },
-    cell: ({ row }) => <div>{row.getValue("name")}</div>,
-  },
-  {
-    accessorKey: "descriptions",
-    header: () => <div className="">Descriptions</div>,
-    cell: ({ row }) => <div className="capitalize">{row.getValue("descriptions")}</div>
-  },
-  {
-    accessorKey: "autor",
-    header: () => <div className="">Created by</div>,
-    cell: ({ row }) => <div className="capitalize">{row.getValue("autor")}</div>
-  },
-  {
-    accessorKey: "date",
-    header: () => <div className="">Date</div>,
-    cell: ({ row }) => <div className="capitalize">{row.getValue("date")}</div>
-  },
-  {
-    id: "actions",
-    enableHiding: false,
-    cell: ({ row }) => {
-      const payment = row.original
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <DotsHorizontalIcon className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <Link href={`/documents/${payment.id}`}>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
-            >
-                Upload document
-            </DropdownMenuItem>
-            </Link>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>Edit bot</DropdownMenuItem>
-            <DropdownMenuItem>Delete bot</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      )
-    },
-  },
-]
 
 export default function DataTableDemo() {
-  const [sorting, setSorting] = React.useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  )
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
-  const [rowSelection, setRowSelection] = React.useState({})
-}
+  const [info, setInfo] =useState<Task[] | null>(null)
+  const [botInfoId, setBotInfoId] = useState({
+    id: '',
+    name: '',
+    description: '',
+    imageUrl:'',
+    
+
+  })
+
+
 
   const select = async () => {
     const x = await supabase.from("aibot").select("*");
@@ -183,8 +98,6 @@ export default function DataTableDemo() {
       [name]: value,
     }));
  };
-
-
  const handleBaseId = async (event: React.MouseEvent<HTMLButtonElement>) => {
 
    const id = event.currentTarget.id
@@ -203,8 +116,6 @@ export default function DataTableDemo() {
     })
   }
 }
-
-
 const handleUpdate = async (e: React.MouseEvent<HTMLButtonElement>) => {
 
   const x = await supabase
@@ -221,47 +132,6 @@ const handleUpdate = async (e: React.MouseEvent<HTMLButtonElement>) => {
   }
 }
 
-  // // Alta de usuarios en supabase simplemente con el email
-  // const login = async() => {
-  //   const email = 'fsantacruz@seidoranalytics.com'
-  //   try {
-  //     let { data, error } = await supabase.auth.signInWithOtp({ email })
-  //   } catch (error) {
-  //     console.log(error)
-  //   }
-  // }
-
-  // // READ ALL ROWS
-  // const select = async() => {
-  //   try {
-  //     let { data, error } = await supabase.from('tenants').select()
-  //     console.log(data)
-  //   } catch (error) {
-  //     console.log(error)
-  //   }
-  // }
-
-  // // INSERT A ROW
-  // const insert = async() => {
-  //   try {
-  //     const { data, error } = await supabase.from('tenants')
-  //       .insert([
-  //         { idtenant: 'fsantacruz_seidoranalytics.com', email: 'fsantacruz@seidoranalytics.com', plan: 'enterprise', payment: true, createdat: '2021-10-01T00:00:00.000Z', updatedat: '2021-10-01T00:00:00.000Z' }
-  //       ])
-  //       .select()
-      
-  //     if(data){
-  //       console.log(data)
-  //     }
-
-  //     if(error){
-  //       console.log(error)
-  //     }
-  //   } catch (error) {
-  //     console.log(error)
-  //   }
-  // }
-  
 
   return (
     <Layout title="ChatBots page">
@@ -269,11 +139,7 @@ const handleUpdate = async (e: React.MouseEvent<HTMLButtonElement>) => {
         <div className="flex-1 space-y-4 p-8 pt-6">
           <div className="flex items-center justify-between space-y-2">
             <h2 className="text-3xl font-bold tracking-tight">ChatBots</h2>
-            <Button variant="outline" onClick={ insert }>Insert</Button>
-            <Button variant="outline" onClick={ select }>Select</Button>
-            <Link href={'addbot'}>
-              <Button>Add new bot</Button>
-            </Link>
+          <Link href={'addbot'}> <Button>Add new bot</Button></Link>
           </div>
         </div>
       </div>
@@ -334,7 +200,7 @@ const handleUpdate = async (e: React.MouseEvent<HTMLButtonElement>) => {
                           <DialogHeader>
                             <DialogTitle>Edit bot</DialogTitle>
                             <DialogDescription>
-                              Make changes to your bot here. Click save when you're done.
+                              Make changes to your bot here. Click save when you re done.
                             </DialogDescription>
                             <div className={styles.avatarform}> 
                             <Avatar className="w-20 h-20">

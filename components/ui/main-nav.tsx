@@ -22,12 +22,6 @@ export function MainNav({ className, ...props }: React.HTMLAttributes<HTMLElemen
         Chatbots
       </Link>
       <Link
-        href="/documents"
-        className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
-      >
-        Documents
-      </Link>
-      <Link
         href="/chat"
         className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
       >
