@@ -1,7 +1,7 @@
 "use client";
-import styles from "./style.module.css";
+
+import { ChangeEvent, DetailedHTMLProps, FormEvent, FormHTMLAttributes, useState } from "react";
 import supabase from "../../apis/supabase";
-import Link from "next/link";
 import * as z from "zod";
 import { Layout } from "@/components/layouts";
 import { Button } from "@/registry/default/ui/button";
@@ -9,13 +9,13 @@ import {Form,FormControl,FormDescription,FormField,FormItem,FormLabel,FormMessag
 import { Input } from "@/registry/default/ui/input";
 import { useForm } from "react-hook-form";
 import { Textarea } from "@/registry/default/ui/textarea";
-import { useState } from "react";
 import {Avatar,AvatarFallback,AvatarImage,} from "@/registry/default/ui/avatar";
-import { Label } from "@/registry/default/ui/label";
 import {Select,SelectContent,SelectItem,SelectTrigger,SelectValue,} from "@/registry/default/ui/select";
-import Swal, { SweetAlertResult } from "sweetalert2";
-import { Router } from "next/router";
+import Swal from "sweetalert2";
 import { useRouter } from "next/router";
+import { chatbotSchema } from "@/interfaces";
+import styles from "./style.module.css";
+
 const formSchema = z.object({
   name: z.string().min(2, {
     message: "Username must be at least 2 characters.",
@@ -31,78 +31,60 @@ const formSchema = z.object({
   }),
 });
 
-const addBotPage = () => {
 
-
-const router = useRouter();
-const [info,setInfo]=useState({
-  name: 'string',
-  descriptions: 'string',
-  img: '',
-  team: '',
-})
-  function onSubmit (values: z.infer<typeof formSchema>) :void | Promise<SweetAlertResult<any>>{
-    const post = async () => {
-     
-      try {
-        const x1 = await supabase
-        .from("aibot")
-        .insert([
-          {
-            idTenant: 1,
-            name: values.name,
-            description: values.descriptions,
-            createdUser: "User1",
-            updatedUser: "UserUpdate",
-            imageUrl:values.img,
-            team: values.team      
-                },
-              ])
-              .select();
-              Swal.fire(
-                "¡Hola, usuario!",
-                "Bot creado ",
-                "success"
-              )
-              router.push('/chatbots')
-            
-            } catch (err) {
-              
-            }
-          };
-          post()
-  }
-
-
-  function onChange(values: z.infer<typeof formSchema>) :void{
-    setInfo(values);
-   
-  }
-
+const AddBotPage = () => {
+  
   const form = useForm();
+  const router = useRouter();
+  const [imageUrl, setImageUrl] = useState<string>('')
+  const [teamSelected, setTeamSelected] = useState<string>('')
+
+  const handleSubmitForm = async(event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const chatbotObject = form.getValues()
+    
+    try {
+      const newChatbotObject = {
+        idTenant: 1,
+        name: chatbotObject.name,
+        description: chatbotObject.description,
+        createdUser: "FSantacruz",
+        updatedUser: "UserUpdate",
+        imageUrl,
+        team: teamSelected 
+      }
+      await supabase.from("aibot").insert([ newChatbotObject ]).select();
+
+      Swal.fire( "¡Hecho!", "Bot creado satisfactoriamente", "success" )
+      router.push('/chatbots')
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  const handleChangeFormValues = (event: ChangeEvent<HTMLFormElement>) => {
+    const formValues = form.getValues();
+    console.log(formValues)
+  }
 
   return (
     <Layout title="Documents page">
       <div className={styles.title}>
         <h1>ADD NEW BOT</h1>
       </div>
-      <div className={styles.main}>
-       
-        <Avatar className="w-40 h-40">
-              <AvatarImage src={info.img} />
-              <AvatarFallback>NT</AvatarFallback>
-            </Avatar>
-        <div className={styles.form}>
 
-          <Form  {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit)}
-              onChange={form.handleSubmit(onChange)}
-              className={styles.form1}
-            >
+      <div className={ styles.main }>
+        <Avatar className='w-40 h-40'>
+          <AvatarImage src={ imageUrl } />
+          <AvatarFallback>NT</AvatarFallback>
+        </Avatar>
+
+        <div className={styles.form}>
+          <Form {...form}>
+            <form onSubmit={ handleSubmitForm } onChange={ handleChangeFormValues } className={ styles.form1 }>
               <FormField
-                control={form.control}
-                name="name"
+                control={ form.control }
+                name='name'
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Name bot</FormLabel>
@@ -113,22 +95,24 @@ const [info,setInfo]=useState({
                   </FormItem>
                 )}
               />
+
               <FormField
-                control={form.control}
-                name="img"
+                control={ form.control }
+                name='imageUrl'
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Avatar image</FormLabel>
                     <FormControl>
-                      <Input placeholder="Url image" {...field} />
+                      <Input placeholder="Insert your URL image" {...field} onChange={ (e) => setImageUrl(e.target.value) } />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+
               <FormField
-                control={form.control}
-                name="descriptions"
+                control={ form.control }
+                name='description'
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Description</FormLabel>
@@ -142,33 +126,33 @@ const [info,setInfo]=useState({
                   </FormItem>
                 )}
               />
-      <FormField
-          control={form.control}
-          name="team"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Team</FormLabel>
-              <Select onValueChange={field.onChange}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a team" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="Not team">Not Team</SelectItem>
-                  <SelectItem value="finance">Finance</SelectItem>
-                  <SelectItem value="legales">Legales</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormDescription>
-              You can select a team for your bot
-           
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <br />
+
+              <FormField
+                control={form.control}
+                name='team'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Team</FormLabel>
+                    <Select onValueChange={ (value) => setTeamSelected(value) }>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a team" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="notteam">Not Team</SelectItem>
+                        <SelectItem value="finance">Finance</SelectItem>
+                        <SelectItem value="legales">Legales</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormDescription>
+                      You can select a team for your bot
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )} />
+
+              <br />
               <Button type="submit">Submit</Button>
             </form>
           </Form>
@@ -178,4 +162,4 @@ const [info,setInfo]=useState({
   );
 };
 
-export default addBotPage;
+export default AddBotPage;

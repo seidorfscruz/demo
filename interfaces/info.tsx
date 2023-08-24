@@ -1,14 +1,9 @@
 export interface Document {
   createdBy: string;
-
   created_at: Date;
- 
   description: string;
- 
   id: string;
- 
   idBot: string;
- 
   name:string;
 }
 

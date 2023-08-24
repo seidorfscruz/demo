@@ -9,7 +9,7 @@ import { Label } from "@/registry/default/ui/label";
 import Swal from "sweetalert2";
 import React from "react";
 import { useRouter } from "next/router";
-import { Document } from "../info";
+import { Document } from "../../interfaces/info";
 import { Input } from "@/registry/default/ui/input";
 import { supabase } from "@/apis";
 import { Task } from "../chatbots/index";
@@ -27,18 +27,11 @@ import {
 } from "@/registry/default/ui/dialog"
 import { error } from "console";
 
+ 
 
-// const DocumentsPage = () => {
-
-// const router = useRouter();
-// const [name,setName] = useState<string>("")
-// const [basededatos, setBasededatos] = useState<Document[]>([])
-// const [nombres, setNombres] = useState<string | null>("");
-// const [descriptions, setDescriptions] = useState<string>("");
+ 
 
 const DocumentsPage = () => {
-  const [info, setInfo] = useState([])
-  const [img,setImg] = useState<string>("")
   const router = useRouter();
   const [basededatos, setBasededatos] = useState<Document[]>([]);
   const [nameReal, setNameReal] = useState<string | null>("");
@@ -53,6 +46,8 @@ const DocumentsPage = () => {
     description: ''
   })
 
+ 
+
   const currentDate = new Date();
   // Obtén el día, el mes y el año por separado
   const day = currentDate.getDate();
@@ -61,12 +56,16 @@ const DocumentsPage = () => {
   // Formatea la fecha al formato día/mes/año
   const formattedDate = `${day}/${month}/${year}`;
 
+ 
+
   useEffect(() => {
     const idBotValue = router.query.documents;
     select();
   }, [router.query.documents]);
 
+ 
 
+ 
 
   const select = async () => {
     const aux = router.query.documents;
@@ -76,7 +75,11 @@ const DocumentsPage = () => {
     if (x.data !== null) setBasededatos(x.data);
   };
 
+ 
+
   const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
+
+ 
 
     const x = await supabase.from('document').delete().eq('id', e.currentTarget.value)
     if (x.error) {
@@ -87,14 +90,21 @@ const DocumentsPage = () => {
     }
   }
 
+ 
 
+ 
 
   const onClick = async () => {
 
+ 
+
+ 
 
     if (!description || !name || !nameReal) {
       return Swal.fire("¡Hola, usuario!", "select a type or add description", "error");
     }
+
+ 
 
     const x = await supabase
       .from('document')
@@ -109,7 +119,9 @@ const DocumentsPage = () => {
       ])
       .select()
 
+ 
 
+ 
 
     // const files =
     //   document.querySelector<HTMLInputElement>("#docfile")?.files![0];
@@ -120,7 +132,11 @@ const DocumentsPage = () => {
     // formData.append("stripNewLines", "true");
     // formData.append("question", "Hey, how are you?");
 
+ 
+
     setLoading(true);
+
+ 
 
     if (x.error) {
       console.log(x.error)
@@ -141,6 +157,8 @@ const DocumentsPage = () => {
         "Documento subido correctamente",
         "success"
       );
+
+ 
 
     }
     // axios
@@ -163,6 +181,8 @@ const DocumentsPage = () => {
     //   });
   };
 
+ 
+
   function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
     const fileInput: HTMLInputElement | null = event.target;
     if (fileInput?.files && fileInput.files.length > 0) {
@@ -170,18 +190,8 @@ const DocumentsPage = () => {
       setNameReal(fileName)
     }
   }
-  
-  const actualBot = router.query.documents
-  // const infoBot =  info.filter((e) => e.id === actualBot)
-  
-  useEffect(() => {
 
-    // setBasededatos(infoBot[0]?.docs)
-    // setImg(infoBot[0]?.img)
-    // setName(infoBot[0]?.name)
-    // console.log(basededatos)
-
-  }, [router.query.documents]);
+ 
 
   const handleNombreUsuarioChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -190,16 +200,27 @@ const DocumentsPage = () => {
       [name]: value,
     }));
 
+ 
+
+ 
 
   };
+
+ 
 
   const handleBaseId = async (event: React.MouseEvent<HTMLButtonElement>) => {
     const id = event.currentTarget.value
 
+ 
+
     const x = await supabase.from('document').select("*").eq('id', id)
     if (x.error) {
 
+ 
+
     } else {
+
+ 
 
       setDocumentId({
         name: x.data[0].name,
@@ -209,13 +230,19 @@ const DocumentsPage = () => {
     }
   }
 
+ 
+
   const handleUpdate = async (e: React.MouseEvent<HTMLButtonElement>) => {
+
+ 
 
     const x = await supabase
       .from('document')
       .update({ name: documentId.name, description: documentId.description })
       .eq('id', documentId.id)
       .select()
+
+ 
 
     if (x.error) {
       return Swal.fire("¡Hola, usuario!", "no se puedo realizar la modificacion", "error");
@@ -225,177 +252,192 @@ const DocumentsPage = () => {
     }
   }
 
+ 
+
+ 
 
   return (
-    <Layout title="Documents page">
+<Layout title="Documents page">
+
+ 
 
       <div className={styles.body}>
-        <div className={styles.sidebar}>
-          <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
-              {`${bot[0]?.name ? bot[0].name : ""}`} documents
-          </h2>
-          <div className="container mx-auto py-10">
+<div className={styles.sidebar}>
+
+ 
+
+        <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
+        {`${bot[0]?.name ? bot[0].name : ""}`} documents
+</h2>
+<div className="container mx-auto py-10">
+
+ 
 
             <Table>
-              <TableCaption>A list of your recent invoices.</TableCaption>
-              <TableHeader>
-                <TableRow>
-                  <TableHead style={{ width: "15%" }} className="w-[100px]">Name</TableHead>
-                  <TableHead style={{ width: "45%" }}>Description</TableHead>
-                  <TableHead style={{ width: "17%" }}>CreatedBy</TableHead>
-                  <TableHead style={{ width: "13%" }}>Date</TableHead>
-                  <TableHead style={{ width: "5%" }}>Edit</TableHead>
-                  <TableHead style={{ width: "5%" }} className="text-right">Delete</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
+<TableCaption>A list of your recent invoices.</TableCaption>
+<TableHeader>
+<TableRow>
+<TableHead style={{ width: "15%" }} className="w-[100px]">Name</TableHead>
+<TableHead style={{ width: "45%" }}>Description</TableHead>
+<TableHead style={{ width: "17%" }}>CreatedBy</TableHead>
+<TableHead style={{ width: "13%" }}>Date</TableHead>
+<TableHead style={{ width: "5%" }}>Edit</TableHead>
+<TableHead style={{ width: "5%" }} className="text-right">Delete</TableHead>
+</TableRow>
+</TableHeader>
+<TableBody>
                 {basededatos.map((e) => (
-                  <TableRow key={e.id}>
-                    <TableCell className="font-medium">{e.name}</TableCell>
-                    <TableCell>{e.description}</TableCell>
-                    <TableCell >{e.createdBy}</TableCell>
-                    <TableCell>{e.created_at.toString().slice(0, 10)}</TableCell>
-                    <TableCell>
-                      <Dialog>
-                        <DialogTrigger>
-                          <button value={e.id} onClick={(event) => { handleBaseId(event) }}
+<TableRow key={e.id}>
+<TableCell className="font-medium">{e.name}</TableCell>
+<TableCell>{e.description}</TableCell>
+<TableCell >{e.createdBy}</TableCell>
+<TableCell>{e.created_at.toString().slice(0, 10)}</TableCell>
+<TableCell>
+<Dialog>
+<DialogTrigger>
+<button value={e.id} onClick={(event) => { handleBaseId(event) }}
                             className="inline-flex items-center px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 text-sm font-medium rounded-md">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34"></path><polygon points="18 2 22 6 12 16 8 16 8 12 18 2"></polygon></svg>
-                          </button>
-                        </DialogTrigger>
-                        <DialogContent className="sm:max-w-[425px]">
-                          <DialogHeader>
-                            <DialogTitle>Edit document</DialogTitle>
-                            <DialogDescription>
-                              Make changes to your document here. Click save when you`re done.
-                            </DialogDescription>
-                          </DialogHeader>
-                          <div className="grid gap-4 py-4">
-                            <div className="grid grid-cols-4 items-center gap-4">
-                              <Label htmlFor="name" className="text-right">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34"></path><polygon points="18 2 22 6 12 16 8 16 8 12 18 2"></polygon></svg>
+</button>
+</DialogTrigger>
+<DialogContent className="sm:max-w-[425px]">
+<DialogHeader>
+<DialogTitle>Edit document</DialogTitle>
+<DialogDescription>
+                              Make changes to your document here. Click save when you re done.
+</DialogDescription>
+</DialogHeader>
+<div className="grid gap-4 py-4">
+<div className="grid grid-cols-4 items-center gap-4">
+<Label htmlFor="name" className="text-right">
                                 Name
-                              </Label>
-                              <Input name="name" value={documentId.name} onChange={handleNombreUsuarioChange} className="col-span-3" />
-                            </div>
-                            <div className="grid grid-cols-4 items-center gap-4">
-                              <Label htmlFor="username" className="text-right">
+</Label>
+<Input name="name" value={documentId.name} onChange={handleNombreUsuarioChange} className="col-span-3" />
+</div>
+<div className="grid grid-cols-4 items-center gap-4">
+<Label htmlFor="username" className="text-right">
                                 Descriptions
-                              </Label>
-                              <Textarea name="description" value={documentId.description} onChange={handleNombreUsuarioChange} className="col-span-3" />
-                            </div>
-                          </div>
-                          <DialogFooter>
-                            <DialogClose asChild>
-                              <Button onClick={handleUpdate} type="button">Save changes</Button>
-                            </DialogClose>
-                          </DialogFooter>
-                        </DialogContent>
-                      </Dialog>
-                    </TableCell>
+</Label>
+<Textarea name="description" value={documentId.description} onChange={handleNombreUsuarioChange} className="col-span-3" />
+</div>
+</div>
+<DialogFooter>
+<DialogClose asChild>
+<Button onClick={handleUpdate} type="button">Save changes</Button>
+</DialogClose>
+</DialogFooter>
+</DialogContent>
+</Dialog>
+</TableCell>
 
-                  {/* <h1>{`${name}` } </h1>
-                  <div className="container mx-auto py-10">
-                        <DataTable  columns={columns} data={ basededatos } />
-                      </div> */}
+ 
+
+ 
 
                     <TableCell className="text-right">
-                      <AlertDialog>
-                        <AlertDialogTrigger>
-                          <button value={e.id} className="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-md">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                            </svg>
-                          </button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                            <AlertDialogDescription>
+<AlertDialog>
+<AlertDialogTrigger>
+<button value={e.id} className="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-md">
+<svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+</svg>
+</button>
+</AlertDialogTrigger>
+<AlertDialogContent>
+<AlertDialogHeader>
+<AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+<AlertDialogDescription>
                               This action cannot be undone. This will permanently delete your document
                               and remove your data from our servers.
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction value={e.id}
+</AlertDialogDescription>
+</AlertDialogHeader>
+<AlertDialogFooter>
+<AlertDialogCancel>Cancel</AlertDialogCancel>
+<AlertDialogAction value={e.id}
                               onClick={(e) => {
                                 handleDelete(e);
                               }}>Continue</AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
-                    </TableCell>
-                  </TableRow>
+</AlertDialogFooter>
+</AlertDialogContent>
+</AlertDialog>
+</TableCell>
+</TableRow>
+
+ 
 
                 ))}
-              </TableBody>
-            </Table>
+</TableBody>
+</Table>
 
-          <h1>{`${name}` } </h1>
+ 
 
-          <div className="container mx-auto py-10">
-            {/* <DataTable  columns={columns} data={ basededatos } /> */}
+ 
+
           </div>
-          </div>
-        </div>
+</div>
+
+ 
+
         <div className={styles.content}>
-          <div className={styles.main}>
-         
-            <div className={styles.avatar}>
-              <Avatar className="w-40 h-40">
-                <AvatarImage src={bot[0]?.imageUrl ? bot[0].imageUrl : ""} />
-                <AvatarFallback>CN</AvatarFallback>
-              </Avatar>
-            </div>
-                                <Label>Add new document to bot   <span className={styles.spanBotname}>{`${bot[0]?.name ? bot[0].name : ""}`}</span></Label>
-            <div className={styles.descriptions}>
-              <Label htmlFor="email">Name</Label>
+<div className={styles.main}>
+
+<div className={styles.avatar}>
+<Avatar className="w-40 h-40">
+<AvatarImage src={bot[0]?.imageUrl ? bot[0].imageUrl : ""} />
+<AvatarFallback>CN</AvatarFallback>
+</Avatar>
+</div>
+<Label>Add new document to bot   <span className={styles.spanBotname}>{`${bot[0]?.name ? bot[0].name : ""}`}</span></Label>
+<div className={styles.descriptions}>
+<Label htmlFor="email">Name</Label>
+
+ 
 
               <Input value={name} onChange={(e) => setName(e.target.value)} />
 
+ 
+
               <Label htmlFor="email">Description</Label>
-              <Textarea value={description} onChange={(e) => setDescription(e.target.value)} />
-              
-              <div className={styles.descriptions}>
-                <Label htmlFor="email">Your descriptions</Label>
-                {/* <Textarea onChange={ handleChangeText } /> */}
-                <Textarea />
-              </div>
-              
-            <div className={styles.descriptions}>
-              <Label
+<Textarea value={description} onChange={(e) => setDescription(e.target.value)} />
+
+ 
+
+            </div>
+<div className={styles.descriptions}>
+<Label
                 htmlFor="docfile"
                 className="flex flex-col items-center justify-center w-full h-25 border-2 border-blue-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
-              >
-                <FaCloudUploadAlt className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" />
-                <p className={styles.pfile}>
+>
+<FaCloudUploadAlt className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" />
+<p className={styles.pfile}>
                   {nameReal
                     ? ` Select file:
                     ${nameReal}`
                     : "Select  PDF (MAX. 50mb)"}
-                </p>
-              </Label>
-              <Input
+</p>
+</Label>
+<Input
                 id="docfile"
                 type="file"
                 className="hidden"
                 onChange={handleFileChange}
               />
               {nameReal ? (
-                <Button disabled={loading} variant="outline" onClick={onClick}>
+<Button disabled={loading} variant="outline" onClick={onClick}>
                   Upload
-                </Button>
+</Button>
               ) : (
                 ""
               )}
-            </div>
+</div>
             {loading && <span className={styles.loader}></span>}
-          </div>
-        </div>
-      </div>
-      </div>
-    </Layout>
+</div>
+</div>
+</div>
+</Layout>
   );
 };
+
+ 
 
 export default DocumentsPage;
