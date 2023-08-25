@@ -71,8 +71,8 @@ export function Overview() {
           axisLine={false}
           tickFormatter={(value) => `${value}`}
         />
-        <Bar dataKey="total" fill="#005eff" radius={[4, 4, 0, 0]} />
-        {/* <Bar dataKey="total" fill="#8000FF" radius={[4, 4, 0, 0]} /> */}
+        {/* <Bar dataKey="total" fill="#005eff" radius={[4, 4, 0, 0]} /> */}
+        <Bar dataKey="total" fill="#8000FF" radius={[4, 4, 0, 0]} />
         {/* <Bar dataKey="total" fill="rgb(239, 184, 16)" radius={[4, 4, 0, 0]} /> */}
       </BarChart>
     </ResponsiveContainer>
