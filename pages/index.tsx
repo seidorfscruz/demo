@@ -53,7 +53,7 @@ const HomePage: NextPage = () => {
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">
-                      Total Revenue
+                      Total de conversaciones iniciadas
                     </CardTitle>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -78,7 +78,7 @@ const HomePage: NextPage = () => {
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                     <CardTitle className="text-sm font-medium">
-                      Subscriptions
+                      Chatbots creados
                     </CardTitle>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -104,7 +104,9 @@ const HomePage: NextPage = () => {
                 </Card>
                 <Card>
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Sales</CardTitle>
+                    <CardTitle className="text-sm font-medium">
+                      Equipos
+                    </CardTitle>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 24 24"
@@ -155,7 +157,7 @@ const HomePage: NextPage = () => {
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
                 <Card className="col-span-4">
                   <CardHeader>
-                    <CardTitle>Overview</CardTitle>
+                    <CardTitle>Mensajes enviados / Consultas realizadas en los últimos meses</CardTitle>
                   </CardHeader>
                   <CardContent className="pl-2">
                     <Overview />
@@ -163,9 +165,9 @@ const HomePage: NextPage = () => {
                 </Card>
                 <Card className="col-span-3">
                   <CardHeader>
-                    <CardTitle>Recent Sales</CardTitle>
+                    <CardTitle>Chats recientes</CardTitle>
                     <CardDescription>
-                      You made 265 sales this month.
+                      Has iniciado 875 conversaciones este mes.
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
