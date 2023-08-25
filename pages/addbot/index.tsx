@@ -1,6 +1,6 @@
 "use client";
 
-import { ChangeEvent, DetailedHTMLProps, FormEvent, FormHTMLAttributes, useState } from "react";
+import { ChangeEvent, DetailedHTMLProps, FormEvent, FormHTMLAttributes, useEffect, useState } from "react";
 import supabase from "../../apis/supabase";
 import * as z from "zod";
 import { Layout } from "@/components/layouts";
@@ -13,7 +13,7 @@ import {Avatar,AvatarFallback,AvatarImage,} from "@/registry/default/ui/avatar";
 import {Select,SelectContent,SelectItem,SelectTrigger,SelectValue,} from "@/registry/default/ui/select";
 import Swal from "sweetalert2";
 import { useRouter } from "next/router";
-import { chatbotSchema } from "@/interfaces";
+import authBasic from '../../middlewares/auth'
 import styles from "./style.module.css";
 
 const formSchema = z.object({
@@ -31,6 +31,7 @@ const formSchema = z.object({
   }),
 });
 
+ 
 
 const AddBotPage = () => {
   
@@ -38,6 +39,15 @@ const AddBotPage = () => {
   const router = useRouter();
   const [imageUrl, setImageUrl] = useState<string>('')
   const [teamSelected, setTeamSelected] = useState<string>('')
+
+
+  
+  useEffect(()=>{
+
+    if(!authBasic()) router.push('/login')
+
+  },[])
+
 
   const handleSubmitForm = async(event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -64,7 +74,6 @@ const AddBotPage = () => {
 
   const handleChangeFormValues = (event: ChangeEvent<HTMLFormElement>) => {
     const formValues = form.getValues();
-    console.log(formValues)
   }
 
   return (
