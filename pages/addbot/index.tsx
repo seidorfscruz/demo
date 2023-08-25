@@ -13,7 +13,7 @@ import {Avatar,AvatarFallback,AvatarImage,} from "@/registry/default/ui/avatar";
 import {Select,SelectContent,SelectItem,SelectTrigger,SelectValue,} from "@/registry/default/ui/select";
 import Swal from "sweetalert2";
 import { useRouter } from "next/router";
-import authBasic from '../../middlewares/auth'
+// import authBasic from '../../middlewares/auth'
 import styles from "./style.module.css";
 
 const formSchema = z.object({
@@ -41,12 +41,9 @@ const AddBotPage = () => {
   const [teamSelected, setTeamSelected] = useState<string>('')
 
 
-  
-  useEffect(()=>{
-
-    if(!authBasic()) router.push('/login')
-
-  },[])
+  // useEffect(()=>{
+  //   if(!authBasic()) router.push('/login')
+  // },[])
 
 
   const handleSubmitForm = async(event: FormEvent<HTMLFormElement>) => {
