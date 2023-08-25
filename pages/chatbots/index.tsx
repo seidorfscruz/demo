@@ -26,6 +26,21 @@ import {
 import { Label } from "@/registry/default/ui/label";
 import { Input } from "@/registry/default/ui/input";
 import { Textarea } from "@/registry/default/ui/textarea";
+import {
+  ChevronDownIcon,
+  CircleIcon,
+  PlusIcon,
+  StarIcon,
+} from "@radix-ui/react-icons"
+
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/registry/new-york/ui/card"
+import { Separator } from "@/registry/new-york/ui/separator"
 
 export type Task = {
   name: string | null;
@@ -42,7 +57,7 @@ export type Task = {
 }
 
 
-export default function DataTableDemo() {
+export default function Modificatepage() {
   const [info, setInfo] =useState<Task[] | null>(null)
   const [botInfoId, setBotInfoId] = useState({
     id: '',
@@ -58,11 +73,12 @@ export default function DataTableDemo() {
   const select = async () => {
     const x = await supabase.from("aibot").select("*");
     setInfo(x.data);
+   
     
   };
   
   useEffect(() => {
-
+    
   select()
     
   }, []); 
@@ -117,7 +133,6 @@ export default function DataTableDemo() {
   }
 }
 const handleUpdate = async (e: React.MouseEvent<HTMLButtonElement>) => {
-
   const x = await supabase
     .from('aibot')
     .update({ name: botInfoId.name, description: botInfoId.description, imageUrl: botInfoId.imageUrl  })
@@ -143,59 +158,69 @@ const handleUpdate = async (e: React.MouseEvent<HTMLButtonElement>) => {
           </div>
         </div>
       </div>
-
-
-      <div className="w-11/12 mx-auto">
-     
-      <Table>
-  <TableCaption>A list of your recent invoices.</TableCaption>
-  <TableHeader>
-    <TableRow>
-      <TableHead className="w-[100px]">Avatar</TableHead>
-      <TableHead>Name</TableHead>
-      <TableHead>Description</TableHead>
-      <TableHead>CreatedBy</TableHead>
-      <TableHead>Date</TableHead>
-      <TableHead >Actions</TableHead>
-    </TableRow>
-  </TableHeader>
-  <TableBody>
-    {info ? (
+      <div className={styles.cardcontainer}>
+      {info ? (
       info.map((e) => (
-        <TableRow key={e.idBot}>
-          <TableCell>
-          <Avatar className="w-10 h-10">
-      <AvatarImage src={e.imageUrl || ''} />
-      <AvatarFallback>CN</AvatarFallback>
-    </Avatar></TableCell>
-          <TableCell className="font-medium">{e.name}</TableCell>
-          <TableCell>{e.description}</TableCell>
-          <TableCell>{e.createdUser}</TableCell>
-          <TableCell>{e.createdAt?.toString().slice(0, 10)}</TableCell>
-          <TableCell>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-8 w-8 p-0">
-                  <span className="sr-only">Open menu</span>
-                  <DotsHorizontalIcon className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                <Link href={`/documents/${e.idBot}`}>
-                  <p className={styles.pbtton}>
-                    Upload document
-                    
-                  </p>
-                </Link>
-                <DropdownMenuSeparator />
+        <div key={e.idBot} className={styles.card}>
+    <Card id={e.idBot}>
+      <CardHeader className="grid grid-cols-[1fr_110px] items-start gap-4 space-y-0">
+        <div className="space-y-1">
+      
+          <CardTitle className={styles.nameCard} >{e.name}</CardTitle> 
+          <CardDescription className={styles.descriptionCard}>
+           {e.description}
+          </CardDescription>
+          
+          <CardDescription className={styles.footerCard}>
+        
+        <div className="flex space-x-4 text-sm text-muted-foreground">
+          <div className="flex items-center">
+            <CircleIcon className="mr-1 h-3 w-3 fill-sky-400 text-sky-400" />
+           {e.team}
+          </div>
+          <div className="flex items-center">
+            <StarIcon className="mr-1 h-3 w-3" />
+            {e.createdUser}
+          </div>
+          <div>{e.createdAt?e.createdAt.toString().slice(0,7):'2023-10'}</div>
+        </div>
+      
+      </CardDescription>
+        </div>
 
-                <Dialog>
-                        <DialogTrigger className={styles.dialog}>
-                       
-                <button id={e.idBot} onClick={(event) => { handleBaseId(event) }} className={styles.pbtton}>Edit bot</button>
-                
-                </DialogTrigger>
+        <div>
+            
+        <div className="flex items-center space-x-1 rounded-md bg-secondary text-secondary-foreground">
+          <Button variant="secondary" className="px-3 shadow-none">
+            <StarIcon className="mr-2 h-4 w-4" />
+            Star
+          </Button>
+          <Separator orientation="vertical" className="h-[20px]" />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="secondary" className="px-2 shadow-none">
+                <ChevronDownIcon className="h-4 w-4 text-secondary-foreground" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="end"
+              alignOffset={-5}
+              className="w-[200px]"
+              forceMount
+            >
+              <DropdownMenuLabel>Suggested Lists</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <Link href={`/documents/${e.idBot}`}>
+              <p className={styles.pbtton}>Upload documents</p>
+              </Link>
+              <DropdownMenuSeparator />
+
+              <Dialog>
+                        <DialogTrigger id={e.idBot} onClick={(event) => { handleBaseId(event) }} className={styles.dialog}>
+               <p className={styles.pbtton}>Edit bot</p>  
+                 
+              </DialogTrigger>
+              <DropdownMenuSeparator />
                         <DialogContent className="sm:max-w-[425px]">
                           <DialogHeader>
                             <DialogTitle>Edit bot</DialogTitle>
@@ -238,12 +263,12 @@ const handleUpdate = async (e: React.MouseEvent<HTMLButtonElement>) => {
                       </Dialog>
 
 
-                <AlertDialog>
+              <AlertDialog>
   <AlertDialogTrigger>
-  <DropdownMenuSeparator />
-                  <p className={styles.pbtton}>Delete bot</p>
-           
-                </AlertDialogTrigger>
+ 
+  <span className={styles.pbttonD}>Delete bot</span>
+
+              </AlertDialogTrigger>
   <AlertDialogContent>
     <AlertDialogHeader>
       <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
@@ -254,29 +279,37 @@ const handleUpdate = async (e: React.MouseEvent<HTMLButtonElement>) => {
     </AlertDialogHeader>
     <AlertDialogFooter>
       <AlertDialogCancel>Cancel</AlertDialogCancel>
-      <AlertDialogAction value={e.idBot} 
+      <AlertDialogAction className={styles.btnDelete} value={e.idBot} 
       onClick={(event) => {
         event.preventDefault();
         handleDelete(e.idBot); // Pasa el idBot directamente a la función handleDelete
-      }}>Continue</AlertDialogAction>
+      }}>Delete</AlertDialogAction>
     </AlertDialogFooter>
   </AlertDialogContent>
 </AlertDialog>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </TableCell>
-        </TableRow>
-      ))
-    ) : (
-      <TableRow>
-        <TableCell colSpan={6} className="h-24 text-center">
-          No results.
-        </TableCell>
-      </TableRow>
-    )}
-  </TableBody>
-</Table>
-      </div>
+              <DropdownMenuSeparator />
+
+              <DropdownMenuItem>
+                <PlusIcon className="mr-2 h-4 w-4" /> Create List
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+    
+    </div>
+    <div className={styles.avatar}>
+          <Avatar className="w-25 h-25">
+      <AvatarImage src={e.imageUrl?e.imageUrl:''} />
+      <AvatarFallback>CN</AvatarFallback>
+    </Avatar>
+    </div>
+        </div>
+        
+      </CardHeader>
+     
+    </Card>
+    </div>))) : (<div>no hay datos</div>)}
+    </div>
+   
     </Layout>
   )
 }

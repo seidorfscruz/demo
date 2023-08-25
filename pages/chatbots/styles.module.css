@@ -6,7 +6,19 @@
 .pbtton:hover{
     opacity: 1;
 }
-
+.pbttonD{
+  transition: 0.3s;
+  cursor: pointer;
+  opacity: 0.6;
+  width: 100%;
+  color: red
+}
+.pbttonD:hover{
+  opacity: 1;
+}
+.btnDelete{
+  background-color: red;
+}
 
 .dialog{
     width: 100%;
@@ -18,3 +30,44 @@
     display: flex;
     justify-content: center;
 }
+
+.cardcontainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 20px;
+    padding: 20px;
+ 
+  }
+  
+  .card {
+   
+  
+  }
+
+  .footerCard{
+    display: flex;
+    margin-top: 20% !important;
+    
+  }
+
+  .avatar{
+    margin-top: 10px;
+  }
+
+  .descriptionCard{
+  
+    min-height: 120px;
+    max-height: 120px;
+    overflow: hidden;
+  }
+
+  .footerCard{
+    
+    margin-top: 10px !important;
+
+    flex: 20;
+  }
+
+  .nameCard{
+   
+  }
