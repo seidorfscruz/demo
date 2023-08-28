@@ -1,17 +1,47 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import {useEffect, useState} from 'react'
+import * as React from "react";
+import { useEffect, useState } from "react";
 import supabase from "../../apis/supabase";
-import { DotsHorizontalIcon,} from "@radix-ui/react-icons"
-import { Button } from "@/registry/new-york/ui/button"
-import {DropdownMenu,DropdownMenuCheckboxItem,DropdownMenuContent,DropdownMenuItem,DropdownMenuLabel,DropdownMenuSeparator,DropdownMenuTrigger,} from "@/registry/new-york/ui/dropdown-menu"
-import { Layout } from "@/components/layouts"
-import Link from "next/link"
-import {Avatar,AvatarFallback,AvatarImage,} from "@/registry/default/ui/avatar"
+import { DotsHorizontalIcon } from "@radix-ui/react-icons";
+import { Button } from "@/registry/new-york/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/registry/new-york/ui/dropdown-menu";
+import { Layout } from "@/components/layouts";
+import Link from "next/link";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/registry/default/ui/avatar";
 import Swal, { SweetAlertResult } from "sweetalert2";
-import {Table,TableBody,TableCaption,TableCell,TableHead,TableHeader,TableRow,} from "@/registry/default/ui/table"
-import {AlertDialog,AlertDialogAction,AlertDialogCancel,AlertDialogContent,AlertDialogDescription,AlertDialogFooter,AlertDialogHeader,AlertDialogTitle,AlertDialogTrigger,} from "@/registry/default/ui/alert-dialog"
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/registry/default/ui/table";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/registry/default/ui/alert-dialog";
 import styles from "./styles.module.css";
 import {
   Dialog,
@@ -22,7 +52,7 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogClose,
-} from "@/registry/default/ui/dialog"
+} from "@/registry/default/ui/dialog";
 import { Label } from "@/registry/default/ui/label";
 import { Input } from "@/registry/default/ui/input";
 import { Textarea } from "@/registry/default/ui/textarea";
@@ -31,7 +61,7 @@ import {
   CircleIcon,
   PlusIcon,
   StarIcon,
-} from "@radix-ui/react-icons"
+} from "@radix-ui/react-icons";
 
 import {
   Card,
@@ -39,114 +69,112 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/registry/new-york/ui/card"
-import { Separator } from "@/registry/new-york/ui/separator"
+} from "@/registry/new-york/ui/card";
+import { Separator } from "@/registry/new-york/ui/separator";
 
 export type Task = {
   name: string | null;
-    idBot: string;
-    idTenant:string | null;
-    description: string | null;
-    createdUser:string | null;
-    updatedUser:string | null;
-    updatedAt: Date | null; 
-    createdAt: Date | null;
-    team: string | null;
-    imageUrl: string | null;
-   
-}
-
+  idBot: string;
+  idTenant: string | null;
+  description: string | null;
+  createdUser: string | null;
+  updatedUser: string | null;
+  updatedAt: Date | null;
+  createdAt: Date | null;
+  team: {
+    description:string
+    created_at: Date | null;
+    id: string
+    imageUrl:string
+    name:string
+  };
+  imageUrl: string | null;
+};
 
 export default function Modificatepage() {
-  const [info, setInfo] =useState<Task[] | null>(null)
+  const [info, setInfo] = useState<Task[] | null>(null);
   const [botInfoId, setBotInfoId] = useState({
-    id: '',
-    name: '',
-    description: '',
-    imageUrl:'',
-    
-
-  })
-
-
+    id: "",
+    name: "",
+    description: "",
+    imageUrl: "",
+  });
 
   const select = async () => {
-    const x = await supabase.from("aibot").select("*");
+    const x = await supabase.from("aibot").select("*,team(*)");
+    console.log(x.data);
     setInfo(x.data);
-   
-    
   };
-  
+
   useEffect(() => {
-    
-  select()
-    
-  }, []); 
+    select();
+  }, []);
 
-  const handleDelete =async  (id: string) =>{
-    console.log(id)
-    const x = await supabase
-    .from('aibot')
-    .delete()
-    .eq('idBot', id)
-  
-    if(x.error){
-      console.log(x.error)
-  Swal.fire(
-    "¡Hola, usuario!",
-    "Bot no pudo ser eliminado ",
-    "warning"
-  )} else {
-    select()
-    Swal.fire(
-      "¡Hola, usuario!",
-      "Bot eliminado exitosamente",
-      "success")
-    
-  }}
+  const handleDelete = async (id: string) => {
+    console.log(id);
+    const x = await supabase.from("aibot").delete().eq("idBot", id);
 
+    if (x.error) {
+      console.log(x.error);
+      Swal.fire("¡Hola, usuario!", "Bot no pudo ser eliminado ", "warning");
+    } else {
+      select();
+      Swal.fire("¡Hola, usuario!", "Bot eliminado exitosamente", "success");
+    }
+  };
 
-  
-  const handleNombreUsuarioChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>)  => {
+  const handleNombreUsuarioChange = (
+    e:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setBotInfoId((prevDocument) => ({
       ...prevDocument,
       [name]: value,
     }));
- };
- const handleBaseId = async (event: React.MouseEvent<HTMLButtonElement>) => {
+  };
+  const handleBaseId = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    const id = event.currentTarget.id;
 
-   const id = event.currentTarget.id
-  
+    const x = await supabase.from("aibot").select("*").eq("idBot", id);
+    if (x.error) {
+      console.log(x.error)
+    } else {
+      setBotInfoId({
+        name: x.data[0].name,
+        description: x.data[0].description,
+        imageUrl: x.data[0].imageUrl,
+        id: x.data[0].idBot,
+      });
+    }
+  };
+  const handleUpdate = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    const x = await supabase
+      .from("aibot")
+      .update({
+        name: botInfoId.name,
+        description: botInfoId.description,
+        imageUrl: botInfoId.imageUrl,
+      })
+      .eq("idBot", botInfoId.id)
+      .select();
 
-  const x = await supabase.from('aibot').select("*").eq('idBot', id)
-  if (x.error) {
-
-  } else {
-
-    setBotInfoId({
-      name: x.data[0].name,
-      description: x.data[0].description,
-      imageUrl: x.data[0].imageUrl,
-      id: x.data[0].idBot,
-    })
-  }
-}
-const handleUpdate = async (e: React.MouseEvent<HTMLButtonElement>) => {
-  const x = await supabase
-    .from('aibot')
-    .update({ name: botInfoId.name, description: botInfoId.description, imageUrl: botInfoId.imageUrl  })
-    .eq('idBot', botInfoId.id)
-    .select()
-
-  if (x.error) {
-    return Swal.fire("¡Hola, usuario!", "no se puedo realizar la modificacion", "error");
-  } else {
-    select()
-    return Swal.fire("¡Hola, usuario!", "Cambios guardados correctamente", "success");
-  }
-}
-
+    if (x.error) {
+      return Swal.fire(
+        "¡Hola, usuario!",
+        "no se puedo realizar la modificacion",
+        "error"
+      );
+    } else {
+      select();
+      return Swal.fire(
+        "¡Hola, usuario!",
+        "Cambios guardados correctamente",
+        "success"
+      );
+    }
+  };
 
   return (
     <Layout title="ChatBots page">
@@ -154,162 +182,201 @@ const handleUpdate = async (e: React.MouseEvent<HTMLButtonElement>) => {
         <div className="flex-1 space-y-4 p-8 pt-6">
           <div className="flex items-center justify-between space-y-2">
             <h2 className="text-3xl font-bold tracking-tight">ChatBots</h2>
-          <Link href={'addbot'}> <Button>Add new bot</Button></Link>
+            <Link href={"addbot"}>
+              {" "}
+              <Button>Add new bot</Button>
+            </Link>
           </div>
         </div>
       </div>
       <div className={styles.cardcontainer}>
-      {info ? (
-      info.map((e) => (
-        <div key={e.idBot} className={styles.card}>
-    <Card id={e.idBot}>
-      <CardHeader className="grid grid-cols-[1fr_110px] items-start gap-4 space-y-0">
-        <div className="space-y-1">
-      
-          <CardTitle className={styles.nameCard} >{e.name}</CardTitle> 
-          <CardDescription className={styles.descriptionCard}>
-           {e.description}
-          </CardDescription>
-          
-          <CardDescription className={styles.footerCard}>
-        
-        <div className="flex space-x-4 text-sm text-muted-foreground">
-          <div className="flex items-center">
-            <CircleIcon className="mr-1 h-3 w-3 fill-sky-400 text-sky-400" />
-           {e.team}
-          </div>
-          <div className="flex items-center">
-            <StarIcon className="mr-1 h-3 w-3" />
-            {e.createdUser}
-          </div>
-          <div>{e.createdAt?e.createdAt.toString().slice(0,7):'2023-10'}</div>
-        </div>
-      
-      </CardDescription>
-        </div>
+        {info ? (
+          info.map((e) => (
+            <div key={e.idBot} className={styles.card}>
+              <Card id={e.idBot}>
+                <CardHeader className="grid grid-cols-[1fr_110px] items-start gap-4 space-y-0">
+                  <div className="space-y-1">
+                    <CardTitle className={styles.nameCard}>{e.name}</CardTitle>
+                    <CardDescription className={styles.descriptionCard}>
+                      {e.description}
+                    </CardDescription>
 
-        <div>
-            
-        <div className="flex items-center space-x-1 rounded-md bg-secondary text-secondary-foreground">
-          <Button variant="secondary" className="px-3 shadow-none">
-            <StarIcon className="mr-2 h-4 w-4" />
-            Star
-          </Button>
-          <Separator orientation="vertical" className="h-[20px]" />
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="secondary" className="px-2 shadow-none">
-                <ChevronDownIcon className="h-4 w-4 text-secondary-foreground" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent
-              align="end"
-              alignOffset={-5}
-              className="w-[200px]"
-              forceMount
-            >
-              <DropdownMenuLabel>Suggested Lists</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <Link href={`/documents/${e.idBot}`}>
-              <p className={styles.pbtton}>Upload documents</p>
-              </Link>
-              <DropdownMenuSeparator />
+                    <CardDescription className={styles.footerCard}>
+                      <div className="flex space-x-4 text-sm text-muted-foreground">
+                        <div className="flex items-center">
+                          <CircleIcon className="mr-1 h-3 w-3 fill-sky-400 text-sky-400" />
+                          {e.team?.name}
+                        </div>
+                        <div className="flex items-center">
+                          <StarIcon className="mr-1 h-3 w-3" />
+                          {e.createdUser}
+                        </div>
+                        <div>
+                          {e.createdAt
+                            ? e.createdAt.toString().slice(0, 7)
+                            : "2023-10"}
+                        </div>
+                      </div>
+                    </CardDescription>
+                  </div>
 
-              <Dialog>
-                        <DialogTrigger id={e.idBot} onClick={(event) => { handleBaseId(event) }} className={styles.dialog}>
-               <p className={styles.pbtton}>Edit bot</p>  
-                 
-              </DialogTrigger>
-              <DropdownMenuSeparator />
-                        <DialogContent className="sm:max-w-[425px]">
-                          <DialogHeader>
-                            <DialogTitle>Edit bot</DialogTitle>
-                            <DialogDescription>
-                              Make changes to your bot here. Click save when you re done.
-                            </DialogDescription>
-                            <div className={styles.avatarform}> 
-                            <Avatar className="w-20 h-20">
-        <AvatarImage src={botInfoId.imageUrl || ''} />
-        <AvatarFallback>CN</AvatarFallback>
-                </Avatar>
-                </div>
-                          </DialogHeader>
-                          <div className="grid gap-4 py-4">
-                            <div className="grid grid-cols-4 items-center gap-4">
-                              <Label htmlFor="name" className="text-right">
-                                Name
-                              </Label>
-                              <Input onChange={handleNombreUsuarioChange} name="name" value={botInfoId.name} className="col-span-3" />
-                            </div>
-                            <div className="grid grid-cols-4 items-center gap-4">
-                              <Label htmlFor="img" className="text-right">
-                                Avatar
-                              </Label>
-                              <Input onChange={handleNombreUsuarioChange} name="imageUrl"  value={botInfoId.imageUrl} className="col-span-3" />
-                            </div>
-                            <div className="grid grid-cols-4 items-center gap-4">
-                              <Label htmlFor="username" className="text-right">
-                                Descriptions
-                              </Label>
-                              <Textarea onChange={handleNombreUsuarioChange} name="description" value={botInfoId.description}  className="col-span-3" />
-                            </div>
-                          </div>
-                          <DialogFooter>
-                            <DialogClose asChild>
-                              <Button onClick={handleUpdate}  type="button">Save changes</Button>
-                            </DialogClose>
-                          </DialogFooter>
-                        </DialogContent>
-                      </Dialog>
+                  <div>
+                    <div className="flex items-center space-x-1 rounded-md bg-secondary text-secondary-foreground">
+                      <Button variant="secondary" className="px-3 shadow-none">
+                        <StarIcon className="mr-2 h-4 w-4" />
+                        Star
+                      </Button>
+                      <Separator orientation="vertical" className="h-[20px]" />
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            variant="secondary"
+                            className="px-2 shadow-none"
+                          >
+                            <ChevronDownIcon className="h-4 w-4 text-secondary-foreground" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent
+                          align="end"
+                          alignOffset={-5}
+                          className="w-[200px]"
+                          forceMount
+                        >
+                          <DropdownMenuLabel>Suggested Lists</DropdownMenuLabel>
+                          <DropdownMenuSeparator />
+                          <Link href={`/documents/${e.idBot}`}>
+                            <p className={styles.pbtton}>Upload documents</p>
+                          </Link>
+                          <DropdownMenuSeparator />
 
+                          <Dialog>
+                            <DialogTrigger
+                              id={e.idBot}
+                              onClick={(event) => {
+                                handleBaseId(event);
+                              }}
+                              className={styles.dialog}
+                            >
+                              <p className={styles.pbtton}>Edit bot</p>
+                            </DialogTrigger>
+                            <DropdownMenuSeparator />
+                            <DialogContent className="sm:max-w-[425px]">
+                              <DialogHeader>
+                                <DialogTitle>Edit bot</DialogTitle>
+                                <DialogDescription>
+                                  Make changes to your bot here. Click save when
+                                  you re done.
+                                </DialogDescription>
+                                <div className={styles.avatarform}>
+                                  <Avatar className="w-20 h-20">
+                                    <AvatarImage
+                                      src={botInfoId.imageUrl || ""}
+                                    />
+                                    <AvatarFallback>CN</AvatarFallback>
+                                  </Avatar>
+                                </div>
+                              </DialogHeader>
+                              <div className="grid gap-4 py-4">
+                                <div className="grid grid-cols-4 items-center gap-4">
+                                  <Label htmlFor="name" className="text-right">
+                                    Name
+                                  </Label>
+                                  <Input
+                                    onChange={handleNombreUsuarioChange}
+                                    name="name"
+                                    value={botInfoId.name}
+                                    className="col-span-3"
+                                  />
+                                </div>
+                                <div className="grid grid-cols-4 items-center gap-4">
+                                  <Label htmlFor="img" className="text-right">
+                                    Avatar
+                                  </Label>
+                                  <Input
+                                    onChange={handleNombreUsuarioChange}
+                                    name="imageUrl"
+                                    value={botInfoId.imageUrl}
+                                    className="col-span-3"
+                                  />
+                                </div>
+                                <div className="grid grid-cols-4 items-center gap-4">
+                                  <Label
+                                    htmlFor="username"
+                                    className="text-right"
+                                  >
+                                    Descriptions
+                                  </Label>
+                                  <Textarea
+                                    onChange={handleNombreUsuarioChange}
+                                    name="description"
+                                    value={botInfoId.description}
+                                    className="col-span-3"
+                                  />
+                                </div>
+                              </div>
+                              <DialogFooter>
+                                <DialogClose asChild>
+                                  <Button onClick={handleUpdate} type="button">
+                                    Save changes
+                                  </Button>
+                                </DialogClose>
+                              </DialogFooter>
+                            </DialogContent>
+                          </Dialog>
 
-              <AlertDialog>
-  <AlertDialogTrigger>
- 
-  <span className={styles.pbttonD}>Delete bot</span>
+                          <AlertDialog>
+                            <AlertDialogTrigger>
+                              <span className={styles.pbttonD}>Delete bot</span>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>
+                                  Are you absolutely sure?
+                                </AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  This action cannot be undone. This will
+                                  permanently delete your document and remove
+                                  your data from our servers.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction
+                                  className={styles.btnDelete}
+                                  value={e.idBot}
+                                  onClick={(event) => {
+                                    event.preventDefault();
+                                    handleDelete(e.idBot); // Pasa el idBot directamente a la función handleDelete
+                                  }}
+                                >
+                                  Delete
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                          <DropdownMenuSeparator />
 
-              </AlertDialogTrigger>
-  <AlertDialogContent>
-    <AlertDialogHeader>
-      <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-      <AlertDialogDescription>
-        This action cannot be undone. This will permanently delete your document
-        and remove your data from our servers.
-      </AlertDialogDescription>
-    </AlertDialogHeader>
-    <AlertDialogFooter>
-      <AlertDialogCancel>Cancel</AlertDialogCancel>
-      <AlertDialogAction className={styles.btnDelete} value={e.idBot} 
-      onClick={(event) => {
-        event.preventDefault();
-        handleDelete(e.idBot); // Pasa el idBot directamente a la función handleDelete
-      }}>Delete</AlertDialogAction>
-    </AlertDialogFooter>
-  </AlertDialogContent>
-</AlertDialog>
-              <DropdownMenuSeparator />
-
-              <DropdownMenuItem>
-                <PlusIcon className="mr-2 h-4 w-4" /> Create List
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-    
-    </div>
-    <div className={styles.avatar}>
-          <Avatar className="w-25 h-25">
-      <AvatarImage src={e.imageUrl?e.imageUrl:''} />
-      <AvatarFallback>CN</AvatarFallback>
-    </Avatar>
-    </div>
-        </div>
-        
-      </CardHeader>
-     
-    </Card>
-    </div>))) : (<div>no hay datos</div>)}
-    </div>
-   
+                          <DropdownMenuItem>
+                            <PlusIcon className="mr-2 h-4 w-4" /> Create List
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
+                    <div className={styles.avatar}>
+                      <Avatar className="w-25 h-25">
+                        <AvatarImage src={e.imageUrl ? e.imageUrl : ""} />
+                        <AvatarFallback>CN</AvatarFallback>
+                      </Avatar>
+                    </div>
+                  </div>
+                </CardHeader>
+              </Card>
+            </div>
+          ))
+        ) : (
+          <div>no hay datos</div>
+        )}
+      </div>
     </Layout>
-  )
+  );
 }

@@ -27,6 +27,12 @@ export function MainNav({ className, ...props }: React.HTMLAttributes<HTMLElemen
       >
         Chat
       </Link>
+      <Link
+        href="/teams"
+        className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+      >
+        Teams
+      </Link>
     </nav>
   )
 }

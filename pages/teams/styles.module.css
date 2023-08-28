@@ -1,0 +1,19 @@
+.avatarForm{
+    display: flex;
+    justify-content: center;
+    padding-bottom: 10px;
+}
+
+.divNav{
+    display: flex;
+    justify-content: space-between;
+    padding-top: 15px;
+    padding-bottom: 20px;
+}
+
+.btnNav{
+   
+    display: flex;
+    align-items: flex-end;
+    padding-right: 5%;
+}

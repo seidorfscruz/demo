@@ -7,7 +7,6 @@ import { FaCloudUploadAlt } from "react-icons/fa";
 import { Avatar, AvatarFallback, AvatarImage } from "@/registry/default/ui/avatar";
 import { Label } from "@/registry/default/ui/label";
 import Swal from "sweetalert2";
-import React from "react";
 import { useRouter } from "next/router";
 import { Document } from "../../interfaces/info";
 import { Input } from "@/registry/default/ui/input";
@@ -25,7 +24,6 @@ import {
   DialogTrigger,
   DialogClose,
 } from "@/registry/default/ui/dialog"
-import { error } from "console";
 
  
 
@@ -292,6 +290,7 @@ const DocumentsPage = () => {
 <TableCell>{e.description}</TableCell>
 <TableCell >{e.createdBy}</TableCell>
 <TableCell>{e.created_at.toString().slice(0, 10)}</TableCell>
+
 <TableCell>
 <Dialog>
 <DialogTrigger>
