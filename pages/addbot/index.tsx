@@ -39,7 +39,7 @@ const AddBotPage = () => {
   const router = useRouter();
   const [imageUrl, setImageUrl] = useState<string>('')
   const [teamSelected, setTeamSelected] = useState<string>('')
-
+  const [teams, setTeams] = useState<any[]>([])
 
   // useEffect(()=>{
   //   if(!authBasic()) router.push('/login')
@@ -50,7 +50,7 @@ const AddBotPage = () => {
     event.preventDefault();
     const chatbotObject = form.getValues()
     
-    try {
+   
       const newChatbotObject = {
         idTenant: 1,
         name: chatbotObject.name,
@@ -60,18 +60,34 @@ const AddBotPage = () => {
         imageUrl,
         team: teamSelected 
       }
-      await supabase.from("aibot").insert([ newChatbotObject ]).select();
+      const x = await supabase.from("aibot").insert([ newChatbotObject ]).select();
+if(x.error){
+  Swal.fire( "Hello, User", "Chatbot can't be created", "success" )
+}else{ 
+  Swal.fire( "Hello, User", "Chatbot successfully createde", "success" )
+   router.push('/chatbots')
+}
 
-      Swal.fire( "¡Hecho!", "Bot creado satisfactoriamente", "success" )
-      router.push('/chatbots')
-    } catch (err) {
-      console.log(err)
-    }
-  }
+}
 
   const handleChangeFormValues = (event: ChangeEvent<HTMLFormElement>) => {
     const formValues = form.getValues();
   }
+
+  async function fetchData() {
+    const x = await supabase.from("teams").select();
+    if (x.error) {
+      console.log(x.error);
+    } else {
+      setTeams(x.data);
+    }
+    console.log(teams)
+  }
+  
+
+  useEffect(() => {
+    fetchData()
+  }, []);
 
   return (
     <Layout title="Documents page">
@@ -146,9 +162,15 @@ const AddBotPage = () => {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="notteam">Not Team</SelectItem>
-                        <SelectItem value="finance">Finance</SelectItem>
-                        <SelectItem value="legales">Legales</SelectItem>
+                        {teams?.map((team) => {
+                          return (
+                            <SelectItem key={team.id} value={team.id}>
+                              {team.name}
+                            </SelectItem>
+                          );
+                        })}
+                        
+                      
                       </SelectContent>
                     </Select>
                     <FormDescription>
