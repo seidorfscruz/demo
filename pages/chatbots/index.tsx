@@ -3,7 +3,8 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 import supabase from "../../apis/supabase";
-import { DotsHorizontalIcon } from "@radix-ui/react-icons";
+import {Select,SelectContent,SelectItem,SelectTrigger,SelectValue,} from "@/registry/default/ui/select";
+
 import { Button } from "@/registry/new-york/ui/button";
 import {
   DropdownMenu,
@@ -93,11 +94,17 @@ export type Task = {
 
 export default function Modificatepage() {
   const [info, setInfo] = useState<Task[] | null>(null);
+  const [teams, setTeams] = useState<any[]>([])
+  const [teamSelected, setTeamSelected] = useState<string>('')
   const [botInfoId, setBotInfoId] = useState({
     id: "",
     name: "",
     description: "",
     imageUrl: "",
+      team:{
+        name: '',
+        id: ''
+        }
   });
 
   const select = async () => {
@@ -137,7 +144,7 @@ export default function Modificatepage() {
   const handleBaseId = async (event: React.MouseEvent<HTMLButtonElement>) => {
     const id = event.currentTarget.id;
 
-    const x = await supabase.from("aibot").select("*").eq("idBot", id);
+    const x = await supabase.from("aibot").select("*,team(*)").eq("idBot", id)
     if (x.error) {
       console.log(x.error)
     } else {
@@ -146,6 +153,7 @@ export default function Modificatepage() {
         description: x.data[0].description,
         imageUrl: x.data[0].imageUrl,
         id: x.data[0].idBot,
+        team:x.data[0].team
       });
     }
   };
@@ -156,6 +164,7 @@ export default function Modificatepage() {
         name: botInfoId.name,
         description: botInfoId.description,
         imageUrl: botInfoId.imageUrl,
+        team: teamSelected
       })
       .eq("idBot", botInfoId.id)
       .select();
@@ -175,6 +184,18 @@ export default function Modificatepage() {
       );
     }
   };
+
+  async function fetchData() {
+    const x = await supabase.from("teams").select();
+    if (x.error) {
+      console.log(x.error);
+    } else {
+      setTeams(x.data);
+    }
+    console.log(teams)
+  }
+  
+
 
   return (
     <Layout title="ChatBots page">
@@ -254,6 +275,7 @@ export default function Modificatepage() {
                               id={e.idBot}
                               onClick={(event) => {
                                 handleBaseId(event);
+                                fetchData()
                               }}
                               className={styles.dialog}
                             >
@@ -313,6 +335,25 @@ export default function Modificatepage() {
                                     className="col-span-3"
                                   />
                                 </div>
+                                <Select onValueChange={ (value) => setTeamSelected(value) }>
+                      
+                        <SelectTrigger>
+                          <SelectValue defaultValue={botInfoId.team.id} placeholder={botInfoId.team.name} />
+                        </SelectTrigger>
+                      
+                      <SelectContent>
+                        {teams?.map((team) => {
+                          return (
+                            <SelectItem key={team.id} value={team.id}>
+                              {team.name}
+                            </SelectItem>
+                          );
+                        })}
+                        
+                      
+                      </SelectContent>
+                    </Select>
+
                               </div>
                               <DialogFooter>
                                 <DialogClose asChild>
