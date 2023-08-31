@@ -52,8 +52,8 @@ const groups = [
     label: "Personal Account",
     teams: [
       {
-        label: "Fernando S",
-        value: "personal",
+        label: "Seidor Analytics",
+        value: "company",
       },
     ],
   },
@@ -69,8 +69,8 @@ const groups = [
         value: "feelings",
       },
       {
-        label: "SmartDoc",
-        value: "smartdoc",
+        label: "Cloud Costing",
+        value: "cloud-costing",
       }
     ],
   },

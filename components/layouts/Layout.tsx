@@ -11,10 +11,10 @@ export const Layout: FC<Props> = ({ children, title }) => {
   return (
     <>
         <Head>
-            <title>{ title || 'SmartDoc'}</title>
+            <title>{ title || 'Daiana'}</title>
             <meta name='author' content='Seidor Analytics' />
             <meta name='description' content='Create your own chatbots with all your business content' />
-            <meta name='keywords' content={`${title}, ask, questions, docs, documents, files, chat, chatbot, ai, smart, business, content`} />
+            <meta name='keywords' content={`${title}, ask, questions, docs, documents, files, chat, chatbot, ai, smart, business, content, daiana`} />
         </Head>
 
         {/* Navbar */}

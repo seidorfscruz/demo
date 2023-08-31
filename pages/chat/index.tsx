@@ -9,7 +9,7 @@ import BotpressChatFutbol from '@/components/ui/BotpressChatFutbol'
 import axios from 'axios'
 import { useSelector } from 'react-redux'
 import { RootState } from '@/store'
-
+import Accordion from '@/components/ui/Accordion'
 
 
 const getChatbotsInformation = async () => {
@@ -56,10 +56,10 @@ const ChatPage = () => {
 
   const [chatSelected, setChatSelected] = useState(0)
   const { isLoading } = useSelector((state: RootState) => state.ui)
-  // console.log(value)
 
-  const [chatbotsInformation, setChatbotsInformation] = useState([{bot:{name:'', integrations:{iconUrl:''}}},{bot:{name:'', integrations:{iconUrl:''}}},{bot:{name:'', integrations:{iconUrl:''}}}])
-  // console.log(chatbotsInformation)
+  const [chatbotsInformation, setChatbotsInformation] = useState([{bot:{createdAt:'', name:'', integrations:{iconUrl:''}}},{bot:{createdAt:'', name:'', integrations:{iconUrl:''}}},{bot:{createdAt:'', name:'', integrations:{iconUrl:''}}}])
+
+  console.log(chatbotsInformation[chatSelected])
 
   useEffect(() => {
     const getChatbotsInfo = async() => {
@@ -73,57 +73,57 @@ const ChatPage = () => {
   return (
     <Layout title='Chat page'>
       <div className="grid grid-cols-5 h-100">
-        <div className="col-span-1 border-r-2 p-2">
-          <h1 className='scroll-m-20 text-3xl font-bold tracking-tight mb-4'>Team</h1>
-          
-          <div className='grid grid-cols-5 p-2 rounded-sm my-1 cursor-pointer hover:bg-blue-200'>
-            <div className="col-span-1">
-              <Icon icon="flat-color-icons:online-support" style={{ fontSize: '40px' }} />
-            </div>
-            <div className="col-span-4 flex justify-between items-center ps-1">
-              <small className='text-sm font-semibold'>Customer support</small>
-              <span className="inline-flex items-center justify-center w-4 h-4 ml-2 text-xs font-semibold text-blue-800 bg-blue-200 rounded-full">2</span>
-            </div>
-          </div>
-          
-          <div className='grid grid-cols-5 p-2 rounded-sm my-1 cursor-pointer hover:bg-blue-200'>
-            <div className="col-span-1">
-              <Icon icon="logos:microsoft-teams" style={{ fontSize: '40px' }} />
-            </div>
-            <div className="col-span-4 flex justify-between items-center ps-1">
-              <small className='text-sm font-semibold'>Accounting</small>
-              <span className="inline-flex items-center justify-center w-4 h-4 ml-2 text-xs font-semibold text-blue-800 bg-blue-200 rounded-full">5</span>
-            </div>
-          </div>
-          
-          <div className='grid grid-cols-5 p-2 rounded-sm my-1 cursor-pointer hover:bg-blue-200'>
-            <div className="col-span-1">
-              <Icon icon="emojione:money-bag" style={{ fontSize: '40px' }} />
-            </div>
-            <div className="col-span-4 flex flex-col justify-center ps-1">
-              <small className='text-sm font-semibold'>Sales team</small>
-            </div>
-          </div>
-          
-          <div className='grid grid-cols-5 p-2 rounded-sm my-1 cursor-pointer hover:bg-blue-200'>
-            <div className="col-span-1">
-              <Icon icon="fluent-emoji:rocket" style={{ fontSize: '40px' }} />
-            </div>
-            <div className="col-span-4 flex flex-col justify-center ps-1">
-              <small className='text-sm font-semibold'>Marketing</small>
-            </div>
-          </div>
-          
-          <div className='grid grid-cols-5 p-2 rounded-sm my-1 cursor-pointer hover:bg-blue-200'>
-            <div className="col-span-1">
-              <Icon icon="logos:google-marketing-platform" style={{ fontSize: '40px' }} />
-            </div>
-            <div className="col-span-4 flex flex-col justify-center ps-1">
-              <small className='text-sm font-semibold'>Human Resources</small>
-            </div>
-          </div>
 
+        <div className="col-span-1 border-r-2 p-2">
+          <span className='scroll-m-20 text-3xl font-bold tracking-tight mb-4'>Teams</span>
+            <div className='grid grid-cols-5 p-2 rounded-sm my-1 cursor-pointer hover:bg-blue-200'>
+              <div className="col-span-1">
+                <Icon icon="flat-color-icons:online-support" style={{ fontSize: '40px' }} />
+              </div>
+              <div className="col-span-4 flex justify-between items-center ps-1">
+                <small className='text-sm font-semibold'>Customer support</small>
+                <span className="inline-flex items-center justify-center w-4 h-4 ml-2 text-xs font-semibold text-blue-800 bg-blue-200 rounded-full">2</span>
+              </div>
+            </div>
+            
+            <div className='grid grid-cols-5 p-2 rounded-sm my-1 cursor-pointer hover:bg-blue-200'>
+              <div className="col-span-1">
+                <Icon icon="logos:microsoft-teams" style={{ fontSize: '40px' }} />
+              </div>
+              <div className="col-span-4 flex justify-between items-center ps-1">
+                <small className='text-sm font-semibold'>Accounting</small>
+                <span className="inline-flex items-center justify-center w-4 h-4 ml-2 text-xs font-semibold text-blue-800 bg-blue-200 rounded-full">5</span>
+              </div>
+            </div>
+            
+            <div className='grid grid-cols-5 p-2 rounded-sm my-1 cursor-pointer hover:bg-blue-200'>
+              <div className="col-span-1">
+                <Icon icon="emojione:money-bag" style={{ fontSize: '40px' }} />
+              </div>
+              <div className="col-span-4 flex flex-col justify-center ps-1">
+                <small className='text-sm font-semibold'>Sales team</small>
+              </div>
+            </div>
+            
+            <div className='grid grid-cols-5 p-2 rounded-sm my-1 cursor-pointer hover:bg-blue-200'>
+              <div className="col-span-1">
+                <Icon icon="fluent-emoji:rocket" style={{ fontSize: '40px' }} />
+              </div>
+              <div className="col-span-4 flex flex-col justify-center ps-1">
+                <small className='text-sm font-semibold'>Marketing</small>
+              </div>
+            </div>
+            
+            <div className='grid grid-cols-5 p-2 rounded-sm my-1 cursor-pointer hover:bg-blue-200'>
+              <div className="col-span-1">
+                <Icon icon="logos:google-marketing-platform" style={{ fontSize: '40px' }} />
+              </div>
+              <div className="col-span-4 flex flex-col justify-center ps-1">
+                <small className='text-sm font-semibold'>Human Resources</small>
+              </div>
+            </div>
         </div>
+
         <div className="col-span-1 p-2">
           <h1 className='scroll-m-20 text-3xl font-bold tracking-tight mb-4'>Chatbots</h1>
 
@@ -200,10 +200,45 @@ const ChatPage = () => {
           </div>
         </div>
         <div className="col-span-1 p-2 overflow-hidden">
-          <h1 className='scroll-m-20 text-3xl font-bold tracking-tight'>Chatbot detail</h1>
-          <small>
-            { JSON.stringify(chatbotsInformation[chatSelected]) }
-          </small>
+          <h1 className='scroll-m-20 text-3xl font-bold tracking-tight'>Details</h1>
+          
+          <div className='flex items-center mt-5'>
+            <Icon icon="fluent:bot-24-regular" className='me-2' style={{ color: 'rgb(239, 184, 16)', fontSize: '23px' }} />
+            <span className='text-lg text-gray-700 font-bold leading-none'>Chatbot info</span>
+          </div>
+
+          <div className='flex flex-col mt-4'>
+            <span className='text-gray-400 text-xs'>Nombre del Chatbot</span>
+            <span className='text-sm text-gray-700 font-medium leading-none'>MyBotti</span>
+          </div>
+          
+          <div className='flex flex-col mt-4'>
+            <span className='text-gray-400 text-xs'>Descripción</span>
+            <span className='text-sm text-gray-700 font-medium leading-none'>This is your smart bot!</span>
+          </div>
+          
+          <div className='flex flex-col mt-4'>
+            {/* <span className='text-gray-400 text-xs'>Documentos cargados</span>
+            <span className='text-sm text-gray-700 font-medium leading-none'>This is your smart bot!</span> */}
+            <Accordion title='Documentos cargados'>
+              <div className='flex flex-col'>
+                <span className='text-gray-400 text-sm'>Documentos 1</span>
+                <span className='text-gray-400 text-sm'>Documentos 1</span>
+                <span className='text-gray-400 text-sm'>Documentos 1</span>
+              </div>
+              {/* <span className='text-sm text-gray-700 font-medium leading-none'>This is your smart bot!</span> */}
+            </Accordion>
+          </div>
+
+          <div className='flex flex-col mt-4'>
+            <span className='text-gray-400 text-xs'>Última conversación</span>
+            <span className='text-sm text-gray-700 font-medium leading-none'>Hace 3 días</span>
+          </div>
+          
+          <div className='flex flex-col mt-4'>
+            <span className='text-gray-400 text-xs'>Chatbot creado el día</span>
+            <span className='text-sm text-gray-700 font-medium leading-none'>{ new Date(chatbotsInformation[chatSelected].bot.createdAt).toLocaleString() }</span>
+          </div>
         </div>
       </div>
     </Layout>
