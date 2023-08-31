@@ -8,7 +8,7 @@ const BotpressCuidarConstitucion = () => {
         window.botpressWebChat.init({
             'composerPlaceholder': 'Escríbele algo...',
             'botConversationDescription': 'Hazme las preguntas que quieras sobre la documentación que cargaste',
-            'botName': 'SecondBot | Constitución Nacional Argentina',
+            'botName': 'Constitución Nacional Argentina',
             'avatarUrl': 'https://e7.pngegg.com/pngimages/811/700/png-clipart-chatbot-internet-bot-business-natural-language-processing-facebook-messenger-business-people-logo-thumbnail.png',
             'locale': 'es',
             'botId': '793096bf-365b-4a3a-994a-b54407c558a7',
