@@ -6,9 +6,9 @@ const BotpressCuidarConstitucion = () => {
       srcDoc="<body><script src='https://cdn.botpress.cloud/webchat/v0/inject.js'></script>
       <script>
         window.botpressWebChat.init({
-            'composerPlaceholder': 'Escríbele a SmartBot...',
+            'composerPlaceholder': 'Escríbele algo...',
             'botConversationDescription': 'Hazme las preguntas que quieras sobre la documentación que cargaste',
-            'botName': 'SmartBot',
+            'botName': 'SecondBot | Constitución Nacional Argentina',
             'avatarUrl': 'https://e7.pngegg.com/pngimages/811/700/png-clipart-chatbot-internet-bot-business-natural-language-processing-facebook-messenger-business-people-logo-thumbnail.png',
             'locale': 'es',
             'botId': '793096bf-365b-4a3a-994a-b54407c558a7',

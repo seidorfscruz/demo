@@ -6,9 +6,9 @@ const BotpressChatCuidar = () => {
       srcDoc="<body><script src='https://cdn.botpress.cloud/webchat/v0/inject.js'></script>
       <script>
         window.botpressWebChat.init({
-            'composerPlaceholder': 'Escríbele a SmartBot...',
+            'composerPlaceholder': 'Escríbele algo...',
             'botConversationDescription': 'Hazme las preguntas que quieras sobre la documentación que cargaste',
-            'botName': 'SmartBot',
+            'botName': 'FirstBot | Términos y condiciones de la aplicación CUIDAR',
             'avatarUrl': 'https://e7.pngegg.com/pngimages/811/700/png-clipart-chatbot-internet-bot-business-natural-language-processing-facebook-messenger-business-people-logo-thumbnail.png',
             'locale': 'es',
             'botId': 'c1fb4c0b-525c-475b-890d-8b9e5f18cc1d',
