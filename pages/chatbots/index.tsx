@@ -107,7 +107,7 @@ export type Task = {
 };
 
 export default function Modificatepage() {
-  const [selectedFile, setSelectedFile] = useState<File | null | string >(null);
+  const [selectedFile, setSelectedFile] = useState<File  | string >('');
   const [previewURL, setPreviewURL] = useState<string | null>(null); // Nuevo estado para la URL de vista previa
   const [info, setInfo] = useState<Task[] | null>(null);
   const [teams, setTeams] = useState<any[]>([]);
@@ -247,8 +247,12 @@ export default function Modificatepage() {
 //Si son diferentes se realiza un update a la base de datos y se sube la imagen a la base de datos
 //Si la imagen cambiada es default solo se cambia imgurl por la url de la imagen default
   const handleUpdate = async (e: React.MouseEvent<HTMLButtonElement>) => {
+   
+
     if (typeof cont === "number" || !isNaN(Number(cont))) {
+    
       if (+cont == +botInfoId.imgCont) {
+      
         const x = await supabase
           .from("aibot")
           .update({
@@ -261,6 +265,7 @@ export default function Modificatepage() {
           .select();
         UploadStatus(true);
       } else {
+       
         const x = await supabase
           .from("aibot")
           .update({
@@ -284,7 +289,9 @@ export default function Modificatepage() {
         UploadStatus(true);
       }
     } else {
+    
       if (cont == previewURL) {
+       
         const x = await supabase
           .from("aibot")
           .update({
@@ -297,6 +304,7 @@ export default function Modificatepage() {
           .select();
         UploadStatus(true);
       } else {
+        console.log('es por aca ')
         const x = await supabase
           .from("aibot")
           .update({
@@ -311,12 +319,13 @@ export default function Modificatepage() {
       const x1 = await supabase.storage
         .from("Images")
         .upload(
-          `imagesChatBots/${botInfoId.idTenant}/${botInfoId.id}/${botInfoId.imgCont}`,
+          `imagesChatBots/${botInfoId.idTenant}/${botInfoId.id}/1`,
           selectedFile
         );
 
       UploadStatus(true);
     }
+    
   };
 //Controla el estado de los mensajes de alerta
   const UploadStatus = (estado: boolean) => {
@@ -333,19 +342,19 @@ export default function Modificatepage() {
         id: "",
       },
     });
-    if (estado === true) {
-      return Swal.fire(
-        "¡Hola, usuario!",
-        "Cambios guardados correctamente",
-        "success"
-      );
-    } else {
-      return Swal.fire(
-        "¡Hola, usuario!",
-        "Cambios guardados correctamente",
-        "success"
-      );
-    }
+    // if (estado === true) {
+    //   return Swal.fire(
+    //     "¡Hola, usuario!",
+    //     "Cambios guardados correctamente",
+    //     "success"
+    //   );
+    // } else {
+    //   return Swal.fire(
+    //     "¡Hola, usuario!",
+    //     "Cambios guardados correctamente",
+    //     "success"
+    //   );
+    // }
   };
 
 //Funcion que se ejecuta al seleccionar una imagen
@@ -365,7 +374,7 @@ export default function Modificatepage() {
       setSelectedFile(file);
       setPreviewURL(URL.createObjectURL(file)); // Crear la URL de vista previa
     } else {
-      setSelectedFile(null);
+      setSelectedFile('');
       setPreviewURL(null);
     }
   };
