@@ -103,7 +103,7 @@ export type Task = {
     imageUrl: string;
     name: string;
   };
-  imageUrl: string | null;
+  imageUrl: string | undefined;
 };
 
 export default function Modificatepage() {
