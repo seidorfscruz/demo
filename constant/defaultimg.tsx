@@ -9,3 +9,4 @@ const imgDefault = [
     {name: 'imgDefault8', value: 'https://fzjgljxomqpukuvmguay.supabase.co/storage/v1/object/public/Images/default/avatardefault8.jpeg'}]
 
     export default imgDefault;
+

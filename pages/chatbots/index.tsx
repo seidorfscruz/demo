@@ -103,7 +103,7 @@ export type Task = {
     imageUrl: string;
     name: string;
   };
-  imageUrl: string | null;
+  imageUrl: string | undefined;
 };
 
 export default function Modificatepage() {
@@ -170,7 +170,7 @@ export default function Modificatepage() {
       const xDelete = await supabase.storage
         .from("Images")
         .remove([`imagesChatBots/${idTenant}/${id}/${imageUrl}`]);
-        console.log(xDelete)
+        
     }
     select();
     Swal.fire("Hello, User!", "Bot successfully removed", "success");
