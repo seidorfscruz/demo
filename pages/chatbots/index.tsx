@@ -170,7 +170,7 @@ export default function Modificatepage() {
       const xDelete = await supabase.storage
         .from("Images")
         .remove([`imagesChatBots/${idTenant}/${id}/${imageUrl}`]);
-        console.log(xDelete)
+        
     }
     select();
     Swal.fire("Hello, User!", "Bot successfully removed", "success");
