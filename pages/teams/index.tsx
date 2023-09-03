@@ -28,6 +28,12 @@ import {
   AvatarImage,
 } from "@/registry/default/ui/avatar";
 import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+  PopoverClose,
+} from "@/registry/default/ui/popover";
+import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -52,6 +58,8 @@ import {
 } from "@/registry/default/ui/dialog";
 import Swal from "sweetalert2";
 import { Textarea } from "@/registry/default/ui/textarea";
+import imgDefaultTeams from "../../constant/defaultimgteams";
+import { set } from "date-fns";
 
 export default function TeamsPage() {
   const [infoCreate, setinfoCreate] = useState({
@@ -74,7 +82,11 @@ export default function TeamsPage() {
     imageUrl: "",
     description: "",
   });
-
+  const [cont,setCont] = useState<string>('')
+  const [selectedFile, setSelectedFile] = useState<File | null | string>(null);
+  const [previewURL, setPreviewURL] = useState<string | undefined>('null'); // Nuevo estado para la URL de vista previa
+  const [selectedFileEdit, setSelectedFileEdit] = useState<File  | string>('');
+  const [previewURLEdit, setPreviewURLEdit] = useState<string | undefined>(''); // Nuevo estado para la URL de vista previa
   const handleChange = (
     e:
       | React.ChangeEvent<HTMLInputElement>
@@ -89,16 +101,32 @@ export default function TeamsPage() {
   };
 
   const handleSumbit = async (e: React.MouseEvent<HTMLButtonElement>) => {
+
+    if (
+      !selectedFile ||
+      !infoCreate.name ||
+      !infoCreate.description 
+    ) {
+      Swal.fire("Hello, User", "please complete all fields", "warning");
+      return;
+    }
     const x = await supabase
       .from("teams")
       .insert([
         {
           name: infoCreate.name,
           description: infoCreate.description,
-          imageUrl: infoCreate.imageUrl,
+          imageUrl: selectedFile === "default"? previewURL:1,
         },
       ])
       .select();
+      if(x.data && selectedFile !== "default"){
+      const x1 = await supabase.storage
+      .from("Images")
+      .upload(
+        `imagesChatBots/${x.data[0].id}/1`,
+        selectedFile
+      );
 
     if (x.error) {
       Swal.fire(
@@ -106,8 +134,8 @@ export default function TeamsPage() {
         "The team could not be deleted correctly, please try again",
         "warning"
       );
-      console.log(x.error);
-    } else {
+   
+    } }
       setinfoCreate({
         id: "",
         name: "",
@@ -115,8 +143,9 @@ export default function TeamsPage() {
         description: "",
       });
       fetchData();
+      setPreviewURL('')
       Swal.fire("¡Hello, user!", "Team created successfully ", "success");
-    }
+    
   };
 
   async function fetchData() {
@@ -131,6 +160,11 @@ export default function TeamsPage() {
 
   const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
     const { value } = e.currentTarget;
+
+    const xGet = await supabase.from("teams").select("*").eq("id", value);
+    if(xGet.error) return console.log(xGet.error)
+
+
     const x = await supabase.from("teams").delete().eq("id", value);
     if (x.error) {
       Swal.fire(
@@ -140,10 +174,22 @@ export default function TeamsPage() {
       );
       console.log(x.error);
     } else {
+    if(typeof infoEdit.imageUrl === "number" ||!isNaN(Number(infoEdit.imageUrl))){
+        const xDelete = await supabase.storage
+        .from("Images")
+        .remove([`imagesChatBots/${xGet.data[0].id}/${xGet.data[0].imageUrl}`]);
+
+        if(xDelete.data) console.log(xDelete.data)
+        if(xDelete.error) console.log(xDelete.error)
       Swal.fire("¡Hello, user!", "Team deleted successfully ", "success");
       fetchData();
     }
+    Swal.fire("¡Hello, user!", "Team deleted successfully ", "success");
+      fetchData();
+    }
   };
+
+
 
   const handleEdit = (
     e:
@@ -155,6 +201,7 @@ export default function TeamsPage() {
       ...prevDocument,
       [name]: value,
     }));
+  
 
   
   };
@@ -173,22 +220,38 @@ export default function TeamsPage() {
         description: x.data[0].description,
         id: x.data[0].id,
       });
+      setPreviewURLEdit(x.data[0].imageUrl)
+      setCont(x.data[0].imageUrl)
     }
   };
 
   const handleUpdate = async() => {
+
     const x = await supabase
     .from('teams')
     .update({ name: infoEdit.name, description: infoEdit.description,imageUrl: infoEdit.imageUrl })
     .eq('id', infoEdit.id)
     .select()
 
+  if (x.error)  return Swal.fire("¡Hola, usuario!", "the changes have not been made successfully", "error");
 
+  if(typeof infoEdit.imageUrl === "number" ||!isNaN(Number(infoEdit.imageUrl))){
+    const xDelete = await supabase.storage
+    .from("Images")
+    .remove([`imagesChatBots/${infoEdit.id}/${cont}`]);
 
-  if (x.error) {
-    return Swal.fire("¡Hola, usuario!", "the changes have not been made successfully", "error");
-  } else {
-    setinfoEdit({
+    if(xDelete.data) console.log(xDelete.data)
+    if(xDelete.error) console.log(xDelete.error)
+
+    const x1 = await supabase.storage
+    .from("Images")
+    .upload(
+      `imagesChatBots/${infoEdit.id}/${infoEdit.imageUrl}`,
+      selectedFileEdit
+    );
+  }
+ 
+  setinfoEdit({
         id: "",
         name: "",
         imageUrl: "",
@@ -196,8 +259,80 @@ export default function TeamsPage() {
       })
     fetchData()
     return Swal.fire("¡Hello, user!", "the changes have been made successfully", "success");
-  }
+  
 }
+
+const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const file = event.target.files && event.target.files[0];
+
+  if (file) {
+    setSelectedFile(file);
+    setPreviewURL(URL.createObjectURL(file)); // Crear la URL de vista previa
+  } else {
+    setSelectedFile(null);
+    setPreviewURL('');
+  }
+};
+
+const handleFileChangeEdit = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const file = event.target.files && event.target.files[0];
+
+  if (file) {
+    setSelectedFileEdit(file);
+    setPreviewURLEdit(URL.createObjectURL(file)); 
+
+    //Si setInfoedit es un numero le sumo uno, en caso contrario le asigno 1
+    //Esto es para que no se repitan los nombres de las imagenes
+    if(typeof infoEdit.imageUrl === "number" ||!isNaN(Number(infoEdit.imageUrl))){
+      setinfoEdit(prevState => ({
+        ...prevState, // Mantén las propiedades existentes
+        imageUrl: (+infoEdit.imageUrl + 1).toString() // Actualiza la propiedad imageUrl
+      }));
+
+      }else{
+        setinfoEdit(prevState => ({
+          ...prevState, // Mantén las propiedades existentes
+          imageUrl: '1'
+        }));
+      }
+    }else {
+    setSelectedFileEdit('');
+    setPreviewURLEdit('');
+  }
+};
+
+const handleFileChangeDefault = (url: string) => {
+  setPreviewURL(url);
+  const fileInput = document.querySelector<HTMLInputElement>("#docfile");
+  setSelectedFile("default");
+
+  if (fileInput) {
+    const newFileName = "default.png"; // Reemplaza con el nombre deseado
+    const files = fileInput.files;
+
+    if (files && files.length > 0) {
+      const file = files[0];
+
+      // Crear un nuevo objeto File con el nuevo nombre
+      const newFile = new File([file], newFileName, { type: file.type });
+
+      // Reemplazar el archivo original en el input con el nuevo archivo
+      const fileList = new DataTransfer();
+      fileList.items.add(newFile);
+      fileInput.files = fileList.files;
+
+      // Comprueba el nuevo nombre del archivo en el input
+      console.log(
+        "Nuevo nombre del archivo en el input:",
+        fileInput.files[0].name
+      );
+    } else {
+      console.log("No se ha seleccionado ningún archivo.");
+    }
+  } else {
+    console.log("No se encontró el input de tipo file.");
+  }
+};
 
 
   useEffect(() => {
@@ -216,7 +351,7 @@ export default function TeamsPage() {
           <div className={styles.btnNav}>
           <Sheet>
             <SheetTrigger asChild>
-              <Button>Add new team</Button>
+              <Button >Add new team</Button>
             </SheetTrigger>
             <SheetContent>
               <SheetHeader>
@@ -229,13 +364,9 @@ export default function TeamsPage() {
 
               <div className="grid gap-4 py-4">
               <div className={styles.avatarForm}>
-                <Avatar className="w-40 h-40">
+                <Avatar className="w-20 h-20">
                   <AvatarImage
-                    src={
-                      infoCreate.imageUrl
-                        ? infoCreate.imageUrl
-                        : "data:image/png;base64,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"
-                    }
+                    src={previewURL}
                   />
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
@@ -251,22 +382,13 @@ export default function TeamsPage() {
                     className="col-span-3"
                   />
                 </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="name" className="text-right">
-                    Image Url
-                  </Label>
-                  <Input
-                    id="imageUrl"
-                    name="imageUrl"
-                    onChange={handleChange}
-                    className="col-span-3"
-                  />
-                </div>
+
+
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="username" className="text-right">
                     Description
                   </Label>
-                  <Input
+                  <Textarea
                     id="description"
                     name="description"
                     onChange={handleChange}
@@ -274,9 +396,41 @@ export default function TeamsPage() {
                   />
                 </div>
               </div>
+              
+             
+                <Input
+                        id={"docfile"}
+                        type="file"
+                        onChange={handleFileChange}
+                      />
+              <Popover>
+  <PopoverTrigger asChild>
+    <Button style={{ width: "100%"}} className={styles.PopoverContent} variant="outline">
+      SELECTED IMAGE DEFAULT
+    </Button>
+  </PopoverTrigger>
+  <PopoverContent className={styles.PopoverContent}>
+    <PopoverClose>
+      <div className="flex flex-wrap">
+        {imgDefaultTeams?.map((img) => (
+          <div key={img.value} className="w-1/4 p-2">
+            <Avatar
+              onClick={() => handleFileChangeDefault(img.value)}
+              className={styles.avatar}
+            >
+              <AvatarImage src={img.value} />
+              <AvatarFallback>CN</AvatarFallback>
+            </Avatar>
+          </div>
+        ))}
+      </div>
+    </PopoverClose>
+  </PopoverContent>
+</Popover>
+
               <SheetFooter>
                 <SheetClose asChild>
-                  <Button onClick={handleSumbit} type="submit">
+                  <Button style={{ width: "100%", marginTop: "15px" }} onClick={handleSumbit} type="submit">
                     Create team
                   </Button>
                 </SheetClose>
@@ -303,7 +457,10 @@ export default function TeamsPage() {
               <TableRow key={infoDb.id}>
                 <TableCell className="font-medium">
                   <Avatar className="w-20 h-20">
-                    <AvatarImage src={infoDb.imageUrl} />
+                    <AvatarImage src={typeof infoDb.imageUrl === "number" ||
+                            !isNaN(Number(infoDb.imageUrl))
+                              ? `https://fzjgljxomqpukuvmguay.supabase.co/storage/v1/object/public/Images/imagesChatBots/${infoDb.id}/${infoDb.imageUrl}`
+                              : infoDb.imageUrl} />
                     <AvatarFallback>CN</AvatarFallback>
                   </Avatar>
                 </TableCell>
@@ -346,9 +503,10 @@ export default function TeamsPage() {
                         <div className="grid gap-4 py-4">
                         <div className={styles.avatarForm}>
                         <Avatar className="w-20 h-20">
-                  <AvatarImage
-                    src={infoEdit.imageUrl}
-                  />
+                        <AvatarImage src={typeof previewURLEdit === "number" ||
+                            !isNaN(Number(previewURLEdit))
+                              ? `https://fzjgljxomqpukuvmguay.supabase.co/storage/v1/object/public/Images/imagesChatBots/${infoEdit.id}/${infoEdit.imageUrl}`
+                              : previewURLEdit} />
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
                 </div>
@@ -365,17 +523,14 @@ export default function TeamsPage() {
                               className="col-span-3"
                             />
                           </div>
+
+
+
                           <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="imgUrl" className="text-right">
-                              Image Url
-                            </Label>
-                            <Input
-                              name="imageUrl"
-                              value={infoEdit.imageUrl}
-                              onChange={handleEdit}
-                              className="col-span-3"
-                            />
+           
+            
                           </div>
+
                           <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="username" className="text-right">
                               Descriptions
@@ -387,6 +542,12 @@ export default function TeamsPage() {
                               className="col-span-3"
                             />
                           </div>
+
+                          <Input
+                        id={"docfile"}
+                        type="file"
+                        onChange={handleFileChangeEdit}
+                      />
                         </div>
                         <DialogFooter>
                           <DialogClose asChild>

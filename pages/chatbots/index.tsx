@@ -3,8 +3,19 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 import supabase from "../../apis/supabase";
-import {Select,SelectContent,SelectItem,SelectTrigger,SelectValue,} from "@/registry/default/ui/select";
-
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/registry/default/ui/select";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+  PopoverClose,
+} from "@/registry/default/ui/popover";
 import { Button } from "@/registry/new-york/ui/button";
 import {
   DropdownMenu,
@@ -73,6 +84,9 @@ import {
 } from "@/registry/new-york/ui/card";
 import { Separator } from "@/registry/new-york/ui/separator";
 import Categories from "@/components/ui/Categories";
+import defaultimg from "../../constant/defaultimg";
+import { X } from "lucide-react";
+import { imageConfigDefault } from "next/dist/shared/lib/image-config";
 
 export type Task = {
   name: string | null;
@@ -84,54 +98,137 @@ export type Task = {
   updatedAt: Date | null;
   createdAt: Date | null;
   team: {
-    description:string
+    description: string;
     created_at: Date | null;
-    id: string
-    imageUrl:string
-    name:string
+    id: string;
+    imageUrl: string;
+    name: string;
   };
-  imageUrl: string | null;
+  imageUrl: string | undefined;
 };
 
 export default function Modificatepage() {
+  const [selectedFile, setSelectedFile] = useState<File  | string >('');
+  const [previewURL, setPreviewURL] = useState<string | null>(null); // Nuevo estado para la URL de vista previa
   const [info, setInfo] = useState<Task[] | null>(null);
-  const [teams, setTeams] = useState<any[]>([])
-  const [teamSelected, setTeamSelected] = useState<string>('')
+  const [teams, setTeams] = useState<any[]>([]);
+  const [teamSelected, setTeamSelected] = useState<string>("");
+  const [cont, setCont] = useState(0);
   const [botInfoId, setBotInfoId] = useState({
     id: "",
     name: "",
     description: "",
     imageUrl: "",
-      team:{
-        name: '',
-        id: ''
-        }
+    imgCont: "",
+    idTenant: "",
+    team: {
+      name: "",
+      id: "",
+    },
   });
 
   const select = async () => {
     const x = await supabase.from("aibot").select("*,team(*)");
-    console.log(x.data);
-    setInfo(x.data);
+    if (x.data) {
+      setInfo(x.data);
+    }
   };
+  async function fetchData() {
+    const x = await supabase.from("teams").select();
+    if (x.error) {
+      console.log(x.error);
+    } else {
+      setTeams(x.data);
+    }
+  }
+
 
   useEffect(() => {
     select();
   }, []);
 
+
+  //Elimina bot seleccionado de base de datos
+  //Elimina image en storage
   const handleDelete = async (id: string) => {
-    console.log(id);
+    const xGet = await supabase.from("aibot").select().eq("idBot", id);
+    let idTenant = "";
+    let imageUrl = "";
+    
+    if (xGet.data) {
+      imageUrl = xGet.data[0].imageUrl;
+      idTenant = xGet.data[0].idTenant;
+
+    }
     const x = await supabase.from("aibot").delete().eq("idBot", id);
 
     if (x.error) {
-      console.log(x.error);
       Swal.fire("¡Hola, usuario!", "Bot no pudo ser eliminado ", "warning");
-    } else {
-      select();
-      Swal.fire("¡Hola, usuario!", "Bot eliminado exitosamente", "success");
+      return;
     }
+    
+    if (typeof imageUrl === "number" ||!isNaN(Number(imageUrl))) {
+      const xDelete = await supabase.storage
+        .from("Images")
+        .remove([`imagesChatBots/${idTenant}/${id}/${imageUrl}`]);
+        
+    }
+    select();
+    Swal.fire("Hello, User!", "Bot successfully removed", "success");
+    return;
   };
 
-  const handleNombreUsuarioChange = (
+
+  //Handle EDIT
+  //funciones utilizadas para el manejo del seleccionado de avatar
+  //setean vista en tiempo real y name en el file input name
+
+
+  //Setea el bot seleccionado en el estado botInfoId
+  //Setea el previewURL con la url de la imagen seleccionada
+  //Setea cont con el valor de la imagen seleccionada para luego compara si se cambio o no comparandolo con el valor de imgUrl que es el que modifico
+  const handleBaseId = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    const id = event.currentTarget.id;
+
+    const x = await supabase.from("aibot").select("*,team(*)").eq("idBot", id);
+    if (x.error) {
+      console.log(x.error);
+    } else {
+      setCont(x.data[0].imageUrl);
+      setBotInfoId({
+        name: x.data[0].name,
+        description: x.data[0].description,
+        imgCont:
+          typeof x.data[0].imageUrl === "number" ||
+          !isNaN(Number(x.data[0].imageUrl))
+            ? x.data[0].imageUrl
+            : "no",
+
+        imageUrl:
+          typeof x.data[0].imageUrl === "number" ||!isNaN(Number(x.data[0].imageUrl))
+            ? `https://fzjgljxomqpukuvmguay.supabase.co/storage/v1/object/public/Images/imagesChatBots/${x.data[0].idTenant}/${x.data[0].idBot}/${x.data[0].imageUrl}}`
+            : x.data[0].imageUrl,
+
+        id: x.data[0].idBot,
+        idTenant: x.data[0].idTenant,
+        team: x.data[0].team,
+      });
+
+      if (
+        typeof x.data[0].imageUrl === "number" ||
+        !isNaN(Number(x.data[0].imageUrl))
+      ) {
+        setPreviewURL(
+          `https://fzjgljxomqpukuvmguay.supabase.co/storage/v1/object/public/Images/imagesChatBots/${x.data[0].idTenant}/${x.data[0].idBot}/${x.data[0].imageUrl}`
+        );
+      } else {
+        setPreviewURL(x.data[0].imageUrl);
+      }
+    }
+  };
+//Setea valores en el estado botInfoId cuando se realiza un cambio en el input
+//Es lo que se esta renderizando en pantalla
+  const handleChangaValue = (
     e:
       | React.ChangeEvent<HTMLInputElement>
       | React.ChangeEvent<HTMLTextAreaElement>
@@ -142,62 +239,176 @@ export default function Modificatepage() {
       [name]: value,
     }));
   };
-  const handleBaseId = async (event: React.MouseEvent<HTMLButtonElement>) => {
-    const id = event.currentTarget.id;
 
-    const x = await supabase.from("aibot").select("*,team(*)").eq("idBot", id)
-    if (x.error) {
-      console.log(x.error)
-    } else {
-      setBotInfoId({
-        name: x.data[0].name,
-        description: x.data[0].description,
-        imageUrl: x.data[0].imageUrl,
-        id: x.data[0].idBot,
-        team:x.data[0].team
-      });
-    }
-  };
+
+//Funcion que se ejecuta al presionar el boton de guardar cambios
+//Se realiza un update a la base de datos con los valores del estado botInfoId
+//Se compruba primero si viene una imagen default o cargada por el usuario
+//Se comprueba si cambia la imagen con el valor de cont y botInfoId.imgCont, si son iguales no se realiza un update a la base de datos
+//Si son diferentes se realiza un update a la base de datos y se sube la imagen a la base de datos
+//Si la imagen cambiada es default solo se cambia imgurl por la url de la imagen default
   const handleUpdate = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    const x = await supabase
-      .from("aibot")
-      .update({
-        name: botInfoId.name,
-        description: botInfoId.description,
-        imageUrl: botInfoId.imageUrl,
-        team: teamSelected
-      })
-      .eq("idBot", botInfoId.id)
-      .select();
+   
 
-    if (x.error) {
-      return Swal.fire(
-        "¡Hola, usuario!",
-        "no se puedo realizar la modificacion",
-        "error"
-      );
+    if (typeof cont === "number" || !isNaN(Number(cont))) {
+    
+      if (+cont == +botInfoId.imgCont) {
+      
+        const x = await supabase
+          .from("aibot")
+          .update({
+            name: botInfoId.name,
+            description: botInfoId.description,
+            //imageUrl: selectedFile === "default"? previewURL:+botInfoId.imgCont,
+            team: teamSelected ? teamSelected : botInfoId.team.id,
+          })
+          .eq("idBot", botInfoId.id)
+          .select();
+        UploadStatus(true);
+      } else {
+       
+        const x = await supabase
+          .from("aibot")
+          .update({
+            name: botInfoId.name,
+            description: botInfoId.description,
+            imageUrl:
+              selectedFile === "default" ? previewURL : +botInfoId.imgCont,
+            team: teamSelected ? teamSelected : botInfoId.team.id,
+          })
+          .eq("idBot", botInfoId.id)
+          .select();
+        const x1 = await supabase.storage
+          .from("Images")
+          .upload(
+            `imagesChatBots/${botInfoId.idTenant}/${botInfoId.id}/${botInfoId.imgCont}`,
+            selectedFile
+          );
+          const xDelete = await supabase.storage
+          .from("Images")
+          .remove([`imagesChatBots/${botInfoId.idTenant}/${botInfoId.id}/${cont}`]);
+        UploadStatus(true);
+      }
     } else {
-      select();
-      return Swal.fire(
-        "¡Hola, usuario!",
-        "Cambios guardados correctamente",
-        "success"
-      );
+    
+      if (cont == previewURL) {
+       
+        const x = await supabase
+          .from("aibot")
+          .update({
+            name: botInfoId.name,
+            description: botInfoId.description,
+            //imageUrl: selectedFile === "default"? previewURL:+botInfoId.imgCont,
+            team: teamSelected ? teamSelected : botInfoId.team.id,
+          })
+          .eq("idBot", botInfoId.id)
+          .select();
+        UploadStatus(true);
+      } else {
+        console.log('es por aca ')
+        const x = await supabase
+          .from("aibot")
+          .update({
+            name: botInfoId.name,
+            description: botInfoId.description,
+            imageUrl: selectedFile === "default" ? previewURL : 1,
+            team: teamSelected ? teamSelected : botInfoId.team.id,
+          })
+          .eq("idBot", botInfoId.id)
+          .select();
+      }
+      const x1 = await supabase.storage
+        .from("Images")
+        .upload(
+          `imagesChatBots/${botInfoId.idTenant}/${botInfoId.id}/1`,
+          selectedFile
+        );
+
+      UploadStatus(true);
+    }
+    
+  };
+//Controla el estado de los mensajes de alerta
+  const UploadStatus = (estado: boolean) => {
+    select();
+    setBotInfoId({
+      id: "",
+      name: "",
+      description: "",
+      imageUrl: "",
+      imgCont: "",
+      idTenant: "",
+      team: {
+        name: "",
+        id: "",
+      },
+    });
+    // if (estado === true) {
+    //   return Swal.fire(
+    //     "¡Hola, usuario!",
+    //     "Cambios guardados correctamente",
+    //     "success"
+    //   );
+    // } else {
+    //   return Swal.fire(
+    //     "¡Hola, usuario!",
+    //     "Cambios guardados correctamente",
+    //     "success"
+    //   );
+    // }
+  };
+
+//Funcion que se ejecuta al seleccionar una imagen
+// Maneja el cambio de imagen, junto con handleFilechange
+//Controla el input fil text
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (typeof botInfoId.imgCont === "number" || !isNaN(Number(cont))) {
+      setBotInfoId((prevState) => ({
+        ...prevState,
+        imgCont: (+botInfoId.imgCont + 1).toString(),
+      }));
+    } else {
+    }
+    const file = event.target.files && event.target.files[0];
+
+    if (file) {
+      setSelectedFile(file);
+      setPreviewURL(URL.createObjectURL(file)); // Crear la URL de vista previa
+    } else {
+      setSelectedFile('');
+      setPreviewURL(null);
     }
   };
 
-  async function fetchData() {
-    const x = await supabase.from("teams").select();
-    if (x.error) {
-      console.log(x.error);
+  const handleFileChangeDefault = (url: string) => {
+    if (typeof botInfoId.imgCont === "number" || !isNaN(Number(cont))) {
+      setBotInfoId((prevState) => ({
+        ...prevState,
+        imgCont: (+botInfoId.imgCont + 1).toString(),
+      }));
     } else {
-      setTeams(x.data);
     }
-    console.log(teams)
-  }
-  
+    setPreviewURL(url);
+    const fileInput = document.querySelector<HTMLInputElement>("#docfile");
+    setSelectedFile("default");
 
+    if (fileInput) {
+      const newFileName = "default.png"; // Reemplaza con el nombre deseado
+      const files = fileInput.files;
 
+      if (files && files.length > 0) {
+        const file = files[0];
+
+        // Crear un nuevo objeto File con el nuevo nombre
+        const newFile = new File([file], newFileName, { type: file.type });
+
+        // Reemplazar el archivo original en el input con el nuevo archivo
+        const fileList = new DataTransfer();
+        fileList.items.add(newFile);
+        fileInput.files = fileList.files;
+      }
+    }
+  };
   return (
     <Layout title="ChatBots page">
       <div className="hidden flex-col md:flex">
@@ -302,7 +513,7 @@ export default function Modificatepage() {
                               id={e.idBot}
                               onClick={(event) => {
                                 handleBaseId(event);
-                                fetchData()
+                                fetchData();
                               }}
                               className={styles.dialog}
                             >
@@ -318,10 +529,11 @@ export default function Modificatepage() {
                                 </DialogDescription>
                                 <div className={styles.avatarform}>
                                   <Avatar className="w-20 h-20">
-                                    <AvatarImage
-                                      src={botInfoId.imageUrl || ""}
-                                    />
-                                    <AvatarFallback>CN</AvatarFallback>
+                                    {previewURL ? ( // Mostrar la vista previa si está disponible
+                                      <AvatarImage src={previewURL} />
+                                    ) : (
+                                      <AvatarFallback>CN</AvatarFallback>
+                                    )}
                                   </Avatar>
                                 </div>
                               </DialogHeader>
@@ -331,23 +543,66 @@ export default function Modificatepage() {
                                     Name
                                   </Label>
                                   <Input
-                                    onChange={handleNombreUsuarioChange}
+                                    onChange={handleChangaValue}
                                     name="name"
                                     value={botInfoId.name}
                                     className="col-span-3"
                                   />
                                 </div>
+
                                 <div className="grid grid-cols-4 items-center gap-4">
                                   <Label htmlFor="img" className="text-right">
                                     Avatar
                                   </Label>
                                   <Input
-                                    onChange={handleNombreUsuarioChange}
+                                    id="docfile"
+                                    type="file"
+                                    onChange={handleFileChange}
                                     name="imageUrl"
-                                    value={botInfoId.imageUrl}
+                                    // value={botInfoId.imageUrl}
                                     className="col-span-3"
                                   />
+                                  <p>Or </p>
+                                  <Popover>
+                                    <PopoverTrigger asChild>
+                                      <Button
+                                        className={styles.PopoverContent}
+                                        variant="outline"
+                                      >
+                                        SELECTED IMAGE DEFAULT
+                                      </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent
+                                      className={styles.PopoverContent}
+                                    >
+                                      <PopoverClose>
+                                        <div className="flex flex-wrap">
+                                          {defaultimg?.map((img) => (
+                                            <div
+                                              key={img.value}
+                                              className="w-1/4 p-2"
+                                            >
+                                              <Avatar
+                                                onClick={() =>
+                                                  handleFileChangeDefault(
+                                                    img.value
+                                                  )
+                                                }
+                                                className={styles.avatarPop}
+                                              >
+                                                <AvatarImage src={img.value} />
+                                                <AvatarFallback>
+                                                  CN
+                                                </AvatarFallback>
+                                              </Avatar>
+                                            </div>
+                                          ))}
+                                        </div>
+                                      </PopoverClose>
+                                    </PopoverContent>
+                                  </Popover>
                                 </div>
+
                                 <div className="grid grid-cols-4 items-center gap-4">
                                   <Label
                                     htmlFor="username"
@@ -356,31 +611,37 @@ export default function Modificatepage() {
                                     Descriptions
                                   </Label>
                                   <Textarea
-                                    onChange={handleNombreUsuarioChange}
+                                    onChange={handleChangaValue}
                                     name="description"
                                     value={botInfoId.description}
                                     className="col-span-3"
                                   />
                                 </div>
-                                <Select onValueChange={ (value) => setTeamSelected(value) }>
-                      
-                        <SelectTrigger>
-                          <SelectValue defaultValue={botInfoId.team.id} placeholder={botInfoId.team.name} />
-                        </SelectTrigger>
-                      
-                      <SelectContent>
-                        {teams?.map((team) => {
-                          return (
-                            <SelectItem key={team.id} value={team.id}>
-                              {team.name}
-                            </SelectItem>
-                          );
-                        })}
-                        
-                      
-                      </SelectContent>
-                    </Select>
+                                <Select
+                                  onValueChange={(value) =>
+                                    setTeamSelected(value)
+                                  }
+                                >
+                                  <SelectTrigger>
+                                    <SelectValue
+                                      defaultValue={teamSelected}
+                                      placeholder={botInfoId.team.name}
+                                    />
+                                  </SelectTrigger>
 
+                                  <SelectContent>
+                                    {teams?.map((team) => {
+                                      return (
+                                        <SelectItem
+                                          key={team.id}
+                                          value={team.id}
+                                        >
+                                          {team.name}
+                                        </SelectItem>
+                                      );
+                                    })}
+                                  </SelectContent>
+                                </Select>
                               </div>
                               <DialogFooter>
                                 <DialogClose asChild>
@@ -432,7 +693,14 @@ export default function Modificatepage() {
                     </div>
                     <div className={styles.avatar}>
                       <Avatar className="w-25 h-25">
-                        <AvatarImage src={e.imageUrl ? e.imageUrl : ""} />
+                        <AvatarImage
+                          src={
+                            typeof e.imageUrl === "number" ||
+                            !isNaN(Number(e.imageUrl))
+                              ? `https://fzjgljxomqpukuvmguay.supabase.co/storage/v1/object/public/Images/imagesChatBots/${e.idTenant}/${e.idBot}/${e.imageUrl}`
+                              : e.imageUrl
+                          }
+                        />
                         <AvatarFallback>CN</AvatarFallback>
                       </Avatar>
                     </div>

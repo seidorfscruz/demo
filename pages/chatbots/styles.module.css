@@ -1,11 +1,11 @@
 .pbtton{
-    transition: 0.3s;
-    cursor: pointer;
-    opacity: 0.6;
+  transition: 0.3s;
+  cursor: pointer;
+  opacity: 0.6;
 }
 
 .pbtton:hover{
-    opacity: 1;
+  opacity: 1;
 }
 
 .pbttonD{
@@ -60,4 +60,29 @@
 .footerCard{
   margin-top: 10px !important;
   flex: 20;
+}
+
+.descriptionCard{
+  min-height: 120px;
+  max-height: 120px;
+  overflow: hidden;
+}
+
+.footerCard{
+  margin-top: 10px !important;
+  flex: 20;
+}
+
+.avatarPop{
+  width:80px;
+  height: 80px;
+}
+
+.avatarPop{
+  width:40px;
+  height: 40px;
+}
+
+.PopoverContent{
+  width: 340%;
 }
