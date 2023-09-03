@@ -9,7 +9,6 @@ const BotpressChatFutbol = () => {
             'composerPlaceholder': 'Escríbele algo...',
             'botConversationDescription': 'Hazme las preguntas que quieras sobre la documentación que cargaste',
             'botName': 'Recursos Humanos | Consultas generales',
-            'avatarUrl': 'https://e7.pngegg.com/pngimages/811/700/png-clipart-chatbot-internet-bot-business-natural-language-processing-facebook-messenger-business-people-logo-thumbnail.png',
             'locale': 'es',
             'botId': '18445742-4842-4d49-9925-3e49acdd17c2',
             'hostUrl': 'https://cdn.botpress.cloud/webchat/v0',

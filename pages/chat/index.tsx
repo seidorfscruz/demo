@@ -83,7 +83,7 @@ const getChatbotsInformation = async () => {
     const chatbotSoporteInfo = await chatbotSoporte.data
     const chatbotVentasInfo = await chatbotVentas.data
 
-    console.log(chatbotFutbolInfo)
+    console.log(chatbotRecursosHumanosInfo)
     
     return [ chatbotConstitucionInfo, chatbotCuidarInfo, chatbotFutbolInfo, chatbotInnovacionInfo, chatbotRecursosHumanosInfo, chatbotSoporteInfo, chatbotVentasInfo ]
 

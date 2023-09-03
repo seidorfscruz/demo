@@ -72,6 +72,7 @@ import {
   CardTitle,
 } from "@/registry/new-york/ui/card";
 import { Separator } from "@/registry/new-york/ui/separator";
+import Categories from "@/components/ui/Categories";
 
 export type Task = {
   name: string | null;
@@ -203,11 +204,37 @@ export default function Modificatepage() {
         <div className="flex-1 space-y-4 p-8 pt-6">
           <div className="flex items-center justify-between space-y-2">
             <h2 className="text-3xl font-bold tracking-tight">ChatBots</h2>
-            <Link href={"addbot"}>
-              {" "}
-              <Button>Add new bot</Button>
-            </Link>
+            
+            <div className="flex justify-end items-center w-6/12" style={{ marginTop: '0px' }}>
+              <div className="relative me-6">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  className="absolute top-2 left-2 h-6 w-6 text-muted-foreground"
+                >
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <Input
+                  className="pl-10"
+                  style={{ width: '400px' }}
+                  placeholder="Search..."
+                />
+              </div>
+
+              <Link href='new-chatbot' className="flex items-center">
+                {" "}
+                <Button style={{ width: '180px' }}>Create new chatbot</Button>
+              </Link>
+            </div>
           </div>
+
+          <Categories categories={['Innovation', 'Human Resources', 'Documents', 'Company', 'Accounting', 'Secrets', 'Public', 'Latest', 'Newest', 'All']} />
         </div>
       </div>
       <div className={styles.cardcontainer}>
