@@ -5,6 +5,7 @@ import TeamSwitcher from '@/components/ui/team-switcher'
 import { MainNav } from '@/components/ui/main-nav'
 import { Search } from '@/components/ui/search'
 import { UserNav } from '@/components/ui/user-nav'
+import { DarkModeToggle } from '../ui/ModeToggle'
 
 
 export const Layout: FC<Props> = ({ children, title }) => {
@@ -24,6 +25,7 @@ export const Layout: FC<Props> = ({ children, title }) => {
               <TeamSwitcher />
               <MainNav className="mx-6" />
               <div className="ml-auto flex items-center space-x-4">
+                <DarkModeToggle />
                 <Search />
                 <UserNav />
               </div>

@@ -1,0 +1,40 @@
+.title{
+    display: flex;
+    justify-content: center;
+    border-bottom: 1px solid #d4d4d4;
+}
+
+.main{
+    background-color: rgb(255, 255, 255);
+    min-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.form{
+    width: 80%;
+    background: rgb(253, 253, 253);
+    padding-top: -25px; display: flex;
+    justify-content: center;
+}
+
+.form1{
+    width: 80%;
+}
+
+.avatar{
+    width:80px;
+    height: 80px;
+}
+
+.avatar :hover{
+    cursor: pointer;
+    -webkit-box-shadow: 2px 4px 22px 26px rgba(0,0,0,0.75);
+    -moz-box-shadow: 2px 4px 22px 26px rgba(0,0,0,0.75);
+    box-shadow: 2px 4px 22px 26px rgba(0,0,0,0.75);
+}
+
+.PopoverContent{
+    width: 100%;
+}
