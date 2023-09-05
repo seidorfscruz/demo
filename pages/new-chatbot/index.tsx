@@ -39,7 +39,6 @@ import {
 import Swal from "sweetalert2";
 import { useRouter } from "next/router";
 // import authBasic from '../../middlewares/auth'
-import styles from "./style.module.css";
 import {
   Popover,
   PopoverContent,
@@ -48,6 +47,8 @@ import {
 } from "@/registry/default/ui/popover";
 import defaultimg from "../../constant/defaultimg";
 import { Separator } from "@/registry/default/ui/separator";
+import Image from "next/image";
+import NoImage from '@/assets/img/no-image.jpg'
 
 const CreateNewChatbot = () => {
   const form = useForm();
@@ -198,14 +199,8 @@ const CreateNewChatbot = () => {
         </div>
 
         <div className="flex justify-center">
-          <Avatar className="w-40 h-40 p-1 border-4 border-dashed border-primary/10 hover:opacity-75 transition">
-            {
-              previewURL ? (
-                <AvatarImage src={previewURL} />
-              ) : (
-                <AvatarFallback>CN</AvatarFallback>
-              )
-            }
+          <Avatar className="w-40 h-40 p-1 border-4 border-dashed rounded-lg border-primary/10 hover:opacity-75 transition">
+            <Image src={previewURL ? previewURL : NoImage } alt='' width={200} height={200} style={{ borderRadius: '8px' }} />
           </Avatar>
         </div>
 
