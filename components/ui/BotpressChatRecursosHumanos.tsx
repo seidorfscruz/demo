@@ -1,14 +1,15 @@
 import React from 'react'
 
-const BotpressChatFutbol = () => {
+const BotpressChatFutbol = ({ image }: { image: string }) => {
   return (
     <iframe
-      srcDoc="<body><script src='https://cdn.botpress.cloud/webchat/v0/inject.js'></script>
+      srcDoc={`<body><script src='https://cdn.botpress.cloud/webchat/v0/inject.js'></script>
       <script>
         window.botpressWebChat.init({
             'composerPlaceholder': 'Escríbele algo...',
             'botConversationDescription': 'Hazme las preguntas que quieras sobre la documentación que cargaste',
             'botName': 'Recursos Humanos | Consultas generales',
+            'avatarUrl': '${image}',
             'locale': 'es',
             'botId': '18445742-4842-4d49-9925-3e49acdd17c2',
             'hostUrl': 'https://cdn.botpress.cloud/webchat/v0',
@@ -29,7 +30,7 @@ const BotpressChatFutbol = () => {
             
         });
       window.botpressWebChat.onEvent(function () { window.botpressWebChat.sendEvent({ type: 'show' }) }, ['LIFECYCLE.LOADED']);
-      </script></body>"
+      </script></body>`}
       width="100%"
       height="100%"
     ></iframe>

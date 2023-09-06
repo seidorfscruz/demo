@@ -14,7 +14,8 @@ import BotpressChatVentas from '@/components/ui/BotpressChatVentas'
 import BotpressChatSoporte from '@/components/ui/BotpressChatSoporte'
 import BotpressChatRecursosHumanos from '@/components/ui/BotpressChatRecursosHumanos'
 import BotpressChatInnovacion from '@/components/ui/BotpressChatInnovacion'
-import { Integrations } from '../../interfaces/chatbotSchema';
+import { Button } from '@mui/material'
+import imgDefault from '@/constant/defaultimg'
 
 
 const getChatbotsInformation = async () => {
@@ -83,7 +84,7 @@ const getChatbotsInformation = async () => {
     const chatbotSoporteInfo = await chatbotSoporte.data
     const chatbotVentasInfo = await chatbotVentas.data
 
-    console.log(chatbotRecursosHumanosInfo)
+    console.log(chatbotSoporteInfo)
     
     return [ chatbotConstitucionInfo, chatbotCuidarInfo, chatbotFutbolInfo, chatbotInnovacionInfo, chatbotRecursosHumanosInfo, chatbotSoporteInfo, chatbotVentasInfo ]
 
@@ -97,7 +98,7 @@ const getChatbotsInformation = async () => {
 
 const ChatPage = () => {
 
-  const [chatSelected, setChatSelected] = useState(0)
+  const [chatSelected, setChatSelected] = useState(3)
   const [teamSelected, setTeamSelected] = useState('innovation')
   const { isLoading } = useSelector((state: RootState) => state.ui)
 
@@ -128,7 +129,7 @@ const ChatPage = () => {
         <div className="col-span-1 border-r-2 p-2">
           <span className='scroll-m-20 text-3xl font-bold tracking-tight mb-4'>Teams</span>            
             <div
-              className={`grid grid-cols-5 p-2 rounded-sm my-1 cursor-pointer hover:bg-blue-200 ${(teamSelected === 'innovation') && 'bg-blue-200'}`}
+              className={`grid grid-cols-5 p-2 rounded-sm my-1 cursor-pointer hover:text-black hover:bg-blue-200 ${(teamSelected === 'innovation') && 'bg-blue-200 text-black'}`}
               onClick={ () => setTeamSelected('innovation') }
             >
               <div className="col-span-1">
@@ -140,7 +141,7 @@ const ChatPage = () => {
             </div>
             
             <div
-              className={`grid grid-cols-5 p-2 rounded-sm my-1 cursor-pointer hover:bg-blue-200 ${(teamSelected === 'humanresources') && 'bg-blue-200'}`}
+              className={`grid grid-cols-5 p-2 rounded-sm my-1 cursor-pointer hover:text-black hover:bg-blue-200 ${(teamSelected === 'humanresources') && 'bg-blue-200 text-black'}`}
               onClick={ () => setTeamSelected('humanresources') }
             >
               <div className="col-span-1">
@@ -152,7 +153,7 @@ const ChatPage = () => {
             </div>
 
             <div
-              className={`grid grid-cols-5 p-2 rounded-sm my-1 cursor-pointer hover:bg-blue-200 ${(teamSelected === 'sales') && 'bg-blue-200'}`}
+              className={`grid grid-cols-5 p-2 rounded-sm my-1 cursor-pointer hover:text-black hover:bg-blue-200 ${(teamSelected === 'sales') && 'bg-blue-200 text-black'}`}
               onClick={ () => setTeamSelected('sales') }
             >
               <div className="col-span-1">
@@ -160,12 +161,12 @@ const ChatPage = () => {
               </div>
               <div className="col-span-4 flex justify-between items-center ps-1">
                 <small className='text-sm font-semibold'>Sales</small>
-                <span className="inline-flex items-center justify-center w-4 h-4 ml-2 text-xs font-semibold text-blue-800 bg-blue-200 rounded-full">2</span>
+                <span className={`inline-flex items-center justify-center w-4 h-4 ml-2 text-xs font-semibold text-blue-800 bg-blue-200 rounded-full ${(teamSelected === 'sales') && 'bg-white text-black'}`}>2</span>
               </div>
             </div>
             
             <div
-              className={`grid grid-cols-5 p-2 rounded-sm my-1 cursor-pointer hover:bg-blue-200 ${(teamSelected === 'support') && 'bg-blue-200'}`}
+              className={`grid grid-cols-5 p-2 rounded-sm my-1 cursor-pointer hover:text-black hover:bg-blue-200 ${(teamSelected === 'support') && 'bg-blue-200 text-black'}`}
               onClick={ () => setTeamSelected('support') }
             >
               <div className="col-span-1">
@@ -173,12 +174,12 @@ const ChatPage = () => {
               </div>
               <div className="col-span-4 flex justify-between items-center ps-1">
                 <small className='text-sm font-semibold'>Support</small>
-                <span className="inline-flex items-center justify-center w-4 h-4 ml-2 text-xs font-semibold text-blue-800 bg-blue-200 rounded-full">5</span>
+                <span className={`inline-flex items-center justify-center w-4 h-4 ml-2 text-xs font-semibold text-blue-800 bg-blue-200 rounded-full ${(teamSelected === 'support') && 'bg-white text-black'}`}>5</span>
               </div>
             </div>
             
             <div
-              className={`grid grid-cols-5 p-2 rounded-sm my-1 cursor-pointer hover:bg-blue-200 ${(teamSelected === 'others') && 'bg-blue-200'}`}
+              className={`grid grid-cols-5 p-2 rounded-sm my-1 cursor-pointer hover:text-black hover:bg-blue-200 ${(teamSelected === 'others') && 'bg-blue-200 text-black'}`}
               onClick={ () => setTeamSelected('others') }
             >
               <div className="col-span-1">
@@ -196,11 +197,11 @@ const ChatPage = () => {
           {
             teamSelected === 'innovation' && (
               <div
-                className={`grid grid-cols-5 border p-2 rounded-sm my-1 cursor-pointer hover:bg-blue-200 ${(chatSelected === 3) && 'bg-blue-200'}`}
+                className={`grid grid-cols-5 border p-2 rounded-sm my-1 cursor-pointer hover:text-black hover:bg-blue-200 ${(chatSelected === 3) && 'bg-blue-200 text-black'}`}
                 onClick={ () => setChatSelected(3) }
               >
                 <div className="col-span-1">
-                  <AvatarStatusBadge imageUrl={'https://app.botpress.cloud/chatbots/abstract-52.svg'}  />
+                  <AvatarStatusBadge imageUrl={imgDefault[3].value}  />
                 </div>
                 <div className="col-span-4 flex flex-col justify-center">
                   <small className='text-sm font-semibold'>
@@ -217,11 +218,11 @@ const ChatPage = () => {
           {
             teamSelected === 'humanresources' && (
               <div
-                className={`grid grid-cols-5 border p-2 rounded-sm my-1 cursor-pointer hover:bg-blue-200 ${(chatSelected === 4) && 'bg-blue-200'}`}
+                className={`grid grid-cols-5 border p-2 rounded-sm my-1 cursor-pointer hover:text-black hover:bg-blue-200 ${(chatSelected === 4) && 'bg-blue-200 text-black'}`}
                 onClick={ () => setChatSelected(4) }
               >
                 <div className="col-span-1">
-                  <AvatarStatusBadge imageUrl={'https://app.botpress.cloud/chatbots/abstract-52.svg'}  />
+                  <AvatarStatusBadge imageUrl={imgDefault[4].value}  />
                 </div>
                 <div className="col-span-4 flex flex-col justify-center">
                   <small className='text-sm font-semibold'>
@@ -238,11 +239,11 @@ const ChatPage = () => {
           {
             teamSelected === 'sales' && (
               <div
-                className={`grid grid-cols-5 border p-2 rounded-sm my-1 cursor-pointer hover:bg-blue-200 ${(chatSelected === 6) && 'bg-blue-200'}`}
+                className={`grid grid-cols-5 border p-2 rounded-sm my-1 cursor-pointer hover:text-black hover:bg-blue-200 ${(chatSelected === 6) && 'bg-blue-200 text-black'}`}
                 onClick={ () => setChatSelected(6) }
               >
                 <div className="col-span-1">
-                  <AvatarStatusBadge imageUrl={'https://app.botpress.cloud/chatbots/abstract-52.svg'}  />
+                  <AvatarStatusBadge imageUrl={imgDefault[6].value}  />
                 </div>
                 <div className="col-span-4 flex flex-col justify-center">
                   <small className='text-sm font-semibold'>
@@ -259,18 +260,18 @@ const ChatPage = () => {
           {
             teamSelected === 'support' && (
               <div
-                className={`grid grid-cols-5 border p-2 rounded-sm my-1 cursor-pointer hover:bg-blue-200 ${(chatSelected === 5) && 'bg-blue-200'}`}
+                className={`grid grid-cols-5 border p-2 rounded-sm my-1 cursor-pointer hover:text-black hover:bg-blue-200 ${(chatSelected === 5) && 'bg-blue-200 text-black'}`}
                 onClick={ () => setChatSelected(5) }
               >
                 <div className="col-span-1">
-                  <AvatarStatusBadge imageUrl={'https://app.botpress.cloud/chatbots/abstract-52.svg'}  />
+                  <AvatarStatusBadge imageUrl={imgDefault[5].value}  />
                 </div>
                 <div className="col-span-4 flex flex-col justify-center">
                   <small className='text-sm font-semibold'>
-                    { chatbotsInformation[5].bot.integrations[Object.keys(chatbotsInformation[5].bot.integrations)[0]].configuration.botName }
+                    { chatbotsInformation[5].bot.integrations[Object.keys(chatbotsInformation[5].bot.integrations)[1]].configuration.botName }
                   </small>
                   <small className='text-xs font-semibold text-gray-500'>
-                    { chatbotsInformation[5].bot.integrations[Object.keys(chatbotsInformation[5].bot.integrations)[0]].configuration.botConversationDescription }
+                    { chatbotsInformation[5].bot.integrations[Object.keys(chatbotsInformation[5].bot.integrations)[1]].configuration.botConversationDescription }
                   </small>
                 </div>
               </div>
@@ -281,11 +282,11 @@ const ChatPage = () => {
             teamSelected === 'others' && (
               <>
                 <div
-                  className={`grid grid-cols-5 border p-2 rounded-sm my-1 cursor-pointer hover:bg-blue-200 ${(chatSelected === 0) && 'bg-blue-200'}`}
+                  className={`grid grid-cols-5 border p-2 rounded-sm my-1 cursor-pointer hover:text-black hover:bg-blue-200 ${(chatSelected === 0) && 'bg-blue-200 text-black'}`}
                   onClick={ () => setChatSelected(0) }
                 >
                   <div className="col-span-1">
-                    <AvatarStatusBadge imageUrl={'https://app.botpress.cloud/chatbots/abstract-13.svg'} />
+                    <AvatarStatusBadge imageUrl={imgDefault[0].value} />
                   </div>
                   <div className="col-span-4 flex flex-col justify-center">
                     <small className='text-sm font-semibold'>
@@ -296,11 +297,11 @@ const ChatPage = () => {
                 </div>
               
                 <div
-                  className={`grid grid-cols-5 border p-2 rounded-sm my-1 cursor-pointer hover:bg-blue-200 ${(chatSelected === 1) && 'bg-blue-200'}`}
+                  className={`grid grid-cols-5 border p-2 rounded-sm my-1 cursor-pointer hover:text-black hover:bg-blue-200 ${(chatSelected === 1) && 'bg-blue-200 text-black'}`}
                   onClick={ () => setChatSelected(1) }
                 >
                   <div className="col-span-1">
-                    <AvatarStatusBadge imageUrl={'https://app.botpress.cloud/chatbots/abstract-35.svg'}  />
+                    <AvatarStatusBadge imageUrl={imgDefault[1].value}  />
                   </div>
                   <div className="col-span-4 flex flex-col justify-center">
                     <small className='text-sm font-semibold'>
@@ -313,11 +314,11 @@ const ChatPage = () => {
                 </div>
               
                 <div
-                  className={`grid grid-cols-5 border p-2 rounded-sm my-1 cursor-pointer hover:bg-blue-200 ${(chatSelected === 2) && 'bg-blue-200'}`}
+                  className={`grid grid-cols-5 border p-2 rounded-sm my-1 cursor-pointer hover:text-black hover:bg-blue-200 ${(chatSelected === 2) && 'bg-blue-200 text-black'}`}
                   onClick={ () => setChatSelected(2) }
                 >
                   <div className="col-span-1">
-                    <AvatarStatusBadge imageUrl={'https://app.botpress.cloud/chatbots/abstract-52.svg'}  />
+                    <AvatarStatusBadge imageUrl={imgDefault[2].value}  />
                   </div>
                   <div className="col-span-4 flex flex-col justify-center">
                     <small className='text-sm font-semibold'>
@@ -358,56 +359,68 @@ const ChatPage = () => {
               className={`${chatStyles.centerDiv} relative h-full w-full overflow-clip border border-zinc-200 bg-white p-2 px-0 py-0`}
             >
               {
-                (chatSelected === 0) && <BotpressChatConstitucion /> ||
-                (chatSelected === 1) && <BotpressChatCuidar /> ||
-                (chatSelected === 2) && <BotpressChatFutbol /> ||
-                (chatSelected === 3) && <BotpressChatInnovacion /> ||
-                (chatSelected === 4) && <BotpressChatRecursosHumanos /> ||
-                (chatSelected === 5) && <BotpressChatSoporte /> ||
-                (chatSelected === 6) && <BotpressChatVentas />
+                (chatSelected === 0) && <BotpressChatConstitucion image={ imgDefault[0].value } /> ||
+                (chatSelected === 1) && <BotpressChatCuidar image={ imgDefault[1].value } /> ||
+                (chatSelected === 2) && <BotpressChatFutbol image={ imgDefault[2].value } /> ||
+                (chatSelected === 3) && <BotpressChatInnovacion image={ imgDefault[3].value } /> ||
+                (chatSelected === 4) && <BotpressChatRecursosHumanos image={ imgDefault[4].value } /> ||
+                (chatSelected === 5) && <BotpressChatSoporte image={ imgDefault[5].value } /> ||
+                (chatSelected === 6) && <BotpressChatVentas image={ imgDefault[6].value } />
               }
             </div>
           </div>
         </div>
+
         <div className="col-span-1 p-2 overflow-hidden">
           <h1 className='scroll-m-20 text-3xl font-bold tracking-tight'>Details</h1>
           
           <div className='flex items-center mt-5'>
             <Icon icon="fluent:bot-24-regular" className='me-2' style={{ color: 'rgb(239, 184, 16)', fontSize: '23px' }} />
-            <span className='text-lg text-gray-700 font-bold leading-none'>Chatbot info</span>
+            <span className='text-lg text-gray-100 font-bold leading-none'>Chatbot info</span>
           </div>
 
           <div className='flex flex-col mt-4'>
             <span className='text-gray-400 text-xs'>Nombre del Chatbot</span>
-            <span className='text-sm text-gray-700 font-medium leading-none'>MyBotti</span>
+            <span className='text-sm text-gray-100 font-medium leading-none'>MyBotti</span>
           </div>
           
           <div className='flex flex-col mt-4'>
             <span className='text-gray-400 text-xs'>Descripción</span>
-            <span className='text-sm text-gray-700 font-medium leading-none'>This is your smart bot!</span>
+            <span className='text-sm text-gray-100 font-medium leading-none'>This is your smart bot!</span>
           </div>
           
           <div className='flex flex-col mt-4'>
-            {/* <span className='text-gray-400 text-xs'>Documentos cargados</span>
-            <span className='text-sm text-gray-700 font-medium leading-none'>This is your smart bot!</span> */}
+            <span className='text-gray-400 text-xs mb-1'>Base de conocimiento</span>
             <Accordion title='Documentos cargados'>
               <div className='flex flex-col'>
-                <span className='text-gray-400 text-sm'>Documentos 1</span>
-                <span className='text-gray-400 text-sm'>Documentos 1</span>
-                <span className='text-gray-400 text-sm'>Documentos 1</span>
+                <span className='text-gray-100 text-sm'>Harbinger modo de uso.doc</span>
+                <span className='text-gray-100 text-sm'>Harbinger preguntas frecuentes.pdf</span>
+                <span className='text-gray-100 text-sm'>Harbinger pricing.pdf</span>
               </div>
-              {/* <span className='text-sm text-gray-700 font-medium leading-none'>This is your smart bot!</span> */}
+              {/* <span className='text-sm text-gray-400 font-medium leading-none'>This is your smart bot!</span> */}
             </Accordion>
           </div>
 
           <div className='flex flex-col mt-4'>
             <span className='text-gray-400 text-xs'>Última conversación</span>
-            <span className='text-sm text-gray-700 font-medium leading-none'>Hace 3 días</span>
+            <span className='text-sm text-gray-100 font-medium leading-none'>Hace 3 días</span>
           </div>
           
           <div className='flex flex-col mt-4'>
             <span className='text-gray-400 text-xs'>Chatbot creado el día</span>
-            <span className='text-sm text-gray-700 font-medium leading-none'>{ new Date(chatbotsInformation[chatSelected].bot.createdAt).toLocaleString() }</span>
+            <span className='text-sm text-gray-100 font-medium leading-none'>{ new Date(chatbotsInformation[chatSelected].bot.createdAt).toLocaleString() }</span>
+          </div>
+
+          <div className='mt-10'>
+            <Button href='https://teams.microsoft.com/l/chat/0/0?users=28:50d83e1a-eb39-4725-bf59-870729939bbe' target='_blank' variant='contained' size="small" style={{ backgroundColor: '#fff' }} className='w-48'>
+              <span className='text-xs font-semibold px-2 py-1' style={{ color: '#464EB8' }}>Abrir en Teams</span>
+              <Icon icon="logos:microsoft-teams" style={{ fontSize: '20px' }} />
+            </Button>
+            
+            <Button variant='contained' size="small" style={{ marginTop: '5px', backgroundColor: 'rgb(170, 170, 170, 0.9)', cursor: 'auto' }} className='w-48'>
+              <span className='text-xs font-semibold px-2 py-1' style={{ color: 'rgb(90, 90, 90)' }}>Próximamente</span>
+              <Icon icon="logos:whatsapp-icon" style={{ fontSize: '20px' }} />
+            </Button>
           </div>
         </div>
       </div>

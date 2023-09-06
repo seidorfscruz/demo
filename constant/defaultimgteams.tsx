@@ -8,4 +8,4 @@ const imgDefaultTeams = [
     {name: 'imgDefault7', value: 'https://fzjgljxomqpukuvmguay.supabase.co/storage/v1/object/public/Images/default/ideogram%20(7).jpeg'},
     {name: 'imgDefault8', value: 'https://fzjgljxomqpukuvmguay.supabase.co/storage/v1/object/public/Images/default/ideogram.jpeg'}]
 
-    export default imgDefaultTeams;
+export default imgDefaultTeams;

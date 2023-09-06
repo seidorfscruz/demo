@@ -32,7 +32,7 @@ import {
   AvatarFallback,
   AvatarImage,
 } from "@/registry/default/ui/avatar";
-import Swal, { SweetAlertResult } from "sweetalert2";
+import Swal from "sweetalert2";
 import {
   Table,
   TableBody,
@@ -84,6 +84,7 @@ import {
 import { Separator } from "@/registry/new-york/ui/separator";
 import Categories from "@/components/ui/Categories";
 import defaultimg from "../../constant/defaultimg";
+import { TagIcon, TagsIcon, UserIcon } from "lucide-react";
 
 
 export type Task = {
@@ -161,7 +162,7 @@ export default function Modificatepage() {
     const x = await supabase.from("aibot").delete().eq("idBot", id);
 
     if (x.error) {
-      Swal.fire("¡Hola, usuario!", "Bot no pudo ser eliminado ", "warning");
+      Swal.fire("Oops...", "Problem while trying to remove your chatbot", "error");
       return;
     }
     
@@ -172,7 +173,7 @@ export default function Modificatepage() {
         
     }
     select();
-    Swal.fire("Hello, User!", "Bot successfully removed", "success");
+    Swal.fire("Success", "Chatbot removed", "success");
     return;
   };
 
@@ -431,7 +432,7 @@ export default function Modificatepage() {
         {info ? (
           info.map((e) => (
             <div key={e.idBot}>
-              <Card id={e.idBot}>
+              <Card id={e.idBot} className="h-full">
                 <div className="flex justify-end">
                   {/* <Button variant="secondary" className="px-3 shadow-none">
                     <StarIcon className="mr-2 h-4 w-4" />
@@ -641,8 +642,8 @@ export default function Modificatepage() {
                   </DropdownMenu>
                 </div>
 
-                <CardHeader className="grid grid-cols-1 p-5 pt-0">
-                  <div className="space-y-1">
+                <CardHeader className="flex flex-col justify-between p-2 pb-4 pt-0" style={{ height: '90%'}}>
+                  <div>
                     <div className="flex justify-center">
                       <Avatar className="w-40 h-40 rounded-sm">
                         <AvatarImage
@@ -663,15 +664,17 @@ export default function Modificatepage() {
                     <CardDescription className="text-center text-xs">
                       {e.description}
                     </CardDescription>
-
-                    <CardDescription className='pt-6'>
+                  </div>
+                  
+                  <div className="pt-2">
+                    <CardDescription className='flex justify-center'>
                       <div className="flex space-x-4 text-sm text-muted-foreground">
                         <div className="flex items-center">
-                          <CircleIcon className="mr-1 h-3 w-3 fill-sky-400 text-sky-400" />
+                          <TagIcon className="h-3 w-3 text-sky-400 me-1" />
                           {e.team?.name}
                         </div>
-                        <div className="flex items-center">
-                          <StarIcon className="mr-1 h-3 w-3" />
+                        <div className="flex justify-center items-center">
+                          <UserIcon className="h-3 w-3" />
                           {e.createdUser}
                         </div>
                         <div>

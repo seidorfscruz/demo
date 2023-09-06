@@ -72,7 +72,7 @@ const CreateNewChatbot = () => {
       !chatbotObject.description ||
       !teamSelected
     ) {
-      Swal.fire("Hello, User", "please complete all fields", "warning");
+      Swal.fire("Warning", "Please complete all the required fields", "warning");
       return;
     }
 
@@ -89,7 +89,7 @@ const CreateNewChatbot = () => {
     const x = await supabase.from("aibot").insert([newChatbotObject]).select();
 
     if (x.error) {
-      Swal.fire("Hello, User", "Chatbot can't be created", "error");
+      Swal.fire("Oops...", "Chatbot can't be created", "warning");
       return;
     }
 
@@ -101,21 +101,17 @@ const CreateNewChatbot = () => {
           selectedFile
         );
       if (x1.error) {
-        Swal.fire(
-          "Warning",
-          "Bot created with errors, could not upload image",
-          "warning"
-        );
+        Swal.fire("Warning", "Chatbot created with errors, could not upload image", "warning");
         return;
       }
       if (x1.data) {
-        Swal.fire("Hello, User", "Chatbot successfully createde", "success");
+        Swal.fire("Success", "Chatbot successfully created", "success");
         router.push("/chatbots");
         return;
       }
     }
 
-    Swal.fire("Hello, User", "Chatbot successfully createde", "success");
+    Swal.fire("Success", "Chatbot successfully created", "success");
     router.push("/chatbots");
     return;
   };
@@ -168,12 +164,6 @@ const CreateNewChatbot = () => {
         const fileList = new DataTransfer();
         fileList.items.add(newFile);
         fileInput.files = fileList.files;
-
-        // Comprueba el nuevo nombre del archivo en el input
-        console.log(
-          "Nuevo nombre del archivo en el input:",
-          fileInput.files[0].name
-        );
       } else {
         console.log("No se ha seleccionado ningún archivo.");
       }

@@ -19,6 +19,8 @@ import { RecentSales } from "../components/ui/recent-sales"
 import { Layout } from "@/components/layouts"
 import botIcon from "../assets/img/bot-icon.svg"
 import Image from "next/image"
+import { useState } from "react"
+import DaianaLogo from '@/assets/img/brand/logo-daiana.png'
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -26,7 +28,8 @@ export const metadata: Metadata = {
 }
 
 const HomePage: NextPage = () => {
-  return (
+  const [enter, setEnter] = useState(false)
+  return enter ? (
     <Layout>
       <div className="hidden flex-col md:flex">
         <div className="flex-1 space-y-4 p-8 pt-6">
@@ -171,6 +174,8 @@ const HomePage: NextPage = () => {
         </div>
       </div>
     </Layout>
+  ) : (
+    <Image src={ DaianaLogo } style={{ height: '100vh', width: '1000px', margin: 'auto' }} alt='' onClick={ () => setEnter(true) }/>
   )
 }
 

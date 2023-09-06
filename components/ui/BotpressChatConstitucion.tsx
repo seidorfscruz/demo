@@ -1,15 +1,15 @@
 import React from 'react'
 
-const BotpressCuidarConstitucion = () => {
+const BotpressCuidarConstitucion = ({ image }: { image: string }) => {
   return (
     <iframe
-      srcDoc="<body><script src='https://cdn.botpress.cloud/webchat/v0/inject.js'></script>
+      srcDoc={`<body><script src='https://cdn.botpress.cloud/webchat/v0/inject.js'></script>
       <script>
         window.botpressWebChat.init({
             'composerPlaceholder': 'Escríbele algo...',
             'botConversationDescription': 'Hazme las preguntas que quieras sobre la documentación que cargaste',
             'botName': 'Constitución Nacional Argentina',
-            'avatarUrl': 'https://e7.pngegg.com/pngimages/811/700/png-clipart-chatbot-internet-bot-business-natural-language-processing-facebook-messenger-business-people-logo-thumbnail.png',
+            'avatarUrl': '${image}',
             'locale': 'es',
             'botId': '793096bf-365b-4a3a-994a-b54407c558a7',
             'hostUrl': 'https://cdn.botpress.cloud/webchat/v0',
@@ -30,7 +30,7 @@ const BotpressCuidarConstitucion = () => {
             
         });
       window.botpressWebChat.onEvent(function () { window.botpressWebChat.sendEvent({ type: 'show' }) }, ['LIFECYCLE.LOADED']);
-      </script></body>"
+      </script></body>`}
       width="100%"
       height="100%"
     ></iframe>

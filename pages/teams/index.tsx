@@ -1,5 +1,5 @@
 import { Layout } from "@/components/layouts";
-import styles from "./styles.module.css"
+import styles from "./styles.module.css";
 import {
   Table,
   TableBody,
@@ -59,7 +59,9 @@ import {
 import Swal from "sweetalert2";
 import { Textarea } from "@/registry/default/ui/textarea";
 import imgDefaultTeams from "../../constant/defaultimgteams";
-import { set } from "date-fns";
+import { Icon } from '@iconify/react'
+import { teamIcons } from "@/constant/teamIcons";
+
 
 export default function TeamsPage() {
   const [infoCreate, setinfoCreate] = useState({
@@ -82,11 +84,11 @@ export default function TeamsPage() {
     imageUrl: "",
     description: "",
   });
-  const [cont,setCont] = useState<string>('')
+  const [cont, setCont] = useState<string>("");
   const [selectedFile, setSelectedFile] = useState<File | null | string>(null);
-  const [previewURL, setPreviewURL] = useState<string | undefined>('null'); // Nuevo estado para la URL de vista previa
-  const [selectedFileEdit, setSelectedFileEdit] = useState<File  | string>('');
-  const [previewURLEdit, setPreviewURLEdit] = useState<string | undefined>(''); // Nuevo estado para la URL de vista previa
+  const [previewURL, setPreviewURL] = useState<string | undefined>("null"); // Nuevo estado para la URL de vista previa
+  const [selectedFileEdit, setSelectedFileEdit] = useState<File | string>("");
+  const [previewURLEdit, setPreviewURLEdit] = useState<string | undefined>(""); // Nuevo estado para la URL de vista previa
   const handleChange = (
     e:
       | React.ChangeEvent<HTMLInputElement>
@@ -101,12 +103,7 @@ export default function TeamsPage() {
   };
 
   const handleSumbit = async (e: React.MouseEvent<HTMLButtonElement>) => {
-
-    if (
-      !selectedFile ||
-      !infoCreate.name ||
-      !infoCreate.description 
-    ) {
+    if (!selectedFile || !infoCreate.name || !infoCreate.description) {
       Swal.fire("Hello, User", "please complete all fields", "warning");
       return;
     }
@@ -116,36 +113,32 @@ export default function TeamsPage() {
         {
           name: infoCreate.name,
           description: infoCreate.description,
-          imageUrl: selectedFile === "default"? previewURL:1,
+          imageUrl: selectedFile === "default" ? previewURL : 1,
         },
       ])
       .select();
-      if(x.data && selectedFile !== "default"){
+    if (x.data && selectedFile !== "default") {
       const x1 = await supabase.storage
-      .from("Images")
-      .upload(
-        `imagesChatBots/${x.data[0].id}/1`,
-        selectedFile
-      );
+        .from("Images")
+        .upload(`imagesChatBots/${x.data[0].id}/1`, selectedFile);
 
-    if (x.error) {
-      Swal.fire(
-        "¡Hello, user!",
-        "The team could not be deleted correctly, please try again",
-        "warning"
-      );
-   
-    } }
-      setinfoCreate({
-        id: "",
-        name: "",
-        imageUrl: "",
-        description: "",
-      });
-      fetchData();
-      setPreviewURL('')
-      Swal.fire("¡Hello, user!", "Team created successfully ", "success");
-    
+      if (x.error) {
+        Swal.fire(
+          "¡Hello, user!",
+          "The team could not be deleted correctly, please try again",
+          "warning"
+        );
+      }
+    }
+    setinfoCreate({
+      id: "",
+      name: "",
+      imageUrl: "",
+      description: "",
+    });
+    fetchData();
+    setPreviewURL("");
+    Swal.fire("¡Hello, user!", "Team created successfully ", "success");
   };
 
   async function fetchData() {
@@ -156,14 +149,12 @@ export default function TeamsPage() {
       setDb(x.data);
     }
   }
-  
 
   const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
     const { value } = e.currentTarget;
 
     const xGet = await supabase.from("teams").select("*").eq("id", value);
-    if(xGet.error) return console.log(xGet.error)
-
+    if (xGet.error) return console.log(xGet.error);
 
     const x = await supabase.from("teams").delete().eq("id", value);
     if (x.error) {
@@ -174,22 +165,25 @@ export default function TeamsPage() {
       );
       console.log(x.error);
     } else {
-    if(typeof infoEdit.imageUrl === "number" ||!isNaN(Number(infoEdit.imageUrl))){
+      if (
+        typeof infoEdit.imageUrl === "number" ||
+        !isNaN(Number(infoEdit.imageUrl))
+      ) {
         const xDelete = await supabase.storage
-        .from("Images")
-        .remove([`imagesChatBots/${xGet.data[0].id}/${xGet.data[0].imageUrl}`]);
+          .from("Images")
+          .remove([
+            `imagesChatBots/${xGet.data[0].id}/${xGet.data[0].imageUrl}`,
+          ]);
 
-        if(xDelete.data) console.log(xDelete.data)
-        if(xDelete.error) console.log(xDelete.error)
+        if (xDelete.data) console.log(xDelete.data);
+        if (xDelete.error) console.log(xDelete.error);
+        Swal.fire("¡Hello, user!", "Team deleted successfully ", "success");
+        fetchData();
+      }
       Swal.fire("¡Hello, user!", "Team deleted successfully ", "success");
       fetchData();
     }
-    Swal.fire("¡Hello, user!", "Team deleted successfully ", "success");
-      fetchData();
-    }
   };
-
-
 
   const handleEdit = (
     e:
@@ -201,18 +195,14 @@ export default function TeamsPage() {
       ...prevDocument,
       [name]: value,
     }));
-  
-
-  
   };
 
   const handleBaseId = async (event: React.MouseEvent<HTMLButtonElement>) => {
-      const id = event.currentTarget.value;
-      
+    const id = event.currentTarget.value;
 
     const x = await supabase.from("teams").select("*").eq("id", id);
     if (x.error) {
-    console.log(x.error)
+      console.log(x.error);
     } else {
       setinfoEdit({
         name: x.data[0].name,
@@ -220,120 +210,135 @@ export default function TeamsPage() {
         description: x.data[0].description,
         id: x.data[0].id,
       });
-      setPreviewURLEdit(x.data[0].imageUrl)
-      setCont(x.data[0].imageUrl)
+      setPreviewURLEdit(x.data[0].imageUrl);
+      setCont(x.data[0].imageUrl);
     }
   };
 
-  const handleUpdate = async() => {
-
+  const handleUpdate = async () => {
     const x = await supabase
-    .from('teams')
-    .update({ name: infoEdit.name, description: infoEdit.description,imageUrl: infoEdit.imageUrl })
-    .eq('id', infoEdit.id)
-    .select()
-
-  if (x.error)  return Swal.fire("¡Hola, usuario!", "the changes have not been made successfully", "error");
-
-  if(typeof infoEdit.imageUrl === "number" ||!isNaN(Number(infoEdit.imageUrl))){
-    const xDelete = await supabase.storage
-    .from("Images")
-    .remove([`imagesChatBots/${infoEdit.id}/${cont}`]);
-
-    if(xDelete.data) console.log(xDelete.data)
-    if(xDelete.error) console.log(xDelete.error)
-
-    const x1 = await supabase.storage
-    .from("Images")
-    .upload(
-      `imagesChatBots/${infoEdit.id}/${infoEdit.imageUrl}`,
-      selectedFileEdit
-    );
-  }
- 
-  setinfoEdit({
-        id: "",
-        name: "",
-        imageUrl: "",
-        description: "",
+      .from("teams")
+      .update({
+        name: infoEdit.name,
+        description: infoEdit.description,
+        imageUrl: infoEdit.imageUrl,
       })
-    fetchData()
-    return Swal.fire("¡Hello, user!", "the changes have been made successfully", "success");
-  
-}
+      .eq("id", infoEdit.id)
+      .select();
 
-const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  const file = event.target.files && event.target.files[0];
+    if (x.error)
+      return Swal.fire(
+        "¡Hola, usuario!",
+        "the changes have not been made successfully",
+        "error"
+      );
 
-  if (file) {
-    setSelectedFile(file);
-    setPreviewURL(URL.createObjectURL(file)); // Crear la URL de vista previa
-  } else {
-    setSelectedFile(null);
-    setPreviewURL('');
-  }
-};
+    if (
+      typeof infoEdit.imageUrl === "number" ||
+      !isNaN(Number(infoEdit.imageUrl))
+    ) {
+      const xDelete = await supabase.storage
+        .from("Images")
+        .remove([`imagesChatBots/${infoEdit.id}/${cont}`]);
 
-const handleFileChangeEdit = (event: React.ChangeEvent<HTMLInputElement>) => {
-  const file = event.target.files && event.target.files[0];
+      if (xDelete.data) console.log(xDelete.data);
+      if (xDelete.error) console.log(xDelete.error);
 
-  if (file) {
-    setSelectedFileEdit(file);
-    setPreviewURLEdit(URL.createObjectURL(file)); 
+      const x1 = await supabase.storage
+        .from("Images")
+        .upload(
+          `imagesChatBots/${infoEdit.id}/${infoEdit.imageUrl}`,
+          selectedFileEdit
+        );
+    }
 
-    //Si setInfoedit es un numero le sumo uno, en caso contrario le asigno 1
-    //Esto es para que no se repitan los nombres de las imagenes
-    if(typeof infoEdit.imageUrl === "number" ||!isNaN(Number(infoEdit.imageUrl))){
-      setinfoEdit(prevState => ({
-        ...prevState, // Mantén las propiedades existentes
-        imageUrl: (+infoEdit.imageUrl + 1).toString() // Actualiza la propiedad imageUrl
-      }));
+    setinfoEdit({
+      id: "",
+      name: "",
+      imageUrl: "",
+      description: "",
+    });
+    fetchData();
+    return Swal.fire(
+      "¡Hello, user!",
+      "the changes have been made successfully",
+      "success"
+    );
+  };
 
-      }else{
-        setinfoEdit(prevState => ({
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files && event.target.files[0];
+
+    if (file) {
+      setSelectedFile(file);
+      setPreviewURL(URL.createObjectURL(file)); // Crear la URL de vista previa
+    } else {
+      setSelectedFile(null);
+      setPreviewURL("");
+    }
+  };
+
+  const handleFileChangeEdit = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files && event.target.files[0];
+
+    if (file) {
+      setSelectedFileEdit(file);
+      setPreviewURLEdit(URL.createObjectURL(file));
+
+      //Si setInfoedit es un numero le sumo uno, en caso contrario le asigno 1
+      //Esto es para que no se repitan los nombres de las imagenes
+      if (
+        typeof infoEdit.imageUrl === "number" ||
+        !isNaN(Number(infoEdit.imageUrl))
+      ) {
+        setinfoEdit((prevState) => ({
           ...prevState, // Mantén las propiedades existentes
-          imageUrl: '1'
+          imageUrl: (+infoEdit.imageUrl + 1).toString(), // Actualiza la propiedad imageUrl
+        }));
+      } else {
+        setinfoEdit((prevState) => ({
+          ...prevState, // Mantén las propiedades existentes
+          imageUrl: "1",
         }));
       }
-    }else {
-    setSelectedFileEdit('');
-    setPreviewURLEdit('');
-  }
-};
-
-const handleFileChangeDefault = (url: string) => {
-  setPreviewURL(url);
-  const fileInput = document.querySelector<HTMLInputElement>("#docfile");
-  setSelectedFile("default");
-
-  if (fileInput) {
-    const newFileName = "default.png"; // Reemplaza con el nombre deseado
-    const files = fileInput.files;
-
-    if (files && files.length > 0) {
-      const file = files[0];
-
-      // Crear un nuevo objeto File con el nuevo nombre
-      const newFile = new File([file], newFileName, { type: file.type });
-
-      // Reemplazar el archivo original en el input con el nuevo archivo
-      const fileList = new DataTransfer();
-      fileList.items.add(newFile);
-      fileInput.files = fileList.files;
-
-      // Comprueba el nuevo nombre del archivo en el input
-      console.log(
-        "Nuevo nombre del archivo en el input:",
-        fileInput.files[0].name
-      );
     } else {
-      console.log("No se ha seleccionado ningún archivo.");
+      setSelectedFileEdit("");
+      setPreviewURLEdit("");
     }
-  } else {
-    console.log("No se encontró el input de tipo file.");
-  }
-};
+  };
 
+  const handleFileChangeDefault = (url: string) => {
+    setPreviewURL(url);
+    const fileInput = document.querySelector<HTMLInputElement>("#docfile");
+    setSelectedFile("default");
+
+    if (fileInput) {
+      const newFileName = "default.png"; // Reemplaza con el nombre deseado
+      const files = fileInput.files;
+
+      if (files && files.length > 0) {
+        const file = files[0];
+
+        // Crear un nuevo objeto File con el nuevo nombre
+        const newFile = new File([file], newFileName, { type: file.type });
+
+        // Reemplazar el archivo original en el input con el nuevo archivo
+        const fileList = new DataTransfer();
+        fileList.items.add(newFile);
+        fileInput.files = fileList.files;
+
+        // Comprueba el nuevo nombre del archivo en el input
+        console.log(
+          "Nuevo nombre del archivo en el input:",
+          fileInput.files[0].name
+        );
+      } else {
+        console.log("No se ha seleccionado ningún archivo.");
+      }
+    } else {
+      console.log("No se encontró el input de tipo file.");
+    }
+  };
 
   useEffect(() => {
     fetchData();
@@ -342,177 +347,183 @@ const handleFileChangeDefault = (url: string) => {
   return (
     <Layout>
       <div>
-        <div className={styles.divNav}>
-            <div>
-            <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-        Teams
-      </h1>
+        <div className="flex justify-between items-center pb-5">
+          <div className="flex flex-col space-y-4 p-8 pt-6">
+            <h2 className="text-3xl font-bold tracking-tight">
+              Teams
+            </h2>
+            <TableCaption>This is a list of your created teams</TableCaption>
           </div>
-          <div className={styles.btnNav}>
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button >Add new team</Button>
-            </SheetTrigger>
-            <SheetContent>
-              <SheetHeader>
-                <SheetTitle>Create team </SheetTitle>
-                <SheetDescription>
-                  Create new teams. In the teams you can group bots with similar
-                  themes
-                </SheetDescription>
-              </SheetHeader>
 
-              <div className="grid gap-4 py-4">
-              <div className={styles.avatarForm}>
-                <Avatar className="w-20 h-20">
-                  <AvatarImage
-                    src={previewURL}
-                  />
-                  <AvatarFallback>CN</AvatarFallback>
-                </Avatar>
+          <div>
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button className="mx-8">Create a new team</Button>
+              </SheetTrigger>
+              <SheetContent>
+                <SheetHeader>
+                  <SheetTitle>Create team </SheetTitle>
+                  <SheetDescription>
+                    Create new teams. In the teams you can group bots with
+                    similar themes
+                  </SheetDescription>
+                </SheetHeader>
+
+                <div className="grid gap-4 py-4">
+                  <div className={styles.avatarForm}>
+                    <Avatar className="w-20 h-20">
+                      <AvatarImage src={previewURL} />
+                      <AvatarFallback>CN</AvatarFallback>
+                    </Avatar>
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="name" className="text-right">
+                      Name
+                    </Label>
+                    <Input
+                      id="name"
+                      name="name"
+                      onChange={handleChange}
+                      className="col-span-3"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="username" className="text-right">
+                      Description
+                    </Label>
+                    <Textarea
+                      id="description"
+                      name="description"
+                      onChange={handleChange}
+                      className="col-span-3"
+                    />
+                  </div>
                 </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="name" className="text-right">
-                    Name
-                  </Label>
-                  <Input
-                    id="name"
-                    name="name"
-                    onChange={handleChange}
-                    className="col-span-3"
-                  />
-                </div>
 
+                <Input id={"docfile"} type="file" onChange={handleFileChange} />
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button
+                      style={{ width: "100%" }}
+                      className={styles.PopoverContent}
+                      variant="outline"
+                    >
+                      SELECTED IMAGE DEFAULT
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className={styles.PopoverContent}>
+                    <PopoverClose>
+                      <div className="flex flex-wrap">
+                        {imgDefaultTeams?.map((img) => (
+                          <div key={img.value} className="w-1/4 p-2">
+                            <Avatar
+                              onClick={() => handleFileChangeDefault(img.value)}
+                              className={styles.avatar}
+                            >
+                              <AvatarImage src={img.value} />
+                              <AvatarFallback>CN</AvatarFallback>
+                            </Avatar>
+                          </div>
+                        ))}
+                      </div>
+                    </PopoverClose>
+                  </PopoverContent>
+                </Popover>
 
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="username" className="text-right">
-                    Description
-                  </Label>
-                  <Textarea
-                    id="description"
-                    name="description"
-                    onChange={handleChange}
-                    className="col-span-3"
-                  />
-                </div>
-              </div>
-              
-             
-                <Input
-                        id={"docfile"}
-                        type="file"
-                        onChange={handleFileChange}
-                      />
-              <Popover>
-  <PopoverTrigger asChild>
-    <Button style={{ width: "100%"}} className={styles.PopoverContent} variant="outline">
-      SELECTED IMAGE DEFAULT
-    </Button>
-  </PopoverTrigger>
-  <PopoverContent className={styles.PopoverContent}>
-    <PopoverClose>
-      <div className="flex flex-wrap">
-        {imgDefaultTeams?.map((img) => (
-          <div key={img.value} className="w-1/4 p-2">
-            <Avatar
-              onClick={() => handleFileChangeDefault(img.value)}
-              className={styles.avatar}
-            >
-              <AvatarImage src={img.value} />
-              <AvatarFallback>CN</AvatarFallback>
-            </Avatar>
-          </div>
-        ))}
-      </div>
-    </PopoverClose>
-  </PopoverContent>
-</Popover>
-
-              <SheetFooter>
-                <SheetClose asChild>
-                  <Button style={{ width: "100%", marginTop: "15px" }} onClick={handleSumbit} type="submit">
-                    Create team
-                  </Button>
-                </SheetClose>
-              </SheetFooter>
-            </SheetContent>
-          </Sheet>
+                <SheetFooter>
+                  <SheetClose asChild>
+                    <Button
+                      style={{ width: "100%", marginTop: "15px" }}
+                      onClick={handleSumbit}
+                      type="submit"
+                    >
+                      Create team
+                    </Button>
+                  </SheetClose>
+                </SheetFooter>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
 
+        <div className="container">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead style={{ width: "15%" }} className="w-[100px]">
+                  Avatar
+                </TableHead>
+                <TableHead style={{ width: "15%" }}>Name</TableHead>
+                <TableHead style={{ width: "50%" }}>Description</TableHead>
+                <TableHead style={{ width: "5%" }}>Edit</TableHead>
+                <TableHead style={{ width: "5%" }}>Delete</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {infoDb.map((infoDb, index) => (
+                <TableRow key={infoDb.id}>
+                  <TableCell className="font-medium">
+                    <Icon icon={teamIcons[index]} style={{ fontSize: '40px' }} />
+                    {/* <Avatar className="w-20 h-20">
+                      <AvatarImage
+                        src={
+                          typeof infoDb.imageUrl === "number" ||
+                          !isNaN(Number(infoDb.imageUrl))
+                            ? `https://fzjgljxomqpukuvmguay.supabase.co/storage/v1/object/public/Images/imagesChatBots/${infoDb.id}/${infoDb.imageUrl}`
+                            : infoDb.imageUrl
+                        }
+                      />
+                      <AvatarFallback>CN</AvatarFallback>
+                    </Avatar> */}
+                  </TableCell>
+                  <TableCell>{infoDb.name}</TableCell>
+                  <TableCell>{infoDb.description}</TableCell>
 
-        <Table>
-          <TableCaption>A list of your recent invoices.</TableCaption>
-          <TableHeader>
-            <TableRow>
-              <TableHead style={{ width: "15%" }}  className="w-[100px]">Avatar</TableHead>
-              <TableHead style={{ width: "15%" }}>Name</TableHead>
-              <TableHead style={{ width: "50%" }}>Description</TableHead>
-              <TableHead style={{ width: "5%" }}>Edit</TableHead>
-              <TableHead style={{ width: "15%" }} >Delete</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {infoDb.map((infoDb) => (
-              <TableRow key={infoDb.id}>
-                <TableCell className="font-medium">
-                  <Avatar className="w-20 h-20">
-                    <AvatarImage src={typeof infoDb.imageUrl === "number" ||
-                            !isNaN(Number(infoDb.imageUrl))
-                              ? `https://fzjgljxomqpukuvmguay.supabase.co/storage/v1/object/public/Images/imagesChatBots/${infoDb.id}/${infoDb.imageUrl}`
-                              : infoDb.imageUrl} />
-                    <AvatarFallback>CN</AvatarFallback>
-                  </Avatar>
-                </TableCell>
-                <TableCell>{infoDb.name}</TableCell>
-                <TableCell>{infoDb.description}</TableCell>
-
-
-                <TableCell>
+                  <TableCell>
                     <Dialog>
-                      <DialogTrigger  value={infoDb.id}
-                          onClick={(event) => {
-                            handleBaseId(event);
-}}
-                          className="inline-flex items-center px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 text-sm font-medium rounded-md">
-                        
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="#000000"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34"></path>
-                            <polygon points="18 2 22 6 12 16 8 16 8 12 18 2"></polygon>
-                          </svg>
-                       
+                      <DialogTrigger
+                        value={infoDb.id}
+                        onClick={(event) => {
+                          handleBaseId(event);
+                        }}
+                        className="inline-flex items-center px-3 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 text-sm font-medium rounded-md"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-4 w-4"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="#000000"
+                          strokeWidth="2"
+                        >
+                          <path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34"></path>
+                          <polygon points="18 2 22 6 12 16 8 16 8 12 18 2"></polygon>
+                        </svg>
                       </DialogTrigger>
                       <DialogContent className="sm:max-w-[425px]">
                         <DialogHeader>
                           <DialogTitle>Edit teams</DialogTitle>
                           <DialogDescription>
-                            Make changes to your Teams here. Click save when
-                            you re done.
+                            Make changes to your Teams here. Click save when you
+                            re done.
                           </DialogDescription>
                         </DialogHeader>
                         <div className="grid gap-4 py-4">
-                        <div className={styles.avatarForm}>
-                        <Avatar className="w-20 h-20">
-                        <AvatarImage src={typeof previewURLEdit === "number" ||
-                            !isNaN(Number(previewURLEdit))
-                              ? `https://fzjgljxomqpukuvmguay.supabase.co/storage/v1/object/public/Images/imagesChatBots/${infoEdit.id}/${infoEdit.imageUrl}`
-                              : previewURLEdit} />
-                  <AvatarFallback>CN</AvatarFallback>
-                </Avatar>
-                </div>
+                          <div className={styles.avatarForm}>
+                            <Avatar className="w-20 h-20">
+                              <AvatarImage
+                                src={
+                                  typeof previewURLEdit === "number" ||
+                                  !isNaN(Number(previewURLEdit))
+                                    ? `https://fzjgljxomqpukuvmguay.supabase.co/storage/v1/object/public/Images/imagesChatBots/${infoEdit.id}/${infoEdit.imageUrl}`
+                                    : previewURLEdit
+                                }
+                              />
+                              <AvatarFallback>CN</AvatarFallback>
+                            </Avatar>
+                          </div>
                           <div className="grid grid-cols-4 items-center gap-4">
-
-
                             <Label htmlFor="name" className="text-right">
                               Name
                             </Label>
@@ -524,12 +535,7 @@ const handleFileChangeDefault = (url: string) => {
                             />
                           </div>
 
-
-
-                          <div className="grid grid-cols-4 items-center gap-4">
-           
-            
-                          </div>
+                          <div className="grid grid-cols-4 items-center gap-4"></div>
 
                           <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="username" className="text-right">
@@ -544,10 +550,10 @@ const handleFileChangeDefault = (url: string) => {
                           </div>
 
                           <Input
-                        id={"docfile"}
-                        type="file"
-                        onChange={handleFileChangeEdit}
-                      />
+                            id={"docfile"}
+                            type="file"
+                            onChange={handleFileChangeEdit}
+                          />
                         </div>
                         <DialogFooter>
                           <DialogClose asChild>
@@ -560,58 +566,55 @@ const handleFileChangeDefault = (url: string) => {
                     </Dialog>
                   </TableCell>
 
-                <TableCell className="">
-                 
-
-                  <AlertDialog>
-                    <AlertDialogTrigger
-                      value={infoDb.id}
-                      className="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-md"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5 mr-0"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
+                  <TableCell>
+                    <AlertDialog>
+                      <AlertDialogTrigger
+                        value={infoDb.id}
+                        className="flex items-center px-3 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-md"
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                        />
-                      </svg>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>
-                          Are you absolutely sure?
-                        </AlertDialogTitle>
-                        <AlertDialogDescription>
-                          This action cannot be undone. This will permanently
-                          delete your document and remove your data from our
-                          servers.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction
-                          value={infoDb.id}
-                          onClick={(e) => {
-                            handleDelete(e);
-                          }}
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-4 w-4"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
                         >
-                          Continue
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+                          <path
+                            strokeWidth="2"
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                          />
+                        </svg>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>
+                            Are you absolutely sure?
+                          </AlertDialogTitle>
+                          <AlertDialogDescription>
+                            This action cannot be undone. This will permanently
+                            delete your document and remove your data from our
+                            servers.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction
+                            value={infoDb.id}
+                            onClick={(e) => {
+                              handleDelete(e);
+                            }}
+                          >
+                            Continue
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
       </div>
     </Layout>
   );
