@@ -21,6 +21,7 @@ import botIcon from "../assets/img/bot-icon.svg"
 import Image from "next/image"
 import { useState } from "react"
 import DaianaLogo from '@/assets/img/brand/logo-daiana.png'
+import 'animate.css';
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -29,9 +30,10 @@ export const metadata: Metadata = {
 
 const HomePage: NextPage = () => {
   const [enter, setEnter] = useState(false)
+  
   return enter ? (
     <Layout>
-      <div className="hidden flex-col md:flex">
+      <div className="hidden flex-col md:flex animate__animated animate__fadeIn">
         <div className="flex-1 space-y-4 p-8 pt-6">
           <div className="flex items-center justify-between space-y-2">
             <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
@@ -175,7 +177,9 @@ const HomePage: NextPage = () => {
       </div>
     </Layout>
   ) : (
-    <Image src={ DaianaLogo } style={{ height: '100vh', width: '1000px', margin: 'auto' }} alt='' onClick={ () => setEnter(true) }/>
+    <div className="flex justify-center animate__animated animate__fadeIn animate__slower" style={{ height: '100vh' }}>
+      <Image style={{ height: '100vh', width: 'auto' }} src={ DaianaLogo } alt='' onClick={ () => setEnter(true) }/>
+    </div>
   )
 }
 

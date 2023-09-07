@@ -84,8 +84,6 @@ const getChatbotsInformation = async () => {
     const chatbotSoporteInfo = await chatbotSoporte.data
     const chatbotVentasInfo = await chatbotVentas.data
 
-    console.log(chatbotSoporteInfo)
-    
     return [ chatbotConstitucionInfo, chatbotCuidarInfo, chatbotFutbolInfo, chatbotInnovacionInfo, chatbotRecursosHumanosInfo, chatbotSoporteInfo, chatbotVentasInfo ]
 
   } catch (error) {

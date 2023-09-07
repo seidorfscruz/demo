@@ -1,6 +1,7 @@
 import React from 'react'
 
 const BotpressChatFutbol = ({ image }: { image: string }) => {
+
   return (
     <iframe
       srcDoc={`<body><script src='https://cdn.botpress.cloud/webchat/v0/inject.js'></script>
