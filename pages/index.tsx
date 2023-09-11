@@ -22,6 +22,9 @@ import Image from "next/image"
 import { useState } from "react"
 import DaianaLogo from '@/assets/img/brand/logo-daiana.png'
 import 'animate.css';
+import Login from './login/index'
+import { useUser } from "@supabase/auth-helpers-react"
+
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -29,7 +32,13 @@ export const metadata: Metadata = {
 }
 
 const HomePage: NextPage = () => {
+  const user = useUser()
   const [enter, setEnter] = useState(false)
+
+  if (!user)
+  return (
+<Login></Login>
+  )
   
   return enter ? (
     <Layout>

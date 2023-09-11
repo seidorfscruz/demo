@@ -61,14 +61,19 @@ import { Textarea } from "@/registry/default/ui/textarea";
 import imgDefaultTeams from "../../constant/defaultimgteams";
 import { Icon } from '@iconify/react'
 import { teamIcons } from "@/constant/teamIcons";
+import Login from '../login/index'
+import { useUser } from "@supabase/auth-helpers-react";
+
 
 
 export default function TeamsPage() {
+  const user = useUser()
   const [infoCreate, setinfoCreate] = useState({
     id: "",
     name: "",
     imageUrl: "",
     description: "",
+    idTenant: user?.user_metadata.id_tenantint
   });
   const [infoDb, setDb] = useState([
     {
@@ -114,6 +119,7 @@ export default function TeamsPage() {
           name: infoCreate.name,
           description: infoCreate.description,
           imageUrl: selectedFile === "default" ? previewURL : 1,
+          idTenant: user?.user_metadata.id_tenantint
         },
       ])
       .select();
@@ -135,6 +141,7 @@ export default function TeamsPage() {
       name: "",
       imageUrl: "",
       description: "",
+      idTenant: user?.user_metadata.id_tenantint
     });
     fetchData();
     setPreviewURL("");
@@ -142,7 +149,7 @@ export default function TeamsPage() {
   };
 
   async function fetchData() {
-    const x = await supabase.from("teams").select();
+    const x = await supabase.from("teams").select().eq('idTenant', user?.user_metadata.id_tenantint)
     if (x.error) {
       console.log(x.error);
     } else {
@@ -344,6 +351,10 @@ export default function TeamsPage() {
     fetchData();
   }, []);
 
+  if (!user)
+  return (
+<Login></Login>
+  )
   return (
     <Layout>
       <div>

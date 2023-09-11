@@ -1,7 +1,6 @@
 import { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
-
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/registry/new-york/ui/button"
 import { UserAuthForm } from "@/components/ui/UserAuthForm"
@@ -10,21 +9,32 @@ import { Icons } from "@/components/ui/icons"
 import { Button } from "@/registry/new-york/ui/button"
 import { Input } from "@/registry/new-york/ui/input"
 import { Label } from "@/registry/new-york/ui/label"
-import { supabase } from "@/apis"
 import { useRouter } from 'next/router';
 import Swal, { SweetAlertResult } from "sweetalert2";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
+import { Database } from "@/types/supabase"
+import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react"
 export const metadata: Metadata = {
   title: "Authentication",
   description: "Authentication forms built using the components.",
 }
+import Index from '../index'
 
 export default function AuthenticationPage() {
+  const supabase = createClientComponentClient<Database>()
   const router = useRouter();
   const [isLoading, setIsLoading] = React.useState<boolean>(false)
   const [infoLogin, setInfoLogin] = React.useState({
     username: '',
     password: '',
   })
+  const supabaseClient = useSupabaseClient()
+  const user = useUser()
+  const [data, setData] = React.useState<undefined | any[]|null>()
+
+
+
+
 
 
   const handleSumbit = async(e: React.MouseEvent<HTMLButtonElement>)=>{
@@ -66,6 +76,18 @@ export default function AuthenticationPage() {
       [name]: value,
     }));
   }
+
+  if (user)
+  return (
+<div>
+<h1>
+  Usuario ya logueado
+</h1>
+<Link href="/">
+<Button>GO TO HOME</Button>
+</Link>
+</div>
+)
 
   return (
     <>
