@@ -98,7 +98,7 @@ const ChatPage = () => {
 
   const [chatSelected, setChatSelected] = useState(3)
   const [teamSelected, setTeamSelected] = useState('innovation')
-  const { isLoading } = useSelector((state: RootState) => state.ui)
+  // const { isLoading } = useSelector((state: RootState) => state.ui)
 
   const [chatbotsInformation, setChatbotsInformation] = useState<any>([
     {bot:{ createdAt:'', name:'', integrations: [{ configuration: {botConversationDescription: ''} }] }},
@@ -168,7 +168,8 @@ const ChatPage = () => {
               onClick={ () => setTeamSelected('support') }
             >
               <div className="col-span-1">
-                <Icon icon="logos:microsoft-teams" style={{ fontSize: '40px' }} />
+                <Icon icon="fluent-emoji:airplane" style={{ fontSize: '40px' }} />
+                {/* <Icon icon="logos:microsoft-teams" style={{ fontSize: '40px' }} /> */}
               </div>
               <div className="col-span-4 flex justify-between items-center ps-1">
                 <small className='text-sm font-semibold'>Support</small>
@@ -181,7 +182,7 @@ const ChatPage = () => {
               onClick={ () => setTeamSelected('others') }
             >
               <div className="col-span-1">
-                <Icon icon="emojione:money-bag" style={{ fontSize: '40px' }} />
+                <Icon icon="fluent-emoji:beach-with-umbrella" style={{ fontSize: '40px' }} />
               </div>
               <div className="col-span-4 flex flex-col justify-center ps-1">
                 <small className='text-sm font-semibold'>Others</small>
