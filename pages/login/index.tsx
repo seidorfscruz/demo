@@ -188,18 +188,21 @@ export default function AuthenticationPage() {
         )}{" "}
         Github
       </Button>
+      
     </div>
 
 
             <p className="px-8 text-center text-sm text-muted-foreground">
-              By clicking continue, you agree to our{" "}
+              Recover Password {" "}
               <Link
-                href="/terms"
+                href="/recover-password"
                 className="underline underline-offset-4 hover:text-primary"
               >
-                Terms of Service
+                Click Here
               </Link>{" "}
-              and{" "}
+              <br />
+              
+If you continue on the site you accept{" "}
               <Link
                 href="/privacy"
                 className="underline underline-offset-4 hover:text-primary"
