@@ -106,8 +106,10 @@ export type Task = {
   };
   imageUrl: string | undefined;
 };
-
+import Login from '../login/index'
+import { useUser } from "@supabase/auth-helpers-react";
 export default function Modificatepage() {
+  const user = useUser()
   const [selectedFile, setSelectedFile] = useState<File  | string >('');
   const [previewURL, setPreviewURL] = useState<string | null>(null); // Nuevo estado para la URL de vista previa
   const [info, setInfo] = useState<Task[] | null>(null);
@@ -127,14 +129,18 @@ export default function Modificatepage() {
     },
   });
 
+  
+
+  
+
   const select = async () => {
-    const x = await supabase.from("aibot").select("*,team(*)");
-    if (x.data) {
+
+    const x = await supabase.from("aibot").select("*,team(*),createdUser(*)").eq('idTenant', user?.user_metadata.id_tenantint); if (x.data) {
       setInfo(x.data);
     }
   };
   async function fetchData() {
-    const x = await supabase.from("teams").select();
+    const x = await supabase.from("teams").select().eq('idTenant', user?.user_metadata.id_tenantint);
     if (x.error) {
       console.log(x.error);
     } else {
@@ -298,7 +304,7 @@ export default function Modificatepage() {
           .select();
         UploadStatus(true);
       } else {
-        console.log('es por aca ')
+       
         const x = await supabase
           .from("aibot")
           .update({
@@ -389,6 +395,11 @@ export default function Modificatepage() {
       }
     }
   };
+  if (!user)
+  return (
+<Login></Login>
+  )
+console.log(info)
   return (
     <Layout title="ChatBots page">
       <div className="hidden flex-col md:flex">
@@ -434,6 +445,7 @@ export default function Modificatepage() {
           <div className='grid grid-cols-5 p-4 gap-4'>
             {
               info.map((e) => (
+                //wep
                 <div key={e.idBot}>
                   <Card id={e.idBot} className="h-full">
                     <div className="flex justify-end">
@@ -678,7 +690,7 @@ export default function Modificatepage() {
                             </div>
                             <div className="flex justify-center items-center">
                               <UserIcon className="h-3 w-3" />
-                              {e.createdUser}
+                              {e.createdUser?.email.toString().slice(0, 10)}
                             </div>
                             <div>
                               {e.createdAt

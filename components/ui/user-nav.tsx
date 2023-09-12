@@ -14,8 +14,16 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/registry/new-york/ui/dropdown-menu"
+import { Database } from "@/types/supabase"
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
 
 export function UserNav() {
+  const supabase = createClientComponentClient<Database>()
+
+      async function handleSignOut() {
+      const { error } = await supabase.auth.signOut()
+    }
+    
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -52,7 +60,7 @@ export function UserNav() {
           <DropdownMenuItem>New Team</DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
+        <DropdownMenuItem onClick={handleSignOut}>
           Log out
           <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
         </DropdownMenuItem>

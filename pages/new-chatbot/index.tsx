@@ -49,8 +49,12 @@ import defaultimg from "../../constant/defaultimg";
 import { Separator } from "@/registry/default/ui/separator";
 import Image from "next/image";
 import NoImage from '@/assets/img/no-image.jpg'
+import Login from '../login/index'
+import { User, useUser } from "@supabase/auth-helpers-react";
+
 
 const CreateNewChatbot = () => {
+  const user = useUser()
   const form = useForm();
   const router = useRouter();
   const [teamSelected, setTeamSelected] = useState<string>("");
@@ -58,11 +62,19 @@ const CreateNewChatbot = () => {
   const [selectedFile, setSelectedFile] = useState<File | null | string>(null);
   const [previewURL, setPreviewURL] = useState<string | null>(null); // Nuevo estado para la URL de vista previa
   const isLoading = form.formState.isSubmitting;
-
-  // useEffect(()=>{
-  //   if(!authBasic()) router.push('/login')
-  // },[])
-
+  const [data, setData] = useState<string | User | undefined | null>('')
+  useEffect(() => {
+    if (user) {
+      loadData()
+    }
+    
+  }, [user])
+  
+  
+  async function loadData() {
+    setData(user?.id)
+    console.log(data)
+    }
   const handleSubmitForm = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const chatbotObject = form.getValues();
@@ -76,11 +88,12 @@ const CreateNewChatbot = () => {
       return;
     }
 
+
     const newChatbotObject = {
-      idTenant: 1,
+      idTenant: user?.user_metadata.id_tenantint,
       name: chatbotObject.name,
       description: chatbotObject.description,
-      createdUser: "FSantacruz",
+      createdUser: data,
       updatedUser: "UserUpdate",
       imageUrl: selectedFile === "default" ? previewURL : 1,
       team: teamSelected,
@@ -121,7 +134,7 @@ const CreateNewChatbot = () => {
   // };
 
   async function fetchData() {
-    const x = await supabase.from("teams").select();
+    const x = await supabase.from("teams").select().eq('idTenant', user?.user_metadata.id_tenantint)
     if (x.error) {
       console.log(x.error);
     } else {
@@ -171,6 +184,10 @@ const CreateNewChatbot = () => {
       console.log("No se encontró el input de tipo file.");
     }
   };
+  if (!user)
+  return (
+<Login></Login>
+  )
 
   return (
     <Layout title="Documents page">

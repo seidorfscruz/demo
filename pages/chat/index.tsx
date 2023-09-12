@@ -16,7 +16,8 @@ import BotpressChatRecursosHumanos from '@/components/ui/BotpressChatRecursosHum
 import BotpressChatInnovacion from '@/components/ui/BotpressChatInnovacion'
 import { Button } from '@mui/material'
 import imgDefault from '@/constant/defaultimg'
-
+import { useUser } from '@supabase/auth-helpers-react'
+import Login from '../login/index'
 
 const getChatbotsInformation = async () => {
   try {
@@ -95,7 +96,7 @@ const getChatbotsInformation = async () => {
 
 
 const ChatPage = () => {
-
+  const user = useUser()
   const [chatSelected, setChatSelected] = useState(3)
   const [teamSelected, setTeamSelected] = useState('innovation')
   // const { isLoading } = useSelector((state: RootState) => state.ui)
@@ -119,6 +120,10 @@ const ChatPage = () => {
     getChatbotsInfo()
   }, [])
   
+  if (!user)
+  return (
+<Login></Login>
+  )
 
   return (
     <Layout title='Chat page'>

@@ -47,8 +47,13 @@ import {
   DialogClose,
 } from "@/registry/default/ui/dialog";
 import { Separator } from "@/registry/default/ui/separator";
+import Login from '../login/index'
+import { useUser } from "@supabase/auth-helpers-react";
+
+
 
 const DocumentsPage = () => {
+  const user = useUser()
   const router = useRouter();
   const [basededatos, setBasededatos] = useState<Document[]>([]);
   const [nameReal, setNameReal] = useState<string | null>("");
@@ -206,6 +211,11 @@ const DocumentsPage = () => {
       );
     }
   };
+
+  if (!user)
+  return (
+<Login></Login>
+  )
 
   return (
     <Layout title="Documents page">
