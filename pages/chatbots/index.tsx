@@ -93,7 +93,7 @@ export type Task = {
   idBot: string;
   idTenant: string | null;
   description: string | null;
-  createdUser: string | null;
+  createdUser: { email: string}
   updatedUser: string | null;
   updatedAt: Date | null;
   createdAt: Date | null;
