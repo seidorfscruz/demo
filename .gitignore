@@ -34,3 +34,16 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+
+services/env
+services/.env
+services/.dockerignore
+services/docker-compose.yml
+services/Dockerfile
+services/src/controllers/__pycache__
+services/src/database/__pycache__
+services/src/models/__pycache__
+services/src/models/entities/__pycache__
+services/src/routes/__pycache__
+services/src/utils/__pycache__
