@@ -20,8 +20,6 @@ const RecoverPassword = () => {
         let { data, error } = await supabase.auth.resetPasswordForEmail(value, {
           redirectTo: 'https://daiana.vercel.app/update-password',
         })
-        console.log(data)
-        console.log(error)
         return Swal.fire(
             "¡Hello user!",
             "Please go check your message box",

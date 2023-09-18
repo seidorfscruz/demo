@@ -22,20 +22,33 @@ const Register = ()=>{
 
   
     const handleSubmitForm = async (event: FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        const chatbotObject = form.getValues();
-        if (
-          !chatbotObject.email ||
-          !chatbotObject.firstname ||
-          !chatbotObject.lastname ||
-          !chatbotObject.company ||
-          !chatbotObject.password ||
-          !chatbotObject.passwordConfirm  
+
+      event.preventDefault();
+   
+
+      const chatbotObject = form.getValues();
+      if (
+        !chatbotObject.email ||
+        !chatbotObject.firstname ||
+        !chatbotObject.lastname ||
+        !chatbotObject.company ||
+        !chatbotObject.password ||
+        !chatbotObject.passwordConfirm  
         ) {
           Swal.fire("Warning", "Please complete all the required fields", "warning");
           return;
         }
-
+        
+        let emailExist = await supabase
+        .from('users')
+        .select("*").eq('email', chatbotObject.email)
+        if( emailExist.data ){
+         if(emailExist.data?.length>0){
+          Swal.fire("Warning", "Email already exist", "warning");
+          return;
+         }
+        }
+      
         if (chatbotObject.password !== chatbotObject.passwordConfirm) {
           Swal.fire("Warning", "Passwords do not match", "warning");
           return;
@@ -63,9 +76,6 @@ const Register = ()=>{
               }
             } )
             if(x.data){
-              console.log('llegue')
-              console.log(x)
-              console.log(x.data)
                 Swal.fire("Please, confirm email", "User successfully created", "success");
                 router.push("/login");
                 return;
