@@ -49,6 +49,7 @@ import {
 import { Separator } from "@/registry/default/ui/separator";
 import Login from '../login/index'
 import { useUser } from "@supabase/auth-helpers-react";
+// import { loadPDF } from "@/helpers/langchain";
 
 
 
@@ -95,40 +96,22 @@ const DocumentsPage = () => {
       .delete()
       .eq("id", e.currentTarget.value);
     if (x.error) {
-      Swal.fire(
-        "Error",
-        "Problem while trying to delete the document",
-        "error"
-      );
+      Swal.fire( "Error", "Problem while trying to delete the document", "error" );
     } else {
       select();
-      Swal.fire(
-        "Hecho",
-        "Document deleted",
-        "success"
-      );
+      Swal.fire( "Hecho", "Document deleted", "success" );
     }
   };
 
-  const onClick = async () => {
+  const handleUploadDocument = async () => {
     if (!description || !name || !nameReal) {
-      return Swal.fire(
-        "Warning",
-        "Add a description, please",
-        "warning"
-      );
+      return Swal.fire( "Warning", "Add a description, please", "warning" );
     }
 
     const x = await supabase
       .from("document")
       .insert([
-        {
-          createdBy: "Seidor Analytics",
-          description,
-          name,
-          nameReal,
-          idBot,
-        },
+        { createdBy: "Seidor Analytics", description, name, nameReal, idBot },
       ])
       .select();
 
@@ -137,32 +120,27 @@ const DocumentsPage = () => {
     if (x.error) {
       console.log(x.error);
       setLoading(false);
-      return Swal.fire(
-        "Oops...",
-        "Error uploading the document",
-        "error"
-      );
+      return Swal.fire( "Oops...", "Error uploading the document", "error" );
     } else {
       setDescription("");
       setName("");
       setNameReal("");
       setLoading(false);
       select();
-      return Swal.fire(
-        "Done",
-        "Document uploaded",
-        "success"
-      );
+      return Swal.fire( "Done", "Document uploaded", "success" );
     }
   };
+
 
   function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
     const fileInput: HTMLInputElement | null = event.target;
     if (fileInput?.files && fileInput.files.length > 0) {
       const fileName = fileInput.files[0].name;
       setNameReal(fileName);
+      console.log(fileInput)
     }
   }
+  
 
   const handleNombreUsuarioChange = (
     e:
@@ -197,25 +175,15 @@ const DocumentsPage = () => {
       .select();
 
     if (x.error) {
-      return Swal.fire(
-        "Oops...",
-        "Problem while trying to update the document",
-        "error"
-      );
+      return Swal.fire( "Oops...", "Problem while trying to update the document", "error" );
     } else {
       select();
-      return Swal.fire(
-        "Done",
-        "Document updated",
-        "success"
-      );
+      return Swal.fire( "Done", "Document updated", "success" );
     }
   };
 
   if (!user)
-  return (
-<Login></Login>
-  )
+  return ( <Login></Login> )
 
   return (
     <Layout title="Documents page">
@@ -439,7 +407,7 @@ const DocumentsPage = () => {
                 onChange={handleFileChange}
               />
               <div className="flex justify-center my-5">
-                <Button className="w-full" disabled={ loading || nameReal === '' } variant="outline" onClick={onClick}>
+                <Button className="w-full" disabled={ loading || nameReal === '' } variant="outline" onClick={ handleUploadDocument }>
                   Upload
                 </Button>
               </div>
@@ -454,5 +422,6 @@ const DocumentsPage = () => {
     </Layout>
   );
 };
+
 
 export default DocumentsPage;
