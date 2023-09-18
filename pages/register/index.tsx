@@ -22,21 +22,33 @@ const Register = ()=>{
 
   
     const handleSubmitForm = async (event: FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        const chatbotObject = form.getValues();
-        console.log(chatbotObject);
-        if (
-          !chatbotObject.email ||
-          !chatbotObject.firstname ||
-          !chatbotObject.lastname ||
-          !chatbotObject.company ||
-          !chatbotObject.password ||
-          !chatbotObject.passwordConfirm  
+
+      event.preventDefault();
+   
+
+      const chatbotObject = form.getValues();
+      if (
+        !chatbotObject.email ||
+        !chatbotObject.firstname ||
+        !chatbotObject.lastname ||
+        !chatbotObject.company ||
+        !chatbotObject.password ||
+        !chatbotObject.passwordConfirm  
         ) {
           Swal.fire("Warning", "Please complete all the required fields", "warning");
           return;
         }
-
+        
+        let emailExist = await supabase
+        .from('users')
+        .select("*").eq('email', chatbotObject.email)
+        if( emailExist.data ){
+         if(emailExist.data?.length>0){
+          Swal.fire("Warning", "Email already exist", "warning");
+          return;
+         }
+        }
+      
         if (chatbotObject.password !== chatbotObject.passwordConfirm) {
           Swal.fire("Warning", "Passwords do not match", "warning");
           return;
@@ -48,12 +60,13 @@ const Register = ()=>{
           ]).select();
 
           if(xTenant.data){
-          console.log(xTenant.data[0].idTenant)
+      
           const x  = await supabaseClient.auth.signUp(
             {
               email: chatbotObject.email,
               password: chatbotObject.password,
               options: {
+                emailRedirectTo:'https://daiana.vercel.app/',
                 data: {
                   first_name: chatbotObject.firstname,
                   last_name: chatbotObject.lastname,

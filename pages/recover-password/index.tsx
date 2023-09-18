@@ -18,10 +18,8 @@ const RecoverPassword = () => {
     const handleSumbit = async (e: React.FormEvent<HTMLFormElement> | FormEvent<HTMLButtonElement>) => {
         e.preventDefault()
         let { data, error } = await supabase.auth.resetPasswordForEmail(value, {
-          redirectTo: 'http://localhost:3000/update-password',
+          redirectTo: 'https://daiana.vercel.app/update-password',
         })
-        console.log(data)
-        console.log(error)
         return Swal.fire(
             "¡Hello user!",
             "Please go check your message box",
