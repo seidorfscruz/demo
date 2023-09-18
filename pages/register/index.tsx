@@ -24,7 +24,6 @@ const Register = ()=>{
     const handleSubmitForm = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const chatbotObject = form.getValues();
-        console.log(chatbotObject);
         if (
           !chatbotObject.email ||
           !chatbotObject.firstname ||
@@ -48,12 +47,13 @@ const Register = ()=>{
           ]).select();
 
           if(xTenant.data){
-          console.log(xTenant.data[0].idTenant)
+      
           const x  = await supabaseClient.auth.signUp(
             {
               email: chatbotObject.email,
               password: chatbotObject.password,
               options: {
+                emailRedirectTo:'https://daiana.vercel.app/',
                 data: {
                   first_name: chatbotObject.firstname,
                   last_name: chatbotObject.lastname,
@@ -63,6 +63,9 @@ const Register = ()=>{
               }
             } )
             if(x.data){
+              console.log('llegue')
+              console.log(x)
+              console.log(x.data)
                 Swal.fire("Please, confirm email", "User successfully created", "success");
                 router.push("/login");
                 return;
