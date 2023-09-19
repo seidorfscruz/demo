@@ -128,13 +128,14 @@ export default function TeamsPage() {
         .from("Images")
         .upload(`imagesChatBots/${x.data[0].id}/1`, selectedFile);
 
-      if (x.error) {
-        Swal.fire(
-          "¡Hello, user!",
-          "The team could not be deleted correctly, please try again",
-          "warning"
-        );
-      }
+      
+    }
+    if (x.error) {
+      Swal.fire(
+        "¡Hello, user!",
+        "The team could not be deleted correctly, please try again",
+        "warning"
+      );
     }
     setinfoCreate({
       id: "",
