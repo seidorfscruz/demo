@@ -75,7 +75,7 @@ const Register = ()=>{
               email: chatbotObject.email,
               password: chatbotObject.password,
               options: {
-                emailRedirectTo:'http://localhost:3000/',
+                emailRedirectTo:'https://daiana.vercel.app/',
                 data: {
                   first_name: chatbotObject.firstname,
                   last_name: chatbotObject.lastname,
