@@ -12,7 +12,11 @@ import { useSupabaseClient, useUser } from "@supabase/auth-helpers-react";
 import { FormEvent, useState } from "react";
 import Swal from "sweetalert2";
 import { supabase } from "@/apis";
-
+import DaianaLogo from '@/assets/img/brand/logo-daiana.png'
+import Image from "next/image";
+import { SelectItem } from "@/registry/new-york/ui/select";
+import { paises } from "@/constant/paises";
+import { ScrollArea } from "@/registry/default/ui/scroll-area";
 const Register = ()=>{
     const user = useUser()
     const form = useForm();
@@ -27,18 +31,23 @@ const Register = ()=>{
    
 
       const chatbotObject = form.getValues();
+      console.log(chatbotObject.country)
+      console.log(chatbotObject.email)
       if (
         !chatbotObject.email ||
         !chatbotObject.firstname ||
         !chatbotObject.lastname ||
         !chatbotObject.company ||
         !chatbotObject.password ||
-        !chatbotObject.passwordConfirm  
+        !chatbotObject.passwordConfirm ||
+        !chatbotObject.country ||
+        !chatbotObject.phone ||
+        !chatbotObject.confirmemail 
+
         ) {
           Swal.fire("Warning", "Please complete all the required fields", "warning");
           return;
         }
-        
         let emailExist = await supabase
         .from('users')
         .select("*").eq('email', chatbotObject.email)
@@ -56,7 +65,7 @@ const Register = ()=>{
     
          const xTenant = await supabase.from("tenants").insert([
             { email: chatbotObject.email,
-            company: chatbotObject.company,},
+            company: chatbotObject.company},
           ]).select();
 
           if(xTenant.data){
@@ -70,7 +79,9 @@ const Register = ()=>{
                 data: {
                   first_name: chatbotObject.firstname,
                   last_name: chatbotObject.lastname,
-                  id_tenant:'c81d4e2e-bcf2-11e6-869b-7df92533d2db',
+                  phone: chatbotObject.phone,
+                  country: chatbotObject.country,
+                  company: chatbotObject.company,
                   id_tenantint:xTenant.data[0].idTenant
                 }
               }
@@ -80,8 +91,9 @@ const Register = ()=>{
                 router.push("/login");
                 return;
             } 
+            console.log(x.error)
           }
-      
+          console.log(xTenant.error)
           Swal.fire("Error ", "User not created", "error");
           router.push("/chatbots");
           return;
@@ -91,8 +103,11 @@ const Register = ()=>{
 
     return (
         <div>
+          <div className="flex justify-center">
+        <Image style={{ height: '300px', width: '500px' }} src={ DaianaLogo } alt="not found" />
+        </div>
         <div className="flex justify-center space-y-4 p-8 pt-6">
-        <h2 className="text-3xl font-bold tracking-tight">Create a new chatbot</h2>
+        <h2 className="text-3xl font-bold tracking-tight">User Register</h2>
       </div>
 
       <div className="h-full p-4 space-y-2 max-w-5xl mx-auto">
@@ -100,7 +115,7 @@ const Register = ()=>{
         <div className="space-y-2 w-full col-span-2 pb-10">
           <div>
             <h3 className="text-lg font-semibold">General Information</h3>
-            <p className="text-sm text-muted-foreground">General information about your Chatbot</p>
+            <p className="text-sm text-muted-foreground">Create a new user</p>
           </div>
           <Separator className="bg-primary/10" />
         </div>
@@ -127,7 +142,27 @@ const Register = ()=>{
       </FormItem>
     )}
   />
-  <FormField
+    <FormField
+    control={form.control}
+    name="confirmemail" // Nombre único para el primer campo
+    render={({ field }) => (
+      <FormItem>
+        <FormLabel>Confirm email</FormLabel>
+        <FormControl>
+          <Input
+          type="email"
+            disabled={isLoading}
+            placeholder="Enter your email"
+            {...field}
+          />
+        </FormControl>
+      </FormItem>
+    )}
+  />
+
+</div>
+<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<FormField
     control={form.control}
     name="firstname" // Nombre único para el segundo campo
     render={({ field }) => (
@@ -143,8 +178,6 @@ const Register = ()=>{
       </FormItem>
     )}
   />
-</div>
-<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
   <FormField
     control={form.control}
     name="lastname" // Nombre único para el primer campo
@@ -173,6 +206,49 @@ const Register = ()=>{
             placeholder="Enter your company"
             {...field}
           />
+        </FormControl>
+      </FormItem>
+    )}
+  />
+    <FormField
+    control={form.control}
+    name="phone" // Nombre único para el segundo campo
+    render={({ field }) => (
+      <FormItem>
+        <FormLabel>Phone</FormLabel>
+        <FormControl>
+          <Input
+           type="number"
+            disabled={isLoading}
+            placeholder="Enter your phone"
+            {...field}
+          />
+        </FormControl>
+      </FormItem>
+    )}
+  />
+    <FormField
+    control={form.control}
+    name="country" // Nombre único para el segundo campo
+    render={({ field }) => (
+      <FormItem>
+        <FormLabel>Country</FormLabel>
+        <FormControl>
+        <Select onValueChange={field.onChange} defaultValue={field.value}>
+  <SelectTrigger name="country">
+    <SelectValue placeholder="Select country"  />
+  </SelectTrigger>
+  <SelectContent  {...field}>
+  <ScrollArea className="h-72 w-100 rounded-md border">
+    {paises?.map((item, index) => (
+      <SelectItem key={index} value={item} >
+        {item}
+      </SelectItem>
+    ))}
+    
+  </ScrollArea>
+  </SelectContent>
+</Select>
         </FormControl>
       </FormItem>
     )}
