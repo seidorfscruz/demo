@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Layout } from '@/components/layouts'
 import { AvatarStatusBadge, AvatarStaticBadge } from '@/components/ui'
 import { Icon } from '@iconify/react'
-import BotpressChatFutbol from '@/components/ui/BotpressChatFutbol'
+import BotpressChatMarketing from '@/components/ui/BotpressChatMarketing'
 import axios from 'axios'
 import Accordion from '@/components/ui/Accordion'
 import BotpressChatVentas from '@/components/ui/BotpressChatVentas'
@@ -229,7 +229,7 @@ const ChatPage = () => {
                   title={chatbotsInformation[3].bot.integrations[Object.keys(chatbotsInformation[3].bot.integrations)[0]].configuration.botName} /> ||
 
                 (chatSelected === 4) &&
-                <BotpressChatFutbol
+                <BotpressChatMarketing
                   image={ chatbotsInformation[4].bot.integrations[Object.keys(chatbotsInformation[4].bot.integrations)[0]].configuration.avatarUrl }
                   title={chatbotsInformation[4].bot.integrations[Object.keys(chatbotsInformation[4].bot.integrations)[0]].configuration.botName} />
               }
