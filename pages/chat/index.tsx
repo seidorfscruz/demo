@@ -357,12 +357,12 @@ const ChatPage = () => {
           
           <div className='flex items-center mt-5'>
             <Icon icon="fluent:bot-24-regular" className='me-2' style={{ color: 'rgb(239, 184, 16)', fontSize: '23px' }} />
-            <span className='text-lg text-gray-100 font-bold leading-none'>Chatbot info</span>
+            <span className='text-lg text-gray-700 font-bold leading-none'>Chatbot info</span>
           </div>
 
           <div className='flex flex-col mt-4'>
-            <span className='text-gray-400 text-xs'>Nombre del Chatbot</span>
-            <span className='text-sm text-gray-100 font-medium leading-none'>
+            <span className='text-gray-700 text-xs'>Nombre del Chatbot</span>
+            <span className='text-sm text-gray-500 font-medium leading-none'>
               {
                 chatbotsInformation[chatSelected].bot.integrations[Object.keys(chatbotsInformation[chatSelected].bot.integrations)[0]].configuration.botName
               }
@@ -370,8 +370,8 @@ const ChatPage = () => {
           </div>
           
           <div className='flex flex-col mt-4'>
-            <span className='text-gray-400 text-xs'>Descripción</span>
-            <span className='text-sm text-gray-100 font-medium leading-none'>
+            <span className='text-gray-700 text-xs'>Descripción</span>
+            <span className='text-sm text-gray-500 font-medium leading-none'>
               {
                 chatbotsInformation[chatSelected].bot.integrations[Object.keys(chatbotsInformation[chatSelected].bot.integrations)[0]].configuration.botConversationDescription
               }
@@ -379,25 +379,24 @@ const ChatPage = () => {
           </div>
           
           <div className='flex flex-col mt-4'>
-            <span className='text-gray-400 text-xs mb-1'>Base de conocimiento</span>
+            <span className='text-gray-700 text-xs mb-1'>Base de conocimiento</span>
             <Accordion title='Documentos cargados'>
               <div className='flex flex-col'>
-                <span className='text-gray-100 text-sm'>Harbinger modo de uso.doc</span>
-                <span className='text-gray-100 text-sm'>Harbinger preguntas frecuentes.pdf</span>
-                <span className='text-gray-100 text-sm'>Harbinger pricing.pdf</span>
+                <span className='text-gray-500 text-sm'>Harbinger modo de uso.doc</span>
+                <span className='text-gray-500 text-sm'>Harbinger preguntas frecuentes.pdf</span>
+                <span className='text-gray-500 text-sm'>Harbinger pricing.pdf</span>
               </div>
-              {/* <span className='text-sm text-gray-400 font-medium leading-none'>This is your smart bot!</span> */}
             </Accordion>
           </div>
 
           <div className='flex flex-col mt-4'>
-            <span className='text-gray-400 text-xs'>Última conversación</span>
-            <span className='text-sm text-gray-100 font-medium leading-none'>Hace 3 días</span>
+            <span className='text-gray-700 text-xs'>Última conversación</span>
+            <span className='text-sm text-gray-500 font-medium leading-none'>Hace 3 días</span>
           </div>
           
           <div className='flex flex-col mt-4'>
-            <span className='text-gray-400 text-xs'>Chatbot creado el día</span>
-            <span className='text-sm text-gray-100 font-medium leading-none'>{ new Date(chatbotsInformation[chatSelected].bot.createdAt).toLocaleString() }</span>
+            <span className='text-gray-700 text-xs'>Chatbot creado el día</span>
+            <span className='text-sm text-gray-500 font-medium leading-none'>{ new Date(chatbotsInformation[chatSelected].bot.createdAt).toLocaleString() }</span>
           </div>
 
           <div className='mt-10'>

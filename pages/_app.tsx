@@ -6,6 +6,7 @@ import type { AppProps } from 'next/app'
 import { createPagesBrowserClient } from '@supabase/auth-helpers-nextjs'
 import { SessionContextProvider } from '@supabase/auth-helpers-react'
 import { useState } from 'react'
+import { ThemeProvider } from '@/components/theme-provider'
 
 export default function App({ Component, pageProps }: AppProps) {
   const [supabaseClient] = useState(() => createPagesBrowserClient())
@@ -14,8 +15,10 @@ export default function App({ Component, pageProps }: AppProps) {
       supabaseClient={supabaseClient}
       initialSession={pageProps.initialSession}
     >
-    <Provider store={ store }>
-      <Component {...pageProps} />
-    </Provider>
-     </SessionContextProvider>
+      <Provider store={ store }>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <Component {...pageProps} />
+        </ThemeProvider>
+      </Provider>
+    </SessionContextProvider>
 )}
