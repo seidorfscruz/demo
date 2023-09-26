@@ -2,20 +2,14 @@ import { useEffect, useState } from 'react'
 import { Layout } from '@/components/layouts'
 import { AvatarStatusBadge, AvatarStaticBadge } from '@/components/ui'
 import { Icon } from '@iconify/react'
-import chatStyles from '@/styles/chat.module.css'
-import BotpressChatConstitucion from '@/components/ui/BotpressChatConstitucion'
-import BotpressChatCuidar from '@/components/ui/BotpressChatCuidar'
 import BotpressChatFutbol from '@/components/ui/BotpressChatFutbol'
 import axios from 'axios'
-import { useSelector } from 'react-redux'
-import { RootState } from '@/store'
 import Accordion from '@/components/ui/Accordion'
 import BotpressChatVentas from '@/components/ui/BotpressChatVentas'
 import BotpressChatSoporte from '@/components/ui/BotpressChatSoporte'
 import BotpressChatRecursosHumanos from '@/components/ui/BotpressChatRecursosHumanos'
 import BotpressChatInnovacion from '@/components/ui/BotpressChatInnovacion'
 import { Button } from '@mui/material'
-import imgDefault from '@/constant/defaultimg'
 import { useUser } from '@supabase/auth-helpers-react'
 import Login from '../login/index'
 import { supabase } from '@/apis'
@@ -28,26 +22,10 @@ import {
 const getChatbotsInformation = async () => {
   try {
     // fsantacruz - Chatbot Reglamento de Futbol 11 escolar
-    const chatbotFutbol = await axios.get('https://api.botpress.cloud/v1/admin/bots/1f5c8318-4066-434b-b87e-acf4b192345f', {
+    const chatbotMarketing = await axios.get('https://api.botpress.cloud/v1/admin/bots/1f5c8318-4066-434b-b87e-acf4b192345f', {
       headers: {
         'x-workspace-id': '7bd3606c-9c5f-472e-8bbb-a5466b82c7e0',
         Authorization: `Bearer bp_pat_0WOQJ18bzLi1D9PGTY8wfRmlhFdlcqMhT11f`
-      }
-    })
-    
-    // santacruzgabrielf - Chatbot Constitución Nacional Argentina
-    const chatbotConstitucion = await axios.get('https://api.botpress.cloud/v1/admin/bots/793096bf-365b-4a3a-994a-b54407c558a7', {
-      headers: {
-        'x-workspace-id': 'ae3eb1e5-47e5-45d3-898c-2d18a03f9816',
-        Authorization: `Bearer bp_pat_TXfxE4kHFDKVMgTsfTcF7LaDyP2iLjCZMNts`
-      }
-    })
-    
-    // santacruzfernandog - Chatbot Aplicación Cuidar
-    const chatbotCuidar = await axios.get('https://api.botpress.cloud/v1/admin/bots/c1fb4c0b-525c-475b-890d-8b9e5f18cc1d', {
-      headers: {
-        'x-workspace-id': '7459f6f8-fcf3-4266-adf0-7ffa55b6e964',
-        Authorization: `Bearer bp_pat_qKieCpNDQq3cqKQGhkfQ7fDlAXRY4XojbQ1G`
       }
     })
     
@@ -87,13 +65,9 @@ const getChatbotsInformation = async () => {
     const chatbotRecursosHumanosInfo = await chatbotRecursosHumanos.data
     const chatbotSoporteInfo = await chatbotSoporte.data
     const chatbotVentasInfo = await chatbotVentas.data
-    const chatbotFutbolInfo = await chatbotFutbol.data
-    const chatbotCuidarInfo = await chatbotCuidar.data
-    const chatbotConstitucionInfo = await chatbotConstitucion.data
+    const chatbotMarketinglInfo = await chatbotMarketing.data
 
-    console.log(chatbotInnovacionInfo.bot.integrations[Object.keys(chatbotInnovacionInfo.bot.integrations)[0]].configuration)
-
-    return [ chatbotInnovacionInfo, chatbotRecursosHumanosInfo, chatbotSoporteInfo, chatbotVentasInfo, chatbotFutbolInfo, chatbotCuidarInfo, chatbotConstitucionInfo ]
+    return [ chatbotInnovacionInfo, chatbotRecursosHumanosInfo, chatbotSoporteInfo, chatbotVentasInfo, chatbotMarketinglInfo ]
 
   } catch (error) {
     console.log('Error getting chatbot information')
@@ -200,138 +174,32 @@ const ChatPage = () => {
           <h1 className='scroll-m-20 text-3xl font-bold tracking-tight mb-4'>Chatbots</h1>
             <div
               className={`grid grid-cols-5 border p-2 rounded-sm my-1 cursor-pointer hover:text-black hover:bg-blue-200 ${(chatSelected === 0) && 'bg-blue-200 text-black'}`}
-              // onClick={ () => setChatSelected(3) }
             >
               <div className="col-span-1">
-                <AvatarStatusBadge imageUrl={chatbotsInformation[chatSelected].bot.integrations[Object.keys(chatbotsInformation[chatSelected].bot.integrations)[0]].configuration.avatarUrl}  />
+                <AvatarStatusBadge
+                  imageUrl={
+                    chatSelected === 2
+                    ? chatbotsInformation[chatSelected].bot.integrations[Object.keys(chatbotsInformation[chatSelected].bot.integrations)[1]].configuration.avatarUrl
+                    : chatbotsInformation[chatSelected].bot.integrations[Object.keys(chatbotsInformation[chatSelected].bot.integrations)[0]].configuration.avatarUrl
+                  }  />
               </div>
               <div className="col-span-4 flex flex-col justify-center">
                 <small className='text-sm font-semibold'>
-                  { chatbotsInformation[chatSelected].bot.integrations[Object.keys(chatbotsInformation[chatSelected].bot.integrations)[0]].configuration.botName }
+                  {
+                    chatSelected === 2
+                    ? chatbotsInformation[chatSelected].bot.integrations[Object.keys(chatbotsInformation[chatSelected].bot.integrations)[1]].configuration.botName
+                    : chatbotsInformation[chatSelected].bot.integrations[Object.keys(chatbotsInformation[chatSelected].bot.integrations)[0]].configuration.botName
+                  }
                 </small>
                 <small className='text-xs font-semibold text-gray-500'>
-                  { chatbotsInformation[chatSelected].bot.integrations[Object.keys(chatbotsInformation[chatSelected].bot.integrations)[0]].configuration.botConversationDescription }
+                  {
+                    chatSelected === 2
+                    ? chatbotsInformation[chatSelected].bot.integrations[Object.keys(chatbotsInformation[chatSelected].bot.integrations)[1]].configuration.botConversationDescription
+                    : chatbotsInformation[chatSelected].bot.integrations[Object.keys(chatbotsInformation[chatSelected].bot.integrations)[0]].configuration.botConversationDescription
+                  }
                 </small>
               </div>
             </div>
-          
-          {/* {
-            teamSelected === 'humanresources' && (
-              <div
-                className={`grid grid-cols-5 border p-2 rounded-sm my-1 cursor-pointer hover:text-black hover:bg-blue-200 ${(chatSelected === 4) && 'bg-blue-200 text-black'}`}
-                onClick={ () => setChatSelected(4) }
-              >
-                <div className="col-span-1">
-                  <AvatarStatusBadge imageUrl={imgDefault[4].value}  />
-                </div>
-                <div className="col-span-4 flex flex-col justify-center">
-                  <small className='text-sm font-semibold'>
-                    { chatbotsInformation[4].bot.integrations[Object.keys(chatbotsInformation[4].bot.integrations)[0]].configuration.botName }
-                  </small>
-                  <small className='text-xs font-semibold text-gray-500'>
-                    { chatbotsInformation[4].bot.integrations[Object.keys(chatbotsInformation[4].bot.integrations)[0]].configuration.botConversationDescription }
-                  </small>
-                </div>
-              </div>
-            )
-          } */}
-          
-          {/* {
-            teamSelected === 'sales' && (
-              <div
-                className={`grid grid-cols-5 border p-2 rounded-sm my-1 cursor-pointer hover:text-black hover:bg-blue-200 ${(chatSelected === 6) && 'bg-blue-200 text-black'}`}
-                onClick={ () => setChatSelected(6) }
-              >
-                <div className="col-span-1">
-                  <AvatarStatusBadge imageUrl={imgDefault[6].value}  />
-                </div>
-                <div className="col-span-4 flex flex-col justify-center">
-                  <small className='text-sm font-semibold'>
-                    { chatbotsInformation[6].bot.integrations[Object.keys(chatbotsInformation[6].bot.integrations)[0]].configuration.botName }
-                  </small>
-                  <small className='text-xs font-semibold text-gray-500'>
-                    { chatbotsInformation[6].bot.integrations[Object.keys(chatbotsInformation[6].bot.integrations)[0]].configuration.botConversationDescription }
-                  </small>
-                </div>
-              </div>
-            )
-          } */}
-          
-          {/* {
-            teamSelected === 'support' && (
-              <div
-                className={`grid grid-cols-5 border p-2 rounded-sm my-1 cursor-pointer hover:text-black hover:bg-blue-200 ${(chatSelected === 5) && 'bg-blue-200 text-black'}`}
-                onClick={ () => setChatSelected(5) }
-              >
-                <div className="col-span-1">
-                  <AvatarStatusBadge imageUrl={imgDefault[5].value}  />
-                </div>
-                <div className="col-span-4 flex flex-col justify-center">
-                  <small className='text-sm font-semibold'>
-                    { chatbotsInformation[5].bot.integrations[Object.keys(chatbotsInformation[5].bot.integrations)[1]].configuration.botName }
-                  </small>
-                  <small className='text-xs font-semibold text-gray-500'>
-                    { chatbotsInformation[5].bot.integrations[Object.keys(chatbotsInformation[5].bot.integrations)[1]].configuration.botConversationDescription }
-                  </small>
-                </div>
-              </div>
-            )
-          } */}
-          
-          {/* {
-            teamSelected === 'others' && (
-              <>
-                <div
-                  className={`grid grid-cols-5 border p-2 rounded-sm my-1 cursor-pointer hover:text-black hover:bg-blue-200 ${(chatSelected === 0) && 'bg-blue-200 text-black'}`}
-                  onClick={ () => setChatSelected(0) }
-                >
-                  <div className="col-span-1">
-                    <AvatarStatusBadge imageUrl={imgDefault[0].value} />
-                  </div>
-                  <div className="col-span-4 flex flex-col justify-center">
-                    <small className='text-sm font-semibold'>
-                      { chatbotsInformation[0].bot.integrations[Object.keys(chatbotsInformation[0].bot.integrations)[0]].configuration.botName }
-                    </small>
-                    <small className='text-xs font-semibold text-gray-500'>{ chatbotsInformation[0].bot.integrations[Object.keys(chatbotsInformation[0].bot.integrations)[0]].configuration.botConversationDescription }</small>
-                  </div>
-                </div>
-              
-                <div
-                  className={`grid grid-cols-5 border p-2 rounded-sm my-1 cursor-pointer hover:text-black hover:bg-blue-200 ${(chatSelected === 1) && 'bg-blue-200 text-black'}`}
-                  onClick={ () => setChatSelected(1) }
-                >
-                  <div className="col-span-1">
-                    <AvatarStatusBadge imageUrl={imgDefault[1].value}  />
-                  </div>
-                  <div className="col-span-4 flex flex-col justify-center">
-                    <small className='text-sm font-semibold'>
-                      { chatbotsInformation[1].bot.integrations[Object.keys(chatbotsInformation[1].bot.integrations)[0]].configuration.botName }
-                    </small>
-                    <small className='text-xs font-semibold text-gray-500'>
-                      { chatbotsInformation[1].bot.integrations[Object.keys(chatbotsInformation[1].bot.integrations)[0]].configuration.botConversationDescription }
-                    </small>
-                  </div>
-                </div>
-              
-                <div
-                  className={`grid grid-cols-5 border p-2 rounded-sm my-1 cursor-pointer hover:text-black hover:bg-blue-200 ${(chatSelected === 2) && 'bg-blue-200 text-black'}`}
-                  onClick={ () => setChatSelected(2) }
-                >
-                  <div className="col-span-1">
-                    <AvatarStatusBadge imageUrl={imgDefault[2].value}  />
-                  </div>
-                  <div className="col-span-4 flex flex-col justify-center">
-                    <small className='text-sm font-semibold'>
-                      { chatbotsInformation[2].bot.integrations[Object.keys(chatbotsInformation[2].bot.integrations)[0]].configuration.botName }
-                    </small>
-                    <small className='text-xs font-semibold text-gray-500'>
-                      { chatbotsInformation[2].bot.integrations[Object.keys(chatbotsInformation[2].bot.integrations)[0]].configuration.botConversationDescription }
-                    </small>
-                  </div>
-                </div>
-              </>
-            )
-          } */}
         </div>
         <div className="col-span-2">
           <div className="relative flex">
@@ -340,13 +208,30 @@ const ChatPage = () => {
               className={`relative h-full w-full overflow-clip border border-zinc-200 bg-white p-2 px-0 py-0`}
             >
               {
-                (chatSelected === 0) && <BotpressChatInnovacion image={ chatbotsInformation[0].bot.integrations[Object.keys(chatbotsInformation[0].bot.integrations)[0]].configuration.avatarUrl } title={chatbotsInformation[0].bot.integrations[Object.keys(chatbotsInformation[0].bot.integrations)[0]].configuration.botName} /> ||
-                (chatSelected === 1) && <BotpressChatRecursosHumanos image={ chatbotsInformation[1].bot.integrations[Object.keys(chatbotsInformation[1].bot.integrations)[0]].configuration.avatarUrl } title={chatbotsInformation[1].bot.integrations[Object.keys(chatbotsInformation[1].bot.integrations)[0]].configuration.botName} /> ||
-                (chatSelected === 2) && <BotpressChatSoporte image={ chatbotsInformation[2].bot.integrations[Object.keys(chatbotsInformation[2].bot.integrations)[0]].configuration.avatarUrl } title={chatbotsInformation[2].bot.integrations[Object.keys(chatbotsInformation[2].bot.integrations)[0]].configuration.botName} /> ||
-                (chatSelected === 3) && <BotpressChatVentas image={ chatbotsInformation[3].bot.integrations[Object.keys(chatbotsInformation[3].bot.integrations)[0]].configuration.avatarUrl } title={chatbotsInformation[3].bot.integrations[Object.keys(chatbotsInformation[3].bot.integrations)[0]].configuration.botName} /> ||
-                (chatSelected === 4) && <BotpressChatFutbol image={ chatbotsInformation[4].bot.integrations[Object.keys(chatbotsInformation[4].bot.integrations)[0]].configuration.avatarUrl } title={chatbotsInformation[4].bot.integrations[Object.keys(chatbotsInformation[4].bot.integrations)[0]].configuration.botName} /> ||
-                (chatSelected === 5) && <BotpressChatCuidar image={ chatbotsInformation[5].bot.integrations[Object.keys(chatbotsInformation[5].bot.integrations)[0]].configuration.avatarUrl } title={chatbotsInformation[5].bot.integrations[Object.keys(chatbotsInformation[5].bot.integrations)[0]].configuration.botName} /> ||
-                (chatSelected === 6) && <BotpressChatConstitucion image={ chatbotsInformation[6].bot.integrations[Object.keys(chatbotsInformation[6].bot.integrations)[0]].configuration.avatarUrl } title={chatbotsInformation[6].bot.integrations[Object.keys(chatbotsInformation[6].bot.integrations)[0]].configuration.botName} />
+                (chatSelected === 0) &&
+                <BotpressChatInnovacion
+                  image={ chatbotsInformation[0].bot.integrations[Object.keys(chatbotsInformation[0].bot.integrations)[0]].configuration.avatarUrl }
+                  title={chatbotsInformation[0].bot.integrations[Object.keys(chatbotsInformation[0].bot.integrations)[0]].configuration.botName} /> ||
+
+                (chatSelected === 1) &&
+                <BotpressChatRecursosHumanos
+                  image={ chatbotsInformation[1].bot.integrations[Object.keys(chatbotsInformation[1].bot.integrations)[0]].configuration.avatarUrl }
+                  title={chatbotsInformation[1].bot.integrations[Object.keys(chatbotsInformation[1].bot.integrations)[0]].configuration.botName} /> ||
+
+                (chatSelected === 2) &&
+                <BotpressChatSoporte
+                  image={ chatbotsInformation[2].bot.integrations[Object.keys(chatbotsInformation[2].bot.integrations)[1]].configuration.avatarUrl }
+                  title={chatbotsInformation[2].bot.integrations[Object.keys(chatbotsInformation[2].bot.integrations)[1]].configuration.botName} /> ||
+
+                (chatSelected === 3) &&
+                <BotpressChatVentas
+                  image={ chatbotsInformation[3].bot.integrations[Object.keys(chatbotsInformation[3].bot.integrations)[0]].configuration.avatarUrl }
+                  title={chatbotsInformation[3].bot.integrations[Object.keys(chatbotsInformation[3].bot.integrations)[0]].configuration.botName} /> ||
+
+                (chatSelected === 4) &&
+                <BotpressChatFutbol
+                  image={ chatbotsInformation[4].bot.integrations[Object.keys(chatbotsInformation[4].bot.integrations)[0]].configuration.avatarUrl }
+                  title={chatbotsInformation[4].bot.integrations[Object.keys(chatbotsInformation[4].bot.integrations)[0]].configuration.botName} />
               }
             </div>
           </div>
@@ -364,7 +249,9 @@ const ChatPage = () => {
             <span className='text-gray-700 text-xs'>Nombre del Chatbot</span>
             <span className='text-sm text-gray-500 font-medium leading-none'>
               {
-                chatbotsInformation[chatSelected].bot.integrations[Object.keys(chatbotsInformation[chatSelected].bot.integrations)[0]].configuration.botName
+                chatSelected === 2
+                ? chatbotsInformation[chatSelected].bot.integrations[Object.keys(chatbotsInformation[chatSelected].bot.integrations)[1]].configuration.botName
+                : chatbotsInformation[chatSelected].bot.integrations[Object.keys(chatbotsInformation[chatSelected].bot.integrations)[0]].configuration.botName
               }
             </span>
           </div>
@@ -373,7 +260,9 @@ const ChatPage = () => {
             <span className='text-gray-700 text-xs'>Descripción</span>
             <span className='text-sm text-gray-500 font-medium leading-none'>
               {
-                chatbotsInformation[chatSelected].bot.integrations[Object.keys(chatbotsInformation[chatSelected].bot.integrations)[0]].configuration.botConversationDescription
+                chatSelected === 2
+                ? chatbotsInformation[chatSelected].bot.integrations[Object.keys(chatbotsInformation[chatSelected].bot.integrations)[1]].configuration.botConversationDescription
+                : chatbotsInformation[chatSelected].bot.integrations[Object.keys(chatbotsInformation[chatSelected].bot.integrations)[0]].configuration.botConversationDescription
               }
             </span>
           </div>
