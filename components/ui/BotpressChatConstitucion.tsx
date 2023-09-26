@@ -1,6 +1,6 @@
 import React from 'react'
 
-const BotpressCuidarConstitucion = ({ image }: { image: string }) => {
+const BotpressCuidarConstitucion = ({ image, title }: { image: string, title: string }) => {
   return (
     <iframe
       srcDoc={`<body><script src='https://cdn.botpress.cloud/webchat/v0/inject.js'></script>
@@ -8,7 +8,7 @@ const BotpressCuidarConstitucion = ({ image }: { image: string }) => {
         window.botpressWebChat.init({
             'composerPlaceholder': 'Escríbele algo...',
             'botConversationDescription': 'Hazme las preguntas que quieras sobre la documentación que cargaste',
-            'botName': 'Constitución Nacional Argentina',
+            'botName': '${title}',
             'avatarUrl': '${image}',
             'locale': 'es',
             'botId': '793096bf-365b-4a3a-994a-b54407c558a7',

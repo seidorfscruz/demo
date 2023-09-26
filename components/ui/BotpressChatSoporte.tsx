@@ -1,6 +1,6 @@
 import React from 'react'
 
-const BotpressChatFutbol = ({ image }: { image: string }) => {
+const BotpressChatFutbol = ({ image, title }: { image: string, title: string }) => {
 
   return (
     <iframe
@@ -9,7 +9,7 @@ const BotpressChatFutbol = ({ image }: { image: string }) => {
         window.botpressWebChat.init({
             'composerPlaceholder': 'Escríbele algo...',
             'botConversationDescription': 'Hazme las preguntas que quieras sobre la documentación que cargaste',
-            'botName': 'Soporte | Consultas sobre Harbinger',
+            'botName': '${title}',
             'avatarUrl': '${image}',
             'locale': 'es',
             'botId': 'fe6cb52a-32b9-4b51-bcae-3c301ad0be4d',

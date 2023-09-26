@@ -1,6 +1,6 @@
 import React from 'react'
 
-const BotpressChatCuidar = ({ image }: { image: string }) => {
+const BotpressChatCuidar = ({ image, title }: { image: string, title: string }) => {
   return (
     <iframe
       srcDoc={`<body><script src='https://cdn.botpress.cloud/webchat/v0/inject.js'></script>
@@ -8,7 +8,7 @@ const BotpressChatCuidar = ({ image }: { image: string }) => {
         window.botpressWebChat.init({
             'composerPlaceholder': 'Escríbele algo...',
             'botConversationDescription': 'Hazme las preguntas que quieras sobre la documentación que cargaste',
-            'botName': 'Aplicación CUIDAR',
+            'botName': '${title}',
             'avatarUrl': '${image}',
             'locale': 'es',
             'botId': 'c1fb4c0b-525c-475b-890d-8b9e5f18cc1d',

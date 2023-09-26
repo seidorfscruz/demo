@@ -1,6 +1,6 @@
 import React from 'react'
 
-const BotpressChatFutbol = ({ image }: { image: string }) => {
+const BotpressChatFutbol = ({ image, title }: { image: string, title: string }) => {
   return (
     <iframe
       srcDoc={`<body><script src='https://cdn.botpress.cloud/webchat/v0/inject.js'></script>
@@ -8,7 +8,7 @@ const BotpressChatFutbol = ({ image }: { image: string }) => {
         window.botpressWebChat.init({
             'composerPlaceholder': 'Escríbele algo...',
             'botConversationDescription': 'Hazme las preguntas que quieras sobre la documentación que cargaste',
-            'botName': 'Reglamento de futbol 11 escolar',
+            'botName': '${title}',
             'avatarUrl': '${image}',
             'locale': 'es',
             'botId': '1f5c8318-4066-434b-b87e-acf4b192345f',

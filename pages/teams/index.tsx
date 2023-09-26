@@ -150,7 +150,7 @@ export default function TeamsPage() {
   };
 
   async function fetchData() {
-    const x = await supabase.from("teams").select().eq('idTenant', user?.user_metadata.id_tenantint)
+    const x = await supabase.from("teams").select().eq('idTenant', user?.user_metadata.id_tenantint).order('created_at', { ascending: true });
     if (x.error) {
       console.log(x.error);
     } else {
@@ -476,8 +476,7 @@ export default function TeamsPage() {
               {infoDb.map((infoDb, index) => (
                 <TableRow key={infoDb.id}>
                   <TableCell className="font-medium">
-                    <Icon icon={teamIcons[index]} style={{ fontSize: '40px' }} />
-                    {/* <Avatar className="w-20 h-20">
+                    <Avatar className="w-10 h-10">
                       <AvatarImage
                         src={
                           typeof infoDb.imageUrl === "number" ||
@@ -487,7 +486,7 @@ export default function TeamsPage() {
                         }
                       />
                       <AvatarFallback>CN</AvatarFallback>
-                    </Avatar> */}
+                    </Avatar>
                   </TableCell>
                   <TableCell>{infoDb.name}</TableCell>
                   <TableCell>{infoDb.description}</TableCell>

@@ -1,6 +1,6 @@
 import React from 'react'
 
-const BotpressChatFutbol = ({ image }: { image: string }) => {
+const BotpressChatFutbol = ({ image, title }: { image: string, title: string }) => {
   return (
     <iframe
       srcDoc={`<body><script src='https://cdn.botpress.cloud/webchat/v0/inject.js'></script>
@@ -8,7 +8,7 @@ const BotpressChatFutbol = ({ image }: { image: string }) => {
         window.botpressWebChat.init({
             'composerPlaceholder': 'Escríbele algo...',
             'botConversationDescription': 'Hazme las preguntas que quieras sobre la documentación que cargaste',
-            'botName': 'Innovación',
+            'botName': '${title}',
             'avatarUrl': '${image}',
             'locale': 'es',
             'botId': 'b72d1a22-13b9-4949-93e4-2ec4974ea8fc',
