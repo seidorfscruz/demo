@@ -18,14 +18,15 @@ import {
   AvatarFallback,
   AvatarImage,
 } from "@/registry/default/ui/avatar";
+import NoImage from '@/assets/img/no-image.jpg'
 
 const getChatbotsInformation = async () => {
   try {
     // fsantacruz - Chatbot Reglamento de Futbol 11 escolar
-    const chatbotMarketing = await axios.get('https://api.botpress.cloud/v1/admin/bots/1f5c8318-4066-434b-b87e-acf4b192345f', {
+    const chatbotMarketing = await axios.get('https://api.botpress.cloud/v1/admin/bots/e0a9fb8a-fed4-49e7-9451-78beb720e945', {
       headers: {
-        'x-workspace-id': '7bd3606c-9c5f-472e-8bbb-a5466b82c7e0',
-        Authorization: `Bearer bp_pat_0WOQJ18bzLi1D9PGTY8wfRmlhFdlcqMhT11f`
+        'x-workspace-id': '44dab843-9144-423f-b5d4-75ced1a8c954',
+        Authorization: `Bearer bp_pat_XqTwqq9fEdcy1e7AEF6hCq8ONC1QkOJppcwp`
       }
     })
     
@@ -65,9 +66,9 @@ const getChatbotsInformation = async () => {
     const chatbotRecursosHumanosInfo = await chatbotRecursosHumanos.data
     const chatbotSoporteInfo = await chatbotSoporte.data
     const chatbotVentasInfo = await chatbotVentas.data
-    const chatbotMarketinglInfo = await chatbotMarketing.data
+    const chatbotMarketingInfo = await chatbotMarketing.data
 
-    return [ chatbotInnovacionInfo, chatbotRecursosHumanosInfo, chatbotSoporteInfo, chatbotVentasInfo, chatbotMarketinglInfo ]
+    return [ chatbotInnovacionInfo, chatbotRecursosHumanosInfo, chatbotSoporteInfo, chatbotVentasInfo, chatbotMarketingInfo ]
 
   } catch (error) {
     console.log('Error getting chatbot information')
@@ -79,7 +80,7 @@ const getChatbotsInformation = async () => {
 
 const ChatPage = () => {
   const user = useUser()
-  const [chatSelected, setChatSelected] = useState(3)
+  const [chatSelected, setChatSelected] = useState(0)
   const [teamSelected, setTeamSelected] = useState('innovation')
   
   const [userTeams, setUserTeams] = useState([
@@ -97,10 +98,9 @@ const ChatPage = () => {
     {bot:{ createdAt:'', name:'', integrations: [{ configuration: {botConversationDescription: ''} }] }},
     {bot:{ createdAt:'', name:'', integrations: [{ configuration: {botConversationDescription: ''} }] }},
     {bot:{ createdAt:'', name:'', integrations: [{ configuration: {botConversationDescription: ''} }] }},
-    {bot:{ createdAt:'', name:'', integrations: [{ configuration: {botConversationDescription: ''} }] }},
-    {bot:{ createdAt:'', name:'', integrations: [{ configuration: {botConversationDescription: ''} }] }},
     {bot:{ createdAt:'', name:'', integrations: [{ configuration: {botConversationDescription: ''} }] }}
   ])
+  console.log(chatbotsInformation[0])
 
 
   useEffect(() => {
@@ -181,7 +181,8 @@ const ChatPage = () => {
                     chatSelected === 2
                     ? chatbotsInformation[chatSelected].bot.integrations[Object.keys(chatbotsInformation[chatSelected].bot.integrations)[1]].configuration.avatarUrl
                     : chatbotsInformation[chatSelected].bot.integrations[Object.keys(chatbotsInformation[chatSelected].bot.integrations)[0]].configuration.avatarUrl
-                  }  />
+                  }
+                  />
               </div>
               <div className="col-span-4 flex flex-col justify-center">
                 <small className='text-sm font-semibold'>
